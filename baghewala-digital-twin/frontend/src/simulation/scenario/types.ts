@@ -1,0 +1,68 @@
+import type { SourceType } from '../../data/baghewala';
+
+export type ScenarioStatus = 'DRAFT' | 'VALID' | 'INVALID' | 'READY_FOR_SIMULATION';
+
+export interface ScenarioInputValues {
+  ambientTemperatureC: number;
+  reservoirTemperatureC: number;
+  steamInjectionRateTpd: number;
+  steamQualityPercent: number; // 0 to 100%
+  soakDurationDays: number;
+  vfdFrequencyHz: number;
+  spm: number;
+  strokeLengthMeters: number;
+}
+
+export interface ScenarioInputMetadata {
+  parameter: string;
+  value: number;
+  unit: string;
+  sourceType: SourceType;
+}
+
+export interface ValidationErrorItem {
+  field: keyof ScenarioInputValues | 'scenario';
+  message: string;
+  limitType: 'documentedEngineeringLimit' | 'softwareValidationLimit';
+}
+
+export interface ScenarioValidationResult {
+  isValid: boolean;
+  errors: ValidationErrorItem[];
+}
+
+export interface Scenario {
+  id: string;
+  name: string;
+  description: string;
+  fieldId: string;
+  wellId: string;
+  reservoirId: string;
+  baseScenarioId: string;
+  inputs: ScenarioInputValues;
+  createdAt: string;
+  updatedAt: string;
+  status: ScenarioStatus;
+  validation: ScenarioValidationResult;
+  isPreset?: boolean;
+}
+
+export interface ParameterDelta {
+  parameter: keyof ScenarioInputValues;
+  label: string;
+  unit: string;
+  baselineValue: number;
+  scenarioValue: number;
+  delta: number;
+  hasChanged: boolean;
+}
+
+export interface LimitBoundary {
+  min: number;
+  max: number;
+  unit: string;
+  limitType: 'documentedEngineeringLimit' | 'softwareValidationLimit';
+  description: string;
+}
+
+export type ScenarioLimits = Record<keyof ScenarioInputValues, LimitBoundary>;
