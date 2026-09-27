@@ -190,57 +190,12 @@ BAGHEWALA_HISTORICAL_INCIDENTS = [
     }
 ]
 
-BAGHEWALA_IMAGE_CATALOG = [
-    {
-        "imageId": "FIG-005",
-        "imageUrl": "https://internal.oilindia.in/schematics/fig-005-casing-program.jpg",
-        "caption": "Casing Program & Hole Size Schematic for Baghewala Wells.",
-        "source": "OIL Rajasthan Field Amendment No. 4 (Section 2.1.3)",
-        "imageAvailable": True
-    },
-    {
-        "imageId": "FIG-006",
-        "imageUrl": "https://internal.oilindia.in/maps/fig-006-sharp-bhagewala-location.jpg",
-        "caption": "Figure 49: Location of Bhagewala Oil field in Bikaner-Nagaur Basin (Mandal et al., 2022).",
-        "source": "SHARP Storage Report D4.1 (Figure 49, Page 63)",
-        "imageAvailable": True
-    },
-    {
-        "imageId": "FIG-007",
-        "imageUrl": "https://internal.oilindia.in/wells/fig-007-bgw1-column.jpg",
-        "caption": "Figure 50: Stratigraphic column for the Baghewala-1 well (Peters et al., 1995; Cozzi et al., 2012).",
-        "source": "SHARP Storage Report D4.1 (Figure 50, Page 64)",
-        "imageAvailable": True
-    },
-    {
-        "imageId": "FIG-008",
-        "imageUrl": "https://internal.oilindia.in/seismic/fig-008-sharp-dd-seismic.jpg",
-        "caption": "Figure 51: DD seismic section transecting the Baghewala-1 well shows compressional structures bounded by steeply dipping faults.",
-        "source": "SHARP Storage Report D4.1 (Figure 51, Page 65)",
-        "imageAvailable": True
-    },
-    {
-        "imageId": "FIG-014",
-        "imageUrl": "https://internal.oilindia.in/operations/fig-014-bgw8-css-pad.jpg",
-        "caption": "Slide 12: Field setup for BGW#8 1st Commercial CSS Cycle (Nov 2018).",
-        "source": "Oil India Limited Presentation (Slide 12)",
-        "imageAvailable": True
-    },
-    {
-        "imageId": "FIG-015",
-        "imageUrl": "https://internal.oilindia.in/schematics/fig-015-thermal-completion.jpg",
-        "caption": "Slide 14: Thermal Well Completion Assembly featuring Vacuum Insulated Tubing (VIT).",
-        "source": "Oil India Limited Presentation (Slide 14)",
-        "imageAvailable": True
-    },
-    {
-        "imageId": "FIG-017",
-        "imageUrl": "https://internal.oilindia.in/specs/fig-017-premium-threads.jpg",
-        "caption": "Page 2: Approved Premium Casing Thread Connections (VAM SWI, Tenaris Blue, Evraz QB2, Hunting Seal-Lock XD).",
-        "source": "OIL Drilling Department EOI 2025-26 (Page 2)",
-        "imageAvailable": True
-    }
-]
+try:
+    from app.services.vision_service import build_dynamic_image_catalog
+except ImportError:
+    from services.vision_service import build_dynamic_image_catalog
+
+BAGHEWALA_IMAGE_CATALOG = build_dynamic_image_catalog()
 
 BAGHEWALA_KNOWLEDGE_GAPS = [
     {
@@ -444,14 +399,75 @@ def search_baghewala_rag(query: str, context: Optional[Dict[str, Any]] = None) -
     evidence_list.sort(key=lambda x: x["relevanceScore"], reverse=True)
     events_list.sort(key=lambda x: x["relevance"], reverse=True)
 
+    image_evidence_list = []
+    for img in BAGHEWALA_IMAGE_CATALOG:
+        searchable_text = f"{img['imageId']} {img['title']} {img['description']} {img['caption']} {img.get('extractedOcrText', '')} {img.get('visualAnalysisSummary', '')} {' '.join(img.get('visualFeatures', []))} {' '.join(img.get('domainTags', []))}".lower()
+        
+        text_match_score = 0.50
+        if query_tokens:
+            matches = sum(1 for t in query_tokens if t in searchable_text)
+            text_match_score = min(1.0, 0.40 + (matches / len(query_tokens)) * 0.60)
+            
+        context_boost = 0.0
+        domain_tags = img.get("domainTags", [])
+        if steam_temp > 250 and ("thermal_css" in domain_tags or "casing" in domain_tags or "twccep" in domain_tags or img["imageId"] in ["FIG-014", "FIG-015", "FIG-017"]):
+            context_boost += 0.25
+        if viscosity > 3000 and (img["imageId"] in ["FIG-002", "FIG-007"] or "viscosity_curve" in domain_tags):
+            context_boost += 0.20
+        if ("geomechanics" in domain_tags or "seismic_profile" in domain_tags) and ("seismic" in norm_query or "fault" in norm_query or "stress" in norm_query):
+            context_boost += 0.30
+            
+        rel_vis_score = min(1.0, round(text_match_score * 0.70 + context_boost * 0.30, 2))
+        
+        img_cat = "HISTORICAL_INCIDENT"
+        if "thermal_css" in domain_tags:
+            img_cat = "THERMAL_CSS"
+        elif "casing" in domain_tags or "twccep" in domain_tags:
+            img_cat = "WELL_INTEGRITY_CASING"
+        elif "geomechanics" in domain_tags or "seismic_profile" in domain_tags:
+            img_cat = "SEISMIC_GEOMECHANICAL"
+        elif "lithocolumn" in domain_tags or "stratigraphy" in domain_tags:
+            img_cat = "RESERVOIR_GEOLOGY"
+            
+        image_evidence_list.append({
+            "imageId": img["imageId"],
+            "title": img["title"],
+            "description": img["description"],
+            "caption": img["caption"],
+            "document": img["document"],
+            "page": img["page"],
+            "imageUrl": img["imageUrl"],
+            "relatedIncidentId": img.get("relatedIncidentId"),
+            "relatedTopic": img["relatedTopic"],
+            "source": img["source"],
+            "imageAvailable": img["imageAvailable"],
+            "extractedOcrText": img.get("extractedOcrText", ""),
+            "visualAnalysisSummary": img.get("visualAnalysisSummary", ""),
+            "visualFeatures": img.get("visualFeatures", []),
+            "domainTags": img.get("domainTags", []),
+            "visualRelevanceScore": rel_vis_score,
+            "provenance": {
+                "document": img["document"],
+                "page": img["page"],
+                "figure": img["imageId"],
+                "source": img["source"],
+                "sourceUrl": img["imageUrl"],
+                "confidence": "HIGH",
+                "evidenceCategory": img_cat
+            }
+        })
+
+    image_evidence_list.sort(key=lambda x: x["visualRelevanceScore"], reverse=True)
+
     return {
         "success": True,
         "events": events_list,
         "evidence": evidence_list,
+        "imageEvidence": image_evidence_list,
         "currentSimulation": context,
         "knowledgeGaps": BAGHEWALA_KNOWLEDGE_GAPS,
         "disclaimer": "HISTORICAL EVIDENCE — NOT A PREDICTION",
-        "summary": f"Retrieved {len(evidence_list)} grounded Baghewala historical evidence records for parameters (Viscosity: {viscosity} cP, Temp: {temp}°C, SPM: {spm}).",
+        "summary": f"Retrieved {len(evidence_list)} grounded Baghewala historical evidence records and {len(image_evidence_list)} multimodal visual assets for parameters (Viscosity: {viscosity} cP, Temp: {temp}°C, SPM: {spm}).",
         "query": query or "Baghewala historical evidence query",
         "totalCount": len(evidence_list)
     }

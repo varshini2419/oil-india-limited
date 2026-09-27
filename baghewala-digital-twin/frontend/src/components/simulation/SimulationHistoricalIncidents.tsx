@@ -9,6 +9,7 @@ import {
   isRagConfigured,
   type BaghewalaGroundedEvidence,
   type BaghewalaHistoricalEvent,
+  type BaghewalaImageEvidence,
   type BaghewalaKnowledgeGap,
   type BaghewalaRagQueryContext,
   type BaghewalaRagResponse
@@ -23,7 +24,9 @@ import {
   FileText,
   Filter,
   Layers,
-  Sparkles
+  Sparkles,
+  Eye,
+  Image as ImageIcon
 } from 'lucide-react';
 
 /**
@@ -32,6 +35,7 @@ import {
 export interface HistoricalIncidentState {
   incidents: BaghewalaHistoricalEvent[];
   evidence: BaghewalaGroundedEvidence[];
+  imageEvidence: BaghewalaImageEvidence[];
   knowledgeGaps: BaghewalaKnowledgeGap[];
   disclaimer: string;
   query: string;
@@ -48,6 +52,7 @@ const sessionCache = new Map<string, BaghewalaRagResponse>();
 let latestIncidentState: HistoricalIncidentState = {
   incidents: [],
   evidence: [],
+  imageEvidence: [],
   knowledgeGaps: [],
   disclaimer: 'HISTORICAL EVIDENCE — NOT A PREDICTION',
   query: '',
@@ -58,6 +63,10 @@ let latestIncidentState: HistoricalIncidentState = {
 
 export function getLatestHistoricalIncidentState(): HistoricalIncidentState {
   return latestIncidentState;
+}
+
+export function setLatestHistoricalIncidentStateForTest(state: HistoricalIncidentState): void {
+  latestIncidentState = state;
 }
 
 export const SimulationHistoricalIncidents: React.FC = () => {
@@ -75,6 +84,7 @@ export const SimulationHistoricalIncidents: React.FC = () => {
   const [state, setState] = useState<HistoricalIncidentState>({
     incidents: [],
     evidence: [],
+    imageEvidence: [],
     knowledgeGaps: [],
     disclaimer: 'HISTORICAL EVIDENCE — NOT A PREDICTION',
     query: '',
@@ -123,6 +133,7 @@ export const SimulationHistoricalIncidents: React.FC = () => {
       const newState: HistoricalIncidentState = {
         incidents: [],
         evidence: [],
+        imageEvidence: [],
         knowledgeGaps: [],
         disclaimer: 'HISTORICAL EVIDENCE — NOT A PREDICTION',
         query: '',
@@ -162,6 +173,7 @@ export const SimulationHistoricalIncidents: React.FC = () => {
       const newState: HistoricalIncidentState = {
         incidents: cached.events || [],
         evidence: cached.evidence || [],
+        imageEvidence: cached.imageEvidence || [],
         knowledgeGaps: cached.knowledgeGaps || [],
         disclaimer: cached.disclaimer || 'HISTORICAL EVIDENCE — NOT A PREDICTION',
         query: queryStr,
@@ -194,6 +206,7 @@ export const SimulationHistoricalIncidents: React.FC = () => {
           const newState: HistoricalIncidentState = {
             incidents: res.events || [],
             evidence: res.evidence || [],
+            imageEvidence: res.imageEvidence || [],
             knowledgeGaps: res.knowledgeGaps || [],
             disclaimer: res.disclaimer || 'HISTORICAL EVIDENCE — NOT A PREDICTION',
             query: queryStr,
@@ -207,6 +220,7 @@ export const SimulationHistoricalIncidents: React.FC = () => {
           const newState: HistoricalIncidentState = {
             incidents: [],
             evidence: [],
+            imageEvidence: [],
             knowledgeGaps: [],
             disclaimer: 'HISTORICAL EVIDENCE — NOT A PREDICTION',
             query: queryStr,
@@ -224,6 +238,7 @@ export const SimulationHistoricalIncidents: React.FC = () => {
         const newState: HistoricalIncidentState = {
           incidents: [],
           evidence: [],
+          imageEvidence: [],
           knowledgeGaps: [],
           disclaimer: 'HISTORICAL EVIDENCE — NOT A PREDICTION',
           query: queryStr,
@@ -551,6 +566,68 @@ export const SimulationHistoricalIncidents: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* Multimodal Visual Evidence Catalog Grid */}
+        {state.status === 'SUCCESS' && state.imageEvidence && state.imageEvidence.length > 0 && (
+          <div className="bg-slate-950 p-4 rounded border border-sky-900/60 space-y-3 mt-4">
+            <div className="flex items-center justify-between text-sky-300 font-bold text-xs uppercase tracking-wider">
+              <span className="flex items-center gap-2">
+                <ImageIcon className="w-4 h-4 text-sky-400" />
+                <span>MULTIMODAL IMAGE EVIDENCE & VISUAL GROUNDING CATALOG ({state.imageEvidence.length})</span>
+              </span>
+              <span className="text-[10px] text-sky-400 bg-sky-950 px-2 py-0.5 rounded border border-sky-800">
+                VISION & OCR INGESTED
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {state.imageEvidence.map((img) => (
+                <div key={img.imageId} className="p-3 bg-slate-900 rounded border border-slate-800 space-y-2 text-xs font-sans">
+                  <div className="flex items-center justify-between font-mono text-[11px] font-bold text-sky-200 border-b border-slate-800 pb-1.5">
+                    <span className="flex items-center gap-1.5">
+                      <span className="px-1.5 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 text-[10px]">
+                        {img.imageId}
+                      </span>
+                      <span className="truncate max-w-[200px]">{img.title}</span>
+                    </span>
+                    <span className="text-[9px] text-emerald-400 bg-slate-950 px-1.5 py-0.5 rounded border border-slate-800">
+                      Relevance: {(img.visualRelevanceScore * 100).toFixed(0)}%
+                    </span>
+                  </div>
+
+                  <div className="text-[10px] text-slate-400 font-mono flex items-center justify-between">
+                    <span>📄 {img.document} ({img.page})</span>
+                    <span className="truncate max-w-[150px]">Source: {img.source}</span>
+                  </div>
+
+                  <p className="text-slate-300 text-[11px] leading-relaxed">{img.visualAnalysisSummary}</p>
+
+                  {/* OCR Callout Box */}
+                  {img.extractedOcrText && (
+                    <div className="bg-slate-950 p-2 rounded border border-slate-800 space-y-1">
+                      <span className="text-[9px] font-mono text-amber-300 uppercase font-bold flex items-center gap-1">
+                        <Eye className="w-3 h-3 text-amber-400" />
+                        Extracted OCR Diagram Callouts & Text Labels:
+                      </span>
+                      <p className="text-[10px] font-mono text-slate-300 leading-snug">{img.extractedOcrText}</p>
+                    </div>
+                  )}
+
+                  {/* Visual Features list */}
+                  {img.visualFeatures && img.visualFeatures.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-1">
+                      {img.visualFeatures.map((feat, fidx) => (
+                        <span key={fidx} className="text-[9px] font-mono bg-slate-950 text-slate-300 px-1.5 py-0.5 rounded border border-slate-800">
+                          ✓ {feat}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </div>

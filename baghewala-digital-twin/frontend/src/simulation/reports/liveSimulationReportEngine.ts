@@ -62,6 +62,16 @@ export interface LiveSimulationReportData {
     confidence: string;
     matchExplanation: string;
   }[];
+  multimodalImageEvidence: {
+    imageId: string;
+    title: string;
+    document: string;
+    page: string;
+    extractedOcrText: string;
+    visualAnalysisSummary: string;
+    visualFeatures: string[];
+    relevanceScore: number;
+  }[];
   knowledgeGaps: {
     id: string;
     title: string;
@@ -186,6 +196,17 @@ export function generateLiveSimulationReport(params: {
     matchExplanation: ev.currentMatch.explanation,
   }));
 
+  const multimodalImageEvidence = (historicalState.imageEvidence || []).map((img) => ({
+    imageId: img.imageId,
+    title: img.title,
+    document: img.document,
+    page: img.page,
+    extractedOcrText: img.extractedOcrText,
+    visualAnalysisSummary: img.visualAnalysisSummary,
+    visualFeatures: img.visualFeatures,
+    relevanceScore: img.visualRelevanceScore,
+  }));
+
   const knowledgeGaps = historicalState.knowledgeGaps.map((gap) => ({
     id: gap.id,
     title: gap.title,
@@ -248,8 +269,11 @@ ${parameterDeltas.map((d) => `| **${d.parameter}** | Baseline: ${d.baselineValue
 ## D. ACTIVE RISK CATEGORIES & CONSTRAINTS
 ${activeRisks.length > 0 ? activeRisks.map((r) => `- **[${r.severity}] ${r.title}**: ${r.explanation} (Advisory: ${r.advisory})`).join('\n') : '✓ All parameters operating safely within documented bounds.'}
 
-## E. GROUNDED HISTORICAL RAG EVIDENCE
+## E.1 GROUNDED HISTORICAL RAG EVIDENCE
 ${groundedEvidence.map((ev) => `- **${ev.title}** [Category: ${ev.category} \| Document: ${ev.document} \| Page: ${ev.page} \| Confidence: ${ev.confidence}]\n  *Why Relevant:* ${ev.matchExplanation}`).join('\n')}
+
+## E.2 MULTIMODAL IMAGE EVIDENCE & VISUAL GROUNDING
+${multimodalImageEvidence.map((img) => `- **[${img.imageId}] ${img.title}** (Relevance: ${(img.relevanceScore * 100).toFixed(0)}%)\n  *Doc/Page:* ${img.document} (${img.page})\n  *Visual Analysis:* ${img.visualAnalysisSummary}\n  *OCR Callouts:* ${img.extractedOcrText || 'N/A'}\n  *Key Features:* ${img.visualFeatures.join(', ')}`).join('\n')}
 
 ## F. DOCUMENTED FIELD KNOWLEDGE GAPS (SHARP D4.1 TABLE 6)
 ${knowledgeGaps.map((g) => `- **${g.title}** (${g.topic}): ${g.documentedGap} [Source: ${g.source} \| Impact: ${g.impact}]`).join('\n')}
@@ -297,6 +321,7 @@ ${advisoryActions.map((a) => `- **${a.title}** [Target: ${a.target} \| Priority:
     parameterDeltas,
     activeRisks,
     groundedEvidence,
+    multimodalImageEvidence,
     knowledgeGaps,
     aiExplanation: aiExplanationText,
     advisoryActions,

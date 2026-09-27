@@ -156,12 +156,36 @@ export interface BaghewalaRagQueryContext {
 }
 
 /**
+ * Multimodal Visual Evidence Item Schema
+ */
+export interface BaghewalaImageEvidence {
+  imageId: string;
+  title: string;
+  description: string;
+  caption: string;
+  document: string;
+  page: string;
+  imageUrl: string;
+  relatedIncidentId: string | null;
+  relatedTopic: string;
+  source: string;
+  imageAvailable: boolean;
+  extractedOcrText: string;
+  visualAnalysisSummary: string;
+  visualFeatures: string[];
+  domainTags: string[];
+  visualRelevanceScore: number;
+  provenance: BaghewalaProvenance;
+}
+
+/**
  * Standard structured response from Baghewala RAG Query
  */
 export interface BaghewalaRagResponse {
   success: boolean;
   events: BaghewalaHistoricalEvent[];
   evidence: BaghewalaGroundedEvidence[];
+  imageEvidence?: BaghewalaImageEvidence[];
   currentSimulation?: BaghewalaRagQueryContext;
   knowledgeGaps?: BaghewalaKnowledgeGap[];
   disclaimer: string;
@@ -302,6 +326,7 @@ export async function queryBaghewalaRag(
           success: true,
           events: data.events || [],
           evidence: data.evidence || [],
+          imageEvidence: data.imageEvidence || [],
           currentSimulation: context,
           knowledgeGaps: data.knowledgeGaps || [],
           disclaimer: 'HISTORICAL EVIDENCE — NOT A PREDICTION',
