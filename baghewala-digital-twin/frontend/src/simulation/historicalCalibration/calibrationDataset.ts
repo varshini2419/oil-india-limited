@@ -51,7 +51,9 @@ export function buildCalibrationObservations(
       let baselinePred: number | null = null;
       let calibratedPred: number | null = null;
 
-      const paramLower = obs.parameter.toLowerCase();
+      const parameterName = obs.parameter ?? 'Production Rate';
+      const paramLower = parameterName.toLowerCase();
+      const obsVal = obs.observedValue ?? null;
 
       if (paramLower.includes('temperature')) {
         baselinePred = baseOutputs.thermalResult.predictedReservoirTemperatureC;
@@ -73,30 +75,30 @@ export function buildCalibrationObservations(
       let calAbsErr: number | null = null;
       let calPctErr: number | null = null;
 
-      if (obs.observedValue !== null && baselinePred !== null) {
-        baseAbsErr = calculateAbsoluteError(obs.observedValue, baselinePred);
-        basePctErr = calculatePercentageError(obs.observedValue, baselinePred);
+      if (obsVal !== null && baselinePred !== null) {
+        baseAbsErr = calculateAbsoluteError(obsVal, baselinePred);
+        basePctErr = calculatePercentageError(obsVal, baselinePred);
       }
 
-      if (obs.observedValue !== null && calibratedPred !== null) {
-        calAbsErr = calculateAbsoluteError(obs.observedValue, calibratedPred);
-        calPctErr = calculatePercentageError(obs.observedValue, calibratedPred);
+      if (obsVal !== null && calibratedPred !== null) {
+        calAbsErr = calculateAbsoluteError(obsVal, calibratedPred);
+        calPctErr = calculatePercentageError(obsVal, calibratedPred);
       }
 
       observations.push({
         id: `CAL_OBS_${obs.id}`,
-        dateOrYear: obs.dateOrYear,
-        parameter: obs.parameter,
-        observedValue: obs.observedValue,
+        dateOrYear: obs.dateOrYear ?? obs.date,
+        parameter: parameterName,
+        observedValue: obsVal,
         baselinePredictedValue: baselinePred,
         calibratedPredictedValue: calibratedPred,
-        unit: obs.unit,
+        unit: obs.unit ?? 'BOPD',
         baselineAbsoluteError: baseAbsErr,
         baselinePercentageError: basePctErr,
         calibratedAbsoluteError: calAbsErr,
         calibratedPercentageError: calPctErr,
-        sourceId: obs.sourceId,
-        dataQuality: obs.observedValue !== null ? 'COMPLETE' : 'INSUFFICIENT_DATA',
+        sourceId: obs.sourceId ?? 'SRC_DEMO',
+        dataQuality: obsVal !== null ? 'COMPLETE' : 'INSUFFICIENT_DATA',
       });
     }
   }

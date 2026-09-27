@@ -12,6 +12,8 @@ export interface ProductionInput {
   strokeLengthM: number;
   temperatureC: number;
   viscosityCp: number;
+  waterCutPercent?: number;
+  reservoirPressureBar?: number;
 }
 
 export interface ProductionBreakdown {
@@ -26,10 +28,16 @@ export interface ProductionBreakdown {
   baselineProductionBopd: number;
   productionChangeBopd: number;
   productionChangePercent: number;
+  totalFluidProductionBfpd?: number;
+  estimatedProductionLitresPerHour?: number;
 }
 
 export interface ProductionResult {
   estimatedProductionBopd: number;
+  totalFluidProductionBfpd: number;
+  estimatedProductionLitresPerHour: number;
+  waterCutPercent: number;
+  reservoirPressureBar: number;
   productionUnit: string; // "BOPD"
   baselineProductionBopd: number;
   productionChangeBopd: number;

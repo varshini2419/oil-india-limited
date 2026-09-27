@@ -1,5 +1,6 @@
 import type { DemoScenario } from './types';
 import { createScenario } from '../scenario/scenarioEngine';
+import { BASELINE_INPUT_VALUES } from '../scenario/defaults';
 import { calculateThermalModel } from '../thermal/thermalModel';
 import { calculateViscosityModel } from '../viscosity/viscosityModel';
 import { calculateMobilityModel } from '../mobility/mobilityModel';
@@ -23,8 +24,11 @@ export function generateDemoScenarios(activeInputs?: ScenarioInputValues): DemoS
     permeabilityD: number;
   }) => {
     const scenarioObj = createScenario(title, desc, {
+      ...BASELINE_INPUT_VALUES,
       ambientTemperatureC: 40,
       reservoirTemperatureC: inputs.reservoirTemperatureC,
+      reservoirPressureBar: inputs.reservoirPressureBar,
+      permeabilityDarcy: inputs.permeabilityD,
       steamInjectionRateTpd: inputs.steamRateTpd,
       steamQualityPercent: 80,
       soakDurationDays: 3,

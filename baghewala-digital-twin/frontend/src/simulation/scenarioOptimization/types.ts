@@ -4,8 +4,11 @@ import type { ModelMode } from '../historicalCalibration/types';
 
 export type DecisionObjective =
   | 'MAXIMIZE_PRODUCTION'
+  | 'MINIMIZE_STEAM'
+  | 'MINIMIZE_WATER_CUT'
   | 'MINIMIZE_OPERATING_RISK'
   | 'MAXIMIZE_EFFICIENCY'
+  | 'TARGET_PRODUCTION'
   | 'BALANCED_OPERATION';
 
 export type ScenarioStatus = 'SAFE' | 'CAUTION' | 'HIGH_RISK' | 'OUT_OF_RANGE';
@@ -13,6 +16,8 @@ export type ScenarioStatus = 'SAFE' | 'CAUTION' | 'HIGH_RISK' | 'OUT_OF_RANGE';
 export type ScenarioConfidence = 'HIGH' | 'MEDIUM' | 'LOW' | 'INSUFFICIENT_DATA';
 
 export type ParetoClassification = 'DOMINATED' | 'NON_DOMINATED';
+
+export type FeasibilityStatus = 'FEASIBLE' | 'INVALID';
 
 export type ScenarioType =
   | 'BASELINE'
@@ -33,6 +38,7 @@ export interface DecisionConstraint {
   maxViscosityCp: number; // e.g. 20000 cP
   minTemperatureC: number; // e.g. 40 °C
   maxRiskLevel: RiskLevel; // e.g. HIGH or MODERATE
+  targetProductionBopd?: number;
 }
 
 export interface ScenarioCandidate {
@@ -57,10 +63,14 @@ export interface ScenarioEvaluationUncertainty {
 
 export interface ScenarioEvaluation {
   candidate: ScenarioCandidate;
+  scenarioId: string;
+  name: string;
+  inputs: ScenarioInputValues;
   temperatureC: number;
   viscosityCp: number;
   mobilityDcP: number;
   estimatedProductionBopd: number;
+  totalFluidProductionBfpd: number;
   srpLoadIndex: number;
   cssPerformanceScore: number;
   riskLevel: RiskLevel;
@@ -69,9 +79,16 @@ export interface ScenarioEvaluation {
   confidence: ScenarioConfidence;
   paretoClassification: ParetoClassification;
   isFeasible: boolean;
+  feasibility: FeasibilityStatus;
+  feasibilityReasons: string[];
   constraintViolations: string[];
   constraintWarnings: string[];
   uncertainty: ScenarioEvaluationUncertainty;
+  uncertaintyLabel?: string;
+  historicalError?: number;
+  historicalValidationScore?: number;
+  uncertaintyRangeBopd?: number;
+  confidenceLevel?: string;
   inputSources: Record<string, string>;
 }
 
@@ -83,6 +100,7 @@ export interface ScenarioComparisonRow {
   viscosityCp: number;
   mobilityDcP: number;
   estimatedProductionBopd: number;
+  totalFluidProductionBfpd: number;
   p10ProductionBopd: number;
   p50ProductionBopd: number;
   p90ProductionBopd: number;
@@ -90,13 +108,18 @@ export interface ScenarioComparisonRow {
   spm: number;
   strokeLengthM: number;
   steamRateTpd: number;
+  waterCutPercent: number;
   srpLoadIndex: number;
   cssEffectivenessScore: number;
   riskLevel: RiskLevel;
   confidence: ScenarioConfidence;
   constraintStatus: ScenarioStatus;
   paretoClassification: ParetoClassification;
+  feasibility: FeasibilityStatus;
   isRecommended: boolean;
+  historicalError?: number;
+  uncertaintyRangeBopd?: number;
+  confidenceLevel?: string;
 }
 
 export interface ScenarioRecommendation {
@@ -110,6 +133,47 @@ export interface ScenarioRecommendation {
   tradeOffAnalysisText: string;
 }
 
+export interface PredictionResult {
+  currentInputs: ScenarioInputValues;
+  futureInputs: ScenarioInputValues;
+  currentProductionBopd: number;
+  predictedProductionBopd: number;
+  bopdDelta: number;
+  bopdPercentChange: number;
+  currentViscosityCp: number;
+  predictedViscosityCp: number;
+  viscosityDeltaCp: number;
+  viscosityPercentChange: number;
+  currentTemperatureC: number;
+  predictedTemperatureC: number;
+  temperatureDeltaC: number;
+  currentFluidBfpd: number;
+  predictedFluidBfpd: number;
+  uncertaintyNotice: string;
+  calculatedAt: string;
+}
+
+export interface EngineeringDecisionTrace {
+  traceId: string;
+  timestamp: string;
+  objective: DecisionObjective;
+  constraintsDescription: string;
+  candidateScenariosCount: number;
+  feasibleScenariosCount: number;
+  selectedScenarioId: string;
+  selectedScenarioName: string;
+  baselineProductionBopd: number;
+  selectedProductionBopd: number;
+  productionDeltaBopd: number;
+  productionPercentChange: number;
+  steamDeltaTpd: number;
+  riskChangeText: string;
+  historicalValidationErrorPercent: number;
+  uncertaintyRange?: number;
+  confidenceLevel?: string;
+  disclaimer: string;
+}
+
 export interface ScenarioOptimizationResult {
   objective: DecisionObjective;
   constraints: DecisionConstraint;
@@ -120,6 +184,7 @@ export interface ScenarioOptimizationResult {
   evaluations: ScenarioEvaluation[];
   comparisonRows: ScenarioComparisonRow[];
   recommendation: ScenarioRecommendation;
+  trace?: EngineeringDecisionTrace;
   calculatedAt: string;
   disclaimer: string;
 }

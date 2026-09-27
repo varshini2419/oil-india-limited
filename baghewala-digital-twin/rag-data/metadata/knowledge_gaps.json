@@ -1,0 +1,40 @@
+{
+  "knowledgeGaps": [
+    {
+      "id": "GAP-001",
+      "title": "Uncalibrated High-Temperature Relative Permeability Curves",
+      "topic": "Reservoir Simulation Physics",
+      "documentedGap": "Lack of multi-phase steam-oil-water relative permeability laboratory measurements at temperatures exceeding 250°C in Jodhpur Sandstone cores.",
+      "sourceDocument": "sharp-d4.1-report-final.pdf Table 6",
+      "sourcePage": "Page 68 (Table 6 Data Gaps)",
+      "impactOnSimulation": "Thermal EOR recovery models must rely on modified Corey/Stone-2 correlation extrapolations above 250°C."
+    },
+    {
+      "id": "GAP-002",
+      "title": "Multi-Cycle Thermal Casing Fatigue Endurance Limits",
+      "topic": "Well Integrity & Tubular Engineering",
+      "documentedGap": "Empirical casing thread connection seal failure data beyond 3 consecutive CSS cycles at >320°C steam temperature is unavailable in public OIL field records.",
+      "sourceDocument": "EOI/OIL/RF/DRLG/01/2025-26 Section 4",
+      "sourcePage": "Page 2",
+      "impactOnSimulation": "Long-term casing stress and thermal elongation predictions carry elevated uncertainty after cycle 3."
+    },
+    {
+      "id": "GAP-003",
+      "title": "Sparse 3D Seismic Resolution on Eastern Margin Fault Blocks",
+      "topic": "Seismic & Geomechanics",
+      "documentedGap": "2D seismic coverage (DD lines) provides structural outline of main anticlinal high but lacks high-resolution 3D fault throw mapping along eastern boundary faults.",
+      "sourceDocument": "sharp-d4.1-report-final.pdf Section 2.5.2",
+      "sourcePage": "Page 65 (Figure 51)",
+      "impactOnSimulation": "Compartmentalization and fault-seal leakage risks cannot be ruled out during high-pressure steam injection."
+    },
+    {
+      "id": "GAP-004",
+      "title": "Extra-Heavy Crude Non-Newtonian Shear Thinning at Low Shear Rates",
+      "topic": "Fluid Rheology",
+      "documentedGap": "Laboratory rheometer testing at 30°C and 15°C was conducted under constant shear rate, leaving low-shear static yield stress unmeasured.",
+      "sourceDocument": "sharp-d4.1-report-final.pdf Section 2.5.1",
+      "sourcePage": "Page 64",
+      "impactOnSimulation": "Unheated wellbore static restart pressure gradient requires safety margin when computing SRP initial polished rod load."
+    }
+  ]
+}

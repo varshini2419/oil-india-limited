@@ -25,6 +25,10 @@ export function rankAndRecommendScenarios(
   const sortedFeasible = [...feasible].sort((a, b) => {
     if (objective === 'MAXIMIZE_PRODUCTION') {
       return b.estimatedProductionBopd - a.estimatedProductionBopd;
+    } else if (objective === 'MINIMIZE_STEAM') {
+      return a.inputs.steamInjectionRateTpd - b.inputs.steamInjectionRateTpd;
+    } else if (objective === 'MINIMIZE_WATER_CUT') {
+      return a.inputs.waterCutPercent - b.inputs.waterCutPercent;
     } else if (objective === 'MINIMIZE_OPERATING_RISK') {
       const rA = riskScoreMap[a.riskLevel] ?? 1;
       const rB = riskScoreMap[b.riskLevel] ?? 1;
@@ -35,9 +39,11 @@ export function rankAndRecommendScenarios(
         return b.cssPerformanceScore - a.cssPerformanceScore;
       }
       return b.estimatedProductionBopd - a.estimatedProductionBopd;
+    } else if (objective === 'TARGET_PRODUCTION') {
+      const target = 1.5;
+      return Math.abs(a.estimatedProductionBopd - target) - Math.abs(b.estimatedProductionBopd - target);
     } else {
       // BALANCED_OPERATION: Composite score
-      // Score = Production (weight 1.0) - (RiskLevel * 2.0) - (LoadIndex * 0.05)
       const scoreA = a.estimatedProductionBopd - (riskScoreMap[a.riskLevel] ?? 1) * 2.0 - a.srpLoadIndex * 0.05;
       const scoreB = b.estimatedProductionBopd - (riskScoreMap[b.riskLevel] ?? 1) * 2.0 - b.srpLoadIndex * 0.05;
       return scoreB - scoreA;

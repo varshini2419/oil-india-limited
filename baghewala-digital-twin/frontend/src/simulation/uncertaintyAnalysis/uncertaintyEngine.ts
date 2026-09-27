@@ -97,3 +97,99 @@ export function runUncertaintyAnalysis(
     disclaimer: UNCERTAINTY_DISCLAIMER,
   };
 }
+
+import type { ScenarioInputValues } from '../scenario/types';
+import type { CommittedUncertaintyResult, SensitivityRankingEntry, ParameterContribution } from './types';
+import { simulateHistoricalRecordProduction } from '../historicalValidation/historicalValidationEngine';
+
+export function runCommittedScenarioUncertaintyAnalysis(
+  committedInputs: ScenarioInputValues
+): CommittedUncertaintyResult {
+  const baseSim = simulateHistoricalRecordProduction(committedInputs);
+  const baseProd = baseSim.predictedProductionBopd;
+
+  const targetParams: { key: keyof ScenarioInputValues; name: string; unit: string }[] = [
+    { key: 'reservoirTemperatureC', name: 'Reservoir Temperature', unit: '°C' },
+    { key: 'reservoirPressureBar', name: 'Reservoir Pressure', unit: 'bar' },
+    { key: 'permeabilityDarcy', name: 'Permeability', unit: 'D' },
+    { key: 'steamInjectionRateTpd', name: 'Steam Injection Rate', unit: 'TPD' },
+    { key: 'steamQualityPercent', name: 'Steam Quality', unit: '%' },
+    { key: 'waterCutPercent', name: 'Water Cut', unit: '%' },
+    { key: 'spm', name: 'SPM', unit: 'strokes/min' },
+    { key: 'strokeLengthMeters', name: 'Stroke Length', unit: 'm' },
+  ];
+
+  const rawEntries: Omit<SensitivityRankingEntry, 'rank' | 'normalizedSensitivity'>[] = [];
+  const allOutputs: number[] = [baseProd];
+
+  for (const p of targetParams) {
+    const baseVal = (committedInputs[p.key] as number) ?? 1.0;
+
+    const pLowVal = Number((baseVal * 0.9).toFixed(2));
+    const pHighVal = Number((baseVal * 1.1).toFixed(2));
+
+    const lowInputs: ScenarioInputValues = { ...committedInputs, [p.key]: pLowVal };
+    const highInputs: ScenarioInputValues = { ...committedInputs, [p.key]: pHighVal };
+
+    const lowSim = simulateHistoricalRecordProduction(lowInputs);
+    const highSim = simulateHistoricalRecordProduction(highInputs);
+
+    allOutputs.push(lowSim.predictedProductionBopd, highSim.predictedProductionBopd);
+
+    const delta = Math.abs(highSim.predictedProductionBopd - lowSim.predictedProductionBopd);
+
+    rawEntries.push({
+      parameterId: p.key,
+      parameterName: p.name,
+      unit: p.unit,
+      lowValue: pLowVal,
+      baselineValue: baseVal,
+      highValue: pHighVal,
+      lowProductionBopd: lowSim.predictedProductionBopd,
+      baselineProductionBopd: baseProd,
+      highProductionBopd: highSim.predictedProductionBopd,
+      productionDeltaBopd: Number(delta.toFixed(2)),
+    });
+  }
+
+  // Sort by productionDeltaBopd descending (dynamic calculation, not hardcoded!)
+  rawEntries.sort((a, b) => b.productionDeltaBopd - a.productionDeltaBopd);
+
+  const maxDelta = Math.max(0.001, rawEntries[0]?.productionDeltaBopd || 1.0);
+  const totalDeltaSum = Math.max(0.001, rawEntries.reduce((sum, e) => sum + e.productionDeltaBopd, 0));
+
+  const sensitivityRanking: SensitivityRankingEntry[] = rawEntries.map((e, idx) => ({
+    ...e,
+    rank: idx + 1,
+    normalizedSensitivity: Number((e.productionDeltaBopd / maxDelta).toFixed(2)),
+  }));
+
+  const parameterContributions: ParameterContribution[] = sensitivityRanking.map((e) => ({
+    parameterName: e.parameterName,
+    contributionPercent: Number(((e.productionDeltaBopd / totalDeltaSum) * 100.0).toFixed(1)),
+  }));
+
+  allOutputs.sort((a, b) => a - b);
+  const minProd = Number(allOutputs[0].toFixed(2));
+  const maxProd = Number(allOutputs[allOutputs.length - 1].toFixed(2));
+  const p10 = Number(allOutputs[Math.floor(allOutputs.length * 0.1)].toFixed(2));
+  const p50 = Number(allOutputs[Math.floor(allOutputs.length * 0.5)].toFixed(2));
+  const p90 = Number(allOutputs[Math.floor(allOutputs.length * 0.9)].toFixed(2));
+
+  return {
+    baselineInputs: committedInputs,
+    baselineProductionBopd: baseProd,
+    minimumProductionBopd: minProd,
+    maximumProductionBopd: maxProd,
+    p10,
+    p50,
+    p90,
+    productionRangeBopd: Number((maxProd - minProd).toFixed(2)),
+    boundsTypeLabel: 'engineering sensitivity bounds',
+    sensitivityRanking,
+    parameterContributions,
+    calculatedAt: new Date().toISOString(),
+    disclaimer:
+      'ENGINEERING SENSITIVITY NOTICE: Bounds (P10, P50, P90) represent deterministic engineering sensitivity ranges across key parameter perturbations (-10% to +10%) and are not statistically derived field confidence intervals.',
+  };
+}

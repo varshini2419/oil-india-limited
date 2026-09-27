@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAnimation } from './AnimationController';
 import { WELL_LAYOUT_CONFIG } from '../config';
+import { useScenarioStore } from '../../../simulation/scenario/scenarioStore';
 
 export const OilFlowAnimation: React.FC = () => {
   const { isPlaying, progress } = useAnimation();
@@ -8,25 +9,40 @@ export const OilFlowAnimation: React.FC = () => {
   const leftCasingX = wellCenterX - casingWidth / 2;
   const rightCasingX = wellCenterX + casingWidth / 2;
 
+  let viscosityCp = 5000;
+  let mobilityDcP = 0.0005;
+
+  try {
+    const store = useScenarioStore();
+    if (store && store.committedSimulationResult) {
+      viscosityCp = store.committedSimulationResult.viscosity.estimatedViscosityCp;
+      mobilityDcP = store.committedSimulationResult.mobility.mobilityDcP;
+    }
+  } catch {
+    // Fallback if rendered outside ScenarioProvider
+  }
+
   if (!isPlaying) return null;
 
-  // Lightweight particle interpolation (8 particles total)
-  // Left reservoir inflow particles
-  const leftParticles = [0, 0.25, 0.5, 0.75].map((offset) => {
+  // Map oil mobility (0.0001 to 0.002 D/cP) to inflow particle count per side (2 to 6)
+  const countPerSide = Math.max(2, Math.min(6, Math.floor(2 + Math.min(4, mobilityDcP * 2500))));
+  // Map crude viscosity (500 to 50000 cP) to visual opacity (0.4 to 0.95)
+  const baseOpacity = Math.max(0.35, Math.min(0.95, 1.0 - Math.min(0.6, viscosityCp / 80000.0)));
+
+  const leftParticles = Array.from({ length: countPerSide }, (_, idx) => {
+    const offset = idx / countPerSide;
     const p = (progress + offset) % 1;
-    // Interpolate along curve (220, 750) -> (leftCasingX, 725)
     const x = 220 + p * (leftCasingX - 220);
     const y = 750 - Math.sin(p * Math.PI) * 20 - p * 25;
-    return { x, y, opacity: p < 0.1 ? p * 10 : (1 - p) };
+    return { x, y, opacity: (p < 0.1 ? p * 10 : (1 - p)) * baseOpacity };
   });
 
-  // Right reservoir inflow particles
-  const rightParticles = [0.125, 0.375, 0.625, 0.875].map((offset) => {
+  const rightParticles = Array.from({ length: countPerSide }, (_, idx) => {
+    const offset = (idx + 0.5) / countPerSide;
     const p = (progress + offset) % 1;
-    // Interpolate along curve (980, 750) -> (rightCasingX, 725)
     const x = 980 - p * (980 - rightCasingX);
     const y = 750 - Math.sin(p * Math.PI) * 20 - p * 25;
-    return { x, y, opacity: p < 0.1 ? p * 10 : (1 - p) };
+    return { x, y, opacity: (p < 0.1 ? p * 10 : (1 - p)) * baseOpacity };
   });
 
   return (
@@ -38,7 +54,7 @@ export const OilFlowAnimation: React.FC = () => {
           cy={pt.y}
           r="4"
           fill="#fbbf24"
-          opacity={pt.opacity * 0.9}
+          opacity={pt.opacity}
         />
       ))}
 
@@ -49,7 +65,7 @@ export const OilFlowAnimation: React.FC = () => {
           cy={pt.y}
           r="4"
           fill="#fbbf24"
-          opacity={pt.opacity * 0.9}
+          opacity={pt.opacity}
         />
       ))}
     </g>

@@ -7,7 +7,8 @@ import {
   useAnimation,
   type AnimationSpeedMode,
 } from './animations';
-import { Grid, ZoomIn, ZoomOut, RotateCcw, Eye, Play, Pause, RotateCcw as ResetIcon } from 'lucide-react';
+import { Grid, ZoomIn, ZoomOut, RotateCcw, Eye, Play, Pause, RotateCcw as ResetIcon, Terminal, Activity, CheckCircle2, AlertCircle } from 'lucide-react';
+import { useScenarioStore } from '../../simulation/scenario';
 
 const ViewportToolbar: React.FC<{
   gridVisible: boolean;
@@ -25,7 +26,7 @@ const ViewportToolbar: React.FC<{
       <div className="flex flex-wrap items-center gap-3">
         <div className="flex items-center gap-1.5 text-xs font-mono text-slate-300 mr-1">
           <Eye className="w-4 h-4 text-sky-400" />
-          <span className="font-bold hidden sm:inline">2D SCHEMATIC VIEWPORT</span>
+          <span className="font-bold hidden sm:inline">2D SCHEMATIC VIEWPORT (SIMULATION PLAYBACK)</span>
         </div>
 
         {/* Play / Pause / Reset Control Group */}
@@ -33,7 +34,7 @@ const ViewportToolbar: React.FC<{
           {!isPlaying ? (
             <button
               onClick={play}
-              aria-label="Play Digital Twin animation"
+              aria-label="Play Digital Twin playback animation"
               className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded text-xs font-mono font-bold transition-colors shadow"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
@@ -42,7 +43,7 @@ const ViewportToolbar: React.FC<{
           ) : (
             <button
               onClick={pause}
-              aria-label="Pause Digital Twin animation"
+              aria-label="Pause Digital Twin playback animation"
               className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-600 hover:bg-amber-500 text-white rounded text-xs font-mono font-bold transition-colors shadow"
             >
               <Pause className="w-3.5 h-3.5 fill-current" />
@@ -63,7 +64,7 @@ const ViewportToolbar: React.FC<{
 
         {/* Active Physical SPM Badge */}
         <div className="px-2.5 py-1 bg-sky-950/60 border border-sky-800/80 rounded text-[11px] font-bold text-sky-300 font-mono">
-          {activeSpm} SPM
+          {activeSpm} SPM (MODELED)
         </div>
 
         {/* Animation Speed Selector (Visual multiplier overlay) */}
@@ -89,7 +90,7 @@ const ViewportToolbar: React.FC<{
             }`}
           />
           <span className={isPlaying ? 'text-emerald-400 font-semibold' : 'text-slate-400'}>
-            Animation: {isPlaying ? 'RUNNING' : 'PAUSED'}
+            Playback: {isPlaying ? 'RUNNING' : 'PAUSED'}
           </span>
         </div>
       </div>
@@ -147,6 +148,109 @@ const ViewportToolbar: React.FC<{
   );
 };
 
+const DigitalTwinFooterContent: React.FC<{ gridVisible: boolean }> = ({ gridVisible }) => {
+  const { committedSimulationResult, isStale } = useScenarioStore();
+  const [showDiagnostics, setShowDiagnostics] = React.useState(false);
+
+  const inputs = committedSimulationResult.inputs;
+  const thermal = committedSimulationResult.thermal;
+  const viscosity = committedSimulationResult.viscosity;
+  const mobility = committedSimulationResult.mobility;
+  const production = committedSimulationResult.production;
+  const risk = committedSimulationResult.risk;
+  const runId = committedSimulationResult.trace.runId;
+
+  return (
+    <div className="p-3 bg-slate-950 border-t border-slate-800 space-y-3 font-mono">
+      <DigitalTwinLegend gridVisible={gridVisible} />
+
+      {/* SECTION 2 MODEL CONTEXT STRIP — COMMITTED SIMULATION STATE */}
+      <div className="bg-slate-900/80 p-3 rounded-lg border border-sky-900/60 text-xs space-y-2">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-1.5">
+          <div className="flex items-center gap-2 font-bold text-sky-300 text-xs">
+            <Activity className="w-4 h-4 text-sky-400" />
+            <span>COMMITTED SIMULATION RESULT — BAGHEWALA WELL STATE</span>
+          </div>
+          
+          <div className="flex items-center gap-2">
+            {isStale ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 text-[10px] font-bold">
+                <AlertCircle className="w-3 h-3 text-amber-400" />
+                <span>INPUTS EDITED — CLICK RUN SIMULATION TO UPDATE TWIN</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold">
+                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                <span>COMMITTED (UP TO DATE)</span>
+              </span>
+            )}
+
+            <button
+              onClick={() => setShowDiagnostics(!showDiagnostics)}
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 text-[10px] font-bold transition-colors"
+            >
+              <Terminal className="w-3 h-3 text-sky-400" />
+              <span>{showDiagnostics ? 'HIDE TRACE' : 'SHOW 2D TWIN TRACE'}</span>
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 text-[11px]">
+          <div>
+            <span className="text-slate-500 block text-[10px]">SIMULATION RUN ID</span>
+            <span className="text-sky-300 font-bold truncate block" title={runId}>{runId}</span>
+          </div>
+          <div>
+            <span className="text-slate-500 block text-[10px]">RESERVOIR TEMP</span>
+            <span className="text-rose-400 font-bold">{thermal.predictedReservoirTemperatureC.toFixed(1)} °C</span>{' '}
+            <span className="text-[9px] text-slate-400">({thermal.temperatureChangeC >= 0 ? `+${thermal.temperatureChangeC.toFixed(1)}` : thermal.temperatureChangeC.toFixed(1)})</span>
+          </div>
+          <div>
+            <span className="text-slate-500 block text-[10px]">CRUDE VISCOSITY</span>
+            <span className="text-purple-400 font-bold">{viscosity.estimatedViscosityCp.toLocaleString()} cP</span>
+          </div>
+          <div>
+            <span className="text-slate-500 block text-[10px]">OIL MOBILITY (k/μ)</span>
+            <span className="text-amber-300 font-bold">{mobility.mobilityDcP.toFixed(4)} D/cP</span>
+          </div>
+          <div>
+            <span className="text-slate-500 block text-[10px]">MODELED PROD</span>
+            <span className="text-emerald-400 font-bold">{production.estimatedProductionBopd.toFixed(2)} BOPD</span>
+          </div>
+          <div>
+            <span className="text-slate-500 block text-[10px]">SYSTEM RISK</span>
+            <span className={risk.riskLevel === 'LOW' ? 'text-emerald-400 font-bold' : risk.riskLevel === 'MODERATE' ? 'text-amber-400 font-bold' : 'text-rose-400 font-bold'}>
+              {risk.riskLevel} ({risk.riskScore}/100)
+            </span>
+          </div>
+        </div>
+
+        {/* STEP 15 DEVELOPMENT DIAGNOSTIC TRACE PANEL */}
+        {showDiagnostics && (
+          <div className="mt-3 p-3 bg-slate-950 rounded border border-sky-900/80 text-[10px] space-y-2 text-slate-300 font-mono">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-1 font-bold text-sky-300">
+              <span>DEVELOPMENT DIAGNOSTIC TRACE PANEL — 2D DIGITAL TWIN CONNECTIVITY</span>
+              <span>STATE: {isStale ? 'STALE (UNCOMMITTED CHANGES)' : 'SYNCHRONIZED'}</span>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div><strong>Store Simulation Run ID:</strong> <span className="text-emerald-400">{runId}</span></div>
+              <div><strong>2D Twin Run ID:</strong> <span className="text-emerald-400">{runId}</span> (MATCHED)</div>
+              <div><strong>Report Run ID:</strong> <span className="text-emerald-400">{runId}</span> (MATCHED)</div>
+              <div><strong>Calculated At:</strong> <span>{committedSimulationResult.calculatedAt}</span></div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 border-t border-slate-800/80 pt-1.5 text-[9.5px]">
+              <div>Ambient / Weather: {inputs.ambientTemperatureC}°C | {inputs.humidityPercent}% | {inputs.windSpeedKmh}km/h</div>
+              <div>Reservoir P / k: {inputs.reservoirPressureBar} bar | {inputs.permeabilityDarcy} D</div>
+              <div>Steam Rate / Temp / Qual: {inputs.steamInjectionRateTpd} TPD | {inputs.steamInjectionTemperatureC}°C | {inputs.steamQualityPercent}%</div>
+              <div>SRP Setpoints: {inputs.spm} SPM | {inputs.strokeLengthMeters}m | {inputs.vfdFrequencyHz} Hz</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const DigitalTwinViewport: React.FC = () => {
   const [gridVisible, setGridVisible] = useState(DEFAULT_TWIN_CONFIG.gridVisible);
   const [zoom, setZoom] = useState(DEFAULT_TWIN_CONFIG.defaultZoom);
@@ -179,12 +283,26 @@ export const DigitalTwinViewport: React.FC = () => {
         {/* Main SVG Render Area */}
         <div className="relative flex-1 min-h-[480px]">
           <DigitalTwinCanvas gridVisible={gridVisible} zoom={zoom} />
+
+          {/* Directional Engineering Annotations Overlay */}
+          <div className="absolute top-3 right-3 flex flex-col gap-1.5 pointer-events-none font-mono text-[10px]">
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950/85 border border-emerald-800/80 text-emerald-300 font-bold shadow backdrop-blur-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>↑ Mechanical Lift (SRP Reciprocating Stroke)</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950/85 border border-rose-800/80 text-rose-300 font-bold shadow backdrop-blur-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+              <span>→ Heat Propagation (Steam Injection Thermal Zone)</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-2 py-1 rounded bg-slate-950/85 border border-sky-800/80 text-sky-300 font-bold shadow backdrop-blur-xs">
+              <span className="w-1.5 h-1.5 rounded-full bg-sky-400 animate-pulse" />
+              <span>↖ Fluid Flow (Viscosity-Controlled Inflow)</span>
+            </div>
+          </div>
         </div>
 
         {/* Viewport Footer Bar & Legend */}
-        <div className="p-3 bg-slate-950 border-t border-slate-800">
-          <DigitalTwinLegend gridVisible={gridVisible} />
-        </div>
+        <DigitalTwinFooterContent gridVisible={gridVisible} />
       </div>
     </AnimationProvider>
   );

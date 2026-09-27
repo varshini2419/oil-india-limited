@@ -7,6 +7,7 @@ import { optimizeSRP } from '../srpOptimization/optimizationEngine';
 import { optimizeCSS } from '../cssOptimization/optimizationEngine';
 import { analyzeAIRisk } from '../riskEngine/recommendationEngine';
 import { runUncertaintyAnalysis } from '../uncertaintyAnalysis/uncertaintyEngine';
+import { findHistoricalMatches } from '../historicalValidation/historicalMatcher';
 import { evaluateScenarioConstraints } from './validation';
 import type {
   ScenarioCandidate,
@@ -38,17 +39,19 @@ export function evaluateCandidate(
   const mobilityResult = calculateMobilityModel(
     viscosityResult.estimatedViscosityCp,
     thermalResult.predictedReservoirTemperatureC,
-    2.5,
+    candidate.inputs.permeabilityDarcy,
     1.0,
     viscosityResult.baselineViscosityCp
   );
+
+  const effectiveDrawdownBar = Math.max(5.0, candidate.inputs.reservoirPressureBar - 18.0);
 
   // 4. Step 4.6 Production Model
   const productionResult = calculateProductionModel(
     mobilityResult.mobilityDcP,
     thermalResult.predictedReservoirTemperatureC,
     viscosityResult.estimatedViscosityCp,
-    30.0,
+    effectiveDrawdownBar,
     candidate.inputs.vfdFrequencyHz,
     candidate.inputs.spm,
     candidate.inputs.strokeLengthMeters,
@@ -61,7 +64,7 @@ export function evaluateCandidate(
     spm: candidate.inputs.spm,
     strokeLengthM: candidate.inputs.strokeLengthMeters,
     oilMobilityDcp: mobilityResult.mobilityDcP,
-    effectiveDrawdownBar: 30.0,
+    effectiveDrawdownBar,
     temperatureC: thermalResult.predictedReservoirTemperatureC,
     viscosityCp: viscosityResult.estimatedViscosityCp,
   });
@@ -138,33 +141,58 @@ export function evaluateCandidate(
     'Decision Recommendation': 'DECISION-SUPPORT — Multi-Objective Rank',
   };
 
-  return {
-    candidate,
-    temperatureC: thermalResult.predictedReservoirTemperatureC,
-    viscosityCp: viscosityResult.estimatedViscosityCp,
-    mobilityDcP: mobilityResult.mobilityDcP,
-    estimatedProductionBopd: productionResult.estimatedProductionBopd,
-    srpLoadIndex: srpResult.currentCandidate.loadIndex,
-    cssPerformanceScore: cssResult.currentCandidate.efficiencyScore,
-    riskLevel: riskResult.riskLevel,
-    riskScore: riskResult.riskScore,
-    status: constraintEval.status,
-    confidence,
-    paretoClassification: 'NON_DOMINATED', // Calculated in batch
-    isFeasible: constraintEval.isFeasible,
-    constraintViolations: constraintEval.violations,
-    constraintWarnings: constraintEval.warnings,
-    uncertainty: {
-      meanProductionBopd: meanProd,
-      p10ProductionBopd: p10Prod,
-      p50ProductionBopd: p50Prod,
-      p90ProductionBopd: p90Prod,
-      stdDevProductionBopd: stdDevProd,
-      probGreaterThanBaseline: uncertaintyRun.productionStats.probGreaterThanBaseline,
-      probLessThanOneBopd: uncertaintyRun.productionStats.probLessThanOneBopd,
-    },
-    inputSources,
-  };
+  const totalFluidProductionBfpd = Number(
+    (productionResult.estimatedProductionBopd / Math.max(0.01, 1 - candidate.inputs.waterCutPercent / 100.0)).toFixed(2)
+  );
+
+    // Phase 5 Historical & Uncertainty evaluations for candidate decision support
+    const topMatch = findHistoricalMatches(candidate.inputs, undefined, { topN: 1 })[0];
+    const historicalErr = Number((topMatch ? topMatch.distance * 12.0 + 2.0 : 4.5).toFixed(1));
+    const uncertaintyRange = Number((productionResult.estimatedProductionBopd * 0.3).toFixed(2));
+    const candConfidence = constraintEval.isFeasible
+      ? topMatch && topMatch.distance <= 0.2
+        ? 'HIGH'
+        : 'MODERATE'
+      : 'LOW';
+
+    return {
+      candidate,
+      scenarioId: candidate.id,
+      name: candidate.name,
+      inputs: candidate.inputs,
+      temperatureC: thermalResult.predictedReservoirTemperatureC,
+      viscosityCp: viscosityResult.estimatedViscosityCp,
+      mobilityDcP: mobilityResult.mobilityDcP,
+      estimatedProductionBopd: productionResult.estimatedProductionBopd,
+      totalFluidProductionBfpd,
+      srpLoadIndex: srpResult.currentCandidate.loadIndex,
+      cssPerformanceScore: cssResult.currentCandidate.efficiencyScore,
+      riskLevel: riskResult.riskLevel,
+      riskScore: riskResult.riskScore,
+      status: constraintEval.status,
+      confidence,
+      paretoClassification: 'NON_DOMINATED', // Calculated in batch
+      isFeasible: constraintEval.isFeasible,
+      feasibility: constraintEval.isFeasible ? 'FEASIBLE' : 'INVALID',
+      feasibilityReasons: constraintEval.violations,
+      constraintViolations: constraintEval.violations,
+      constraintWarnings: constraintEval.warnings,
+      uncertainty: {
+        meanProductionBopd: meanProd,
+        p10ProductionBopd: p10Prod,
+        p50ProductionBopd: p50Prod,
+        p90ProductionBopd: p90Prod,
+        stdDevProductionBopd: stdDevProd,
+        probGreaterThanBaseline: uncertaintyRun.productionStats.probGreaterThanBaseline,
+        probLessThanOneBopd: uncertaintyRun.productionStats.probLessThanOneBopd,
+      },
+      uncertaintyLabel: 'Deterministic simulation — uncertainty model not calibrated.',
+      historicalError: historicalErr,
+      historicalValidationScore: historicalErr,
+      uncertaintyRangeBopd: uncertaintyRange,
+      confidenceLevel: candConfidence,
+      inputSources,
+    };
 }
 
 export function computeParetoClassifications(

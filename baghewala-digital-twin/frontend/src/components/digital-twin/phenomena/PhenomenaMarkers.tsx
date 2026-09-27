@@ -2,7 +2,16 @@ import React from 'react';
 import { useScenarioStore } from '../../../simulation/scenario';
 
 export const PhenomenaMarkers: React.FC = () => {
-  const { mobilityResult, viscosityResult, productionResult, srpOptimizationResult, cssOptimizationResult, aiRiskResult } = useScenarioStore();
+  const { committedSimulationResult } = useScenarioStore();
+  const {
+    mobility: mobilityResult,
+    viscosity: viscosityResult,
+    production: productionResult,
+    srp: srpOptimizationResult,
+    css: cssOptimizationResult,
+    risk: aiRiskResult,
+    inputs,
+  } = committedSimulationResult;
 
   return (
     <g id="component-phenomena-markers" className="phenomena-markers-group pointer-events-none">
@@ -247,7 +256,7 @@ export const PhenomenaMarkers: React.FC = () => {
           fontSize="8"
           fontFamily="monospace"
         >
-          VISCOSITY: <tspan fill="#c084fc">{viscosityResult?.estimatedViscosityCp ?? 15000} cP</tspan> | PERM: 2.5 D
+          VISCOSITY: <tspan fill="#c084fc">{viscosityResult?.estimatedViscosityCp ?? 15000} cP</tspan> | PERM: {inputs?.permeabilityDarcy?.toFixed(1) ?? 2.5} D
         </text>
       </g>
     </g>

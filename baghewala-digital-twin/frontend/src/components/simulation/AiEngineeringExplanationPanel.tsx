@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { Panel } from '../ui/Panel';
 import { useScenarioStore } from '../../simulation/scenario';
 import { generateAiExplanation } from '../../simulation/aiExplanationEngine';
+import { getLatestHistoricalIncidentState } from './SimulationHistoricalIncidents';
 import {
   HelpCircle,
   TrendingUp,
@@ -11,7 +12,8 @@ import {
   ShieldAlert,
   Sliders,
   Zap,
-  Info,
+  BookOpen,
+  FileText
 } from 'lucide-react';
 
 export const AiEngineeringExplanationPanel: React.FC = () => {
@@ -64,14 +66,18 @@ export const AiEngineeringExplanationPanel: React.FC = () => {
   const constraints = explanation.riskAndConstraints.activeConstraints;
   const riskLevel = explanation.riskAndConstraints.overallRiskLevel;
 
+  // Retrieve grounded historical evidence state
+  const historicalState = getLatestHistoricalIncidentState();
+  const groundedEvidence = historicalState.evidence.length > 0 ? historicalState.evidence : historicalState.incidents;
+
   return (
     <Panel
       title="AI Engineering Explanation & Advisory Recommendations"
-      subtitle="Dynamic 5-section physical causal chain, parameter transitions, engineering implications & advisory recommendations"
+      subtitle="Dynamic 5-section physical causal chain, parameter transitions, grounded historical evidence & advisory recommendations"
       action={
         <div className="flex items-center gap-2 font-mono text-[10px] text-sky-400 bg-sky-950/80 px-2.5 py-1 rounded border border-sky-800">
           <Activity className="w-3.5 h-3.5 text-sky-400 animate-pulse" />
-          <span>REAL-TIME SIMULATION DRIVEN</span>
+          <span>MODELED SIMULATION DRIVEN</span>
         </div>
       }
     >
@@ -87,7 +93,7 @@ export const AiEngineeringExplanationPanel: React.FC = () => {
           </p>
         </div>
 
-        {/* SECTION 2 & 3 GRID: WHAT CHANGED & ENGINEERING IMPLICATION */}
+        {/* SECTION 2 & 3 GRID: WHAT CHANGED & GROUNDED HISTORICAL EVIDENCE */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {/* SECTION 2: WHAT CHANGED (NUMERICAL TRANSITIONS) */}
           <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3">
@@ -177,25 +183,54 @@ export const AiEngineeringExplanationPanel: React.FC = () => {
             </div>
           </div>
 
-          {/* SECTION 3: ENGINEERING IMPLICATION */}
+          {/* SECTION 3: GROUNDED HISTORICAL EVIDENCE (RAG INTEGRATION) */}
           <div className="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-3">
-            <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-2">
-              <Info className="w-4 h-4 text-emerald-400" />
-              <span>3. ENGINEERING IMPLICATION</span>
+            <div className="text-[11px] font-bold text-emerald-400 uppercase tracking-wider flex items-center justify-between">
+              <span className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-emerald-400" />
+                <span>3. GROUNDED HISTORICAL EVIDENCE (RAG INTEGRATION)</span>
+              </span>
+              <span className="text-[10px] text-slate-400 font-mono">FIELD BENCHMARKS</span>
             </div>
 
-            <p className="text-slate-200 font-sans text-xs leading-relaxed">
-              {explanation.engineeringImplication}
-            </p>
+            {groundedEvidence.length > 0 ? (
+              <div className="space-y-2">
+                {groundedEvidence.slice(0, 3).map((item) => {
+                  const title = item.title;
+                  const desc = 'documentedEvidence' in item ? item.documentedEvidence.description : (item as { description: string }).description;
+                  const sourceStr = 'provenance' in item ? item.provenance.document : ((item as { source?: string }).source || 'Baghewala Knowledge Base');
+                  const matchExplanation = 'currentMatch' in item ? item.currentMatch.explanation : null;
 
-            <div className="p-3 bg-slate-900/90 rounded border border-slate-800 text-[11px] space-y-1 font-mono">
-              <span className="text-slate-400 text-[10px] block font-bold">PHYSICS GOVERNING PRINCIPLES:</span>
-              <ul className="list-disc list-inside space-y-1 text-slate-300 font-sans text-[11px]">
-                <li>Crude oil viscosity obeys non-linear Arrhenius / log-linear thermal sensitivity.</li>
-                <li>Inflow performance is governed by Darcy mobility (k/μ) within Jodhpur Sandstone matrix.</li>
-                <li>Artificial lift displacement capacity is bounded by sucker rod fatigue index (&lt; 85.0).</li>
-              </ul>
-            </div>
+                  return (
+                    <div key={item.id} className="p-2.5 bg-slate-900/90 rounded border border-slate-800 space-y-1 text-[11px]">
+                      <div className="flex items-center justify-between font-bold text-slate-200">
+                        <span className="truncate max-w-[280px]">{title}</span>
+                        <span className="text-[9px] text-emerald-400 bg-emerald-950 px-1.5 py-0.5 rounded border border-emerald-800 shrink-0 font-mono">
+                          HISTORICAL EVIDENCE
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-slate-300 font-sans leading-relaxed line-clamp-2">
+                        {desc}
+                      </p>
+                      {matchExplanation && (
+                        <div className="text-[10px] text-sky-300 font-mono bg-sky-950/40 p-1.5 rounded border border-sky-900/40">
+                          <strong>Why Relevant:</strong> {matchExplanation}
+                        </div>
+                      )}
+                      <div className="text-[9px] text-slate-500 font-mono pt-0.5 flex items-center justify-between">
+                        <span>Source: {sourceStr}</span>
+                        <span className="text-amber-400/90 font-bold">HISTORICAL EVIDENCE — NOT A PREDICTION</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-3 bg-slate-900 rounded border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
+                <FileText className="w-4 h-4 text-sky-400 shrink-0" />
+                <span>Historical evidence initialized from embedded Baghewala knowledge base.</span>
+              </div>
+            )}
           </div>
         </div>
 

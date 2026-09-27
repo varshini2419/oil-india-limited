@@ -82,9 +82,6 @@ export const WellDynamicsPage: React.FC = () => {
           <span className="px-2.5 py-1 rounded bg-amber-950/80 text-amber-400 border border-amber-800/80 font-bold">
             DEMO MODE
           </span>
-          <span className="px-2.5 py-1 rounded bg-slate-955 text-slate-300 border border-slate-800 font-bold">
-            REAL FIELD DATA: NOT CONNECTED
-          </span>
           <span className="px-2.5 py-1 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 font-bold flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             0 PHYSICAL ACTUATION PERMITTED

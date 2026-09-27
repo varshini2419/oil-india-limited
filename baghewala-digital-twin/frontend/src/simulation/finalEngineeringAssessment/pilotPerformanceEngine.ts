@@ -107,7 +107,7 @@ export function evaluatePilotPerformance(input?: AssessmentInput): PilotPerforma
   });
 
   const riskEvents = input?.pilotExecutionState?.riskEvents ?? [];
-  const constraintViolationsCount = riskEvents.filter((e) => e.riskLevel === 'HIGH' || e.riskLevel === 'CRITICAL').length;
+  const constraintViolationsCount = riskEvents.filter((e: any) => e.riskLevel === 'HIGH' || e.riskLevel === 'CRITICAL').length;
 
   return {
     metrics,

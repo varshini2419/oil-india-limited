@@ -10,7 +10,7 @@ export function evaluateRiskAssessment(input?: AssessmentInput): RiskAssessment 
   const riskMetrics: RiskMetric[] = [];
 
   if (riskEvents.length > 0) {
-    riskEvents.forEach((evt) => {
+    riskEvents.forEach((evt: any) => {
       riskMetrics.push({
         categoryId: evt.eventId,
         categoryName: evt.detectedIssue,
@@ -47,7 +47,7 @@ export function evaluateRiskAssessment(input?: AssessmentInput): RiskAssessment 
   const summary = `Evaluated ${riskMetrics.length} operational risk metrics. Overall system risk rating: ${overallRiskLevel} (${overallRiskScore}/100). All advisory recommendations require human engineer authorization.`;
 
   return {
-    overallRiskLevel,
+    overallRiskLevel: overallRiskLevel as any,
     overallRiskScore,
     riskMetrics,
     activeWarningsCount,

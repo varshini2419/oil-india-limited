@@ -23,7 +23,7 @@ export function summarizePilotExecution(input?: FinalValidationInput): PilotSumm
   }
 
   const riskEventCount = pilotState?.riskEvents?.length ?? 1;
-  const constraintViolationsCount = pilotState?.riskEvents?.filter((e) => e.riskLevel === 'HIGH' || e.riskLevel === 'CRITICAL').length ?? 0;
+  const constraintViolationsCount = pilotState?.riskEvents?.filter((e: any) => e.riskLevel === 'HIGH' || e.riskLevel === 'CRITICAL').length ?? 0;
   const auditEventCount = pilotState?.auditTrail?.length ?? 12;
 
   return {

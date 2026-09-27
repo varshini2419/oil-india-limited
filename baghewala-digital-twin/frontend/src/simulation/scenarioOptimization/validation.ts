@@ -43,6 +43,8 @@ export function validateDecisionConstraints(constraints: DecisionConstraint): {
   };
 }
 
+import { SCENARIO_LIMITS } from '../scenario/defaults';
+
 export function evaluateScenarioConstraints(
   candidate: ScenarioCandidate,
   outputs: {
@@ -58,6 +60,19 @@ export function evaluateScenarioConstraints(
   const warnings: string[] = [];
 
   const inputs = candidate.inputs;
+
+  // 0. SCENARIO_LIMITS Boundary Validation
+  for (const [key, limit] of Object.entries(SCENARIO_LIMITS)) {
+    const val = (inputs as any)[key];
+    if (typeof val === 'number') {
+      if (val < limit.min) {
+        violations.push(`${key} (${val} ${limit.unit}) is below lower physical boundary (${limit.min} ${limit.unit}).`);
+      }
+      if (val > limit.max) {
+        violations.push(`${key} (${val} ${limit.unit}) exceeds upper physical boundary (${limit.max} ${limit.unit}).`);
+      }
+    }
+  }
 
   // 1. Hard Constraints
   if (inputs.vfdFrequencyHz > constraints.maxVfdHz) {

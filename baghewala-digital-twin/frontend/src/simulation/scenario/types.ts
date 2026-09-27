@@ -4,13 +4,58 @@ export type ScenarioStatus = 'DRAFT' | 'VALID' | 'INVALID' | 'READY_FOR_SIMULATI
 
 export interface ScenarioInputValues {
   ambientTemperatureC: number;
+  humidityPercent: number;
+  windSpeedKmh: number;
   reservoirTemperatureC: number;
+  reservoirPressureBar: number;
+  permeabilityDarcy: number;
   steamInjectionRateTpd: number;
   steamQualityPercent: number; // 0 to 100%
+  steamInjectionTemperatureC: number;
   soakDurationDays: number;
+  waterCutPercent: number; // 0 to 100%
   vfdFrequencyHz: number;
   spm: number;
   strokeLengthMeters: number;
+}
+
+export interface PressureModelResult {
+  reservoirPressureBar: number;
+  flowingPressureBar: number;
+  drawdownBar: number;
+  source: string;
+}
+
+export interface SimulationTrace {
+  scenarioId: string;
+  scenarioName: string;
+  runId: string;
+  inputs: ScenarioInputValues;
+  derived: {
+    predictedReservoirTemperatureC: number;
+    estimatedViscosityCp: number;
+    mobilityDcP: number;
+    estimatedProductionBopd: number;
+    totalFluidProductionBfpd: number;
+    srpLoadIndex: number;
+    riskScore: number;
+    riskLevel: string;
+  };
+  calculatedAt: string;
+}
+
+export interface SimulationResult {
+  thermal: import('../thermal').ThermalResult;
+  viscosity: import('../viscosity').ViscosityResult;
+  mobility: import('../mobility').MobilityResult;
+  production: import('../production').ProductionResult;
+  srp: import('../srpOptimization').OptimizationResult;
+  css: import('../cssOptimization').CSSOptimizationResult;
+  risk: import('../riskEngine').AIRiskResult;
+  pressure: PressureModelResult;
+  trace: SimulationTrace;
+  inputs: ScenarioInputValues;
+  calculatedAt: string;
 }
 
 export interface ScenarioInputMetadata {

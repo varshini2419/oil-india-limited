@@ -93,6 +93,9 @@ export class TelemetryStreamReplay {
     this.timerId = setInterval(() => {
       this.stepForward();
     }, intervalMs);
+    if (this.timerId && typeof (this.timerId as any).unref === 'function') {
+      (this.timerId as any).unref();
+    }
   }
 
   public pause() {
@@ -159,6 +162,9 @@ export class MockFieldBackendAdapter implements FieldDataBackendAdapter {
         index++;
       }
     }, 2000);
+    if (interval && typeof (interval as any).unref === 'function') {
+      (interval as any).unref();
+    }
 
     return () => clearInterval(interval);
   }

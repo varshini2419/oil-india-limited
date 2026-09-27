@@ -7,8 +7,8 @@ interface DigitalTwinLegendProps {
 }
 
 export const DigitalTwinLegend: React.FC<DigitalTwinLegendProps> = ({ gridVisible }) => {
-  const { activeScenario } = useScenarioStore();
-  const inputs = activeScenario.inputs;
+  const { committedSimulationResult } = useScenarioStore();
+  const inputs = committedSimulationResult.inputs;
 
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-md p-3 font-mono text-[11px] text-slate-400 space-y-2.5">
@@ -16,8 +16,8 @@ export const DigitalTwinLegend: React.FC<DigitalTwinLegendProps> = ({ gridVisibl
       <div className="flex flex-wrap items-center justify-between gap-2 p-2 bg-slate-950/80 rounded border border-slate-800">
         <div className="flex items-center gap-2">
           <Sliders className="w-3.5 h-3.5 text-sky-400" />
-          <span className="text-slate-400">ACTIVE SCENARIO:</span>
-          <span className="text-sky-300 font-bold">{activeScenario.name}</span>
+          <span className="text-slate-400">COMMITTED SCENARIO:</span>
+          <span className="text-sky-300 font-bold">{committedSimulationResult.trace.scenarioName}</span>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 text-[10px] text-slate-300">

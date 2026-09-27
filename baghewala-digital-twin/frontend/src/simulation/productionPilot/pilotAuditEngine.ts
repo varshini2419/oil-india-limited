@@ -125,9 +125,9 @@ export function generatePilotAuditTrail(
       inputProvenance: 'DERIVED',
       moduleName: 'riskEngine (Step 4.9)',
       inputSummary: 'Evaluating multi-variable operational risk matrix.',
-      outputSummary: `Risk Score: ${twinState?.risk.riskScore ?? 25}/100 (${twinState?.risk.riskLevel ?? 'LOW'}).`,
-      status: (twinState?.risk.riskScore ?? 25) > 70 ? 'WARNING' : 'PASS',
-      decisionAdvisory: twinState?.risk.activeWarnings?.join('; ') || 'No critical risk conditions detected.',
+      outputSummary: `Risk Score: ${twinState?.risk?.riskScore ?? 25}/100 (${twinState?.risk?.riskLevel ?? 'LOW'}).`,
+      status: (twinState?.risk?.riskScore ?? 25) > 70 ? 'WARNING' : 'PASS',
+      decisionAdvisory: twinState?.risk?.activeWarnings?.join('; ') || 'No critical risk conditions detected.',
       traceId,
     },
     {

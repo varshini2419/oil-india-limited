@@ -1,0 +1,92 @@
+{
+  "evidenceIndex": [
+    {
+      "id": "INC-008",
+      "title": "Baghewala-1 (BGW-1) Discovery Well Test & Heavy Crude Temperature-Viscosity Characterization",
+      "category": "VISCOSITY_RHEOLOGY",
+      "sourceDocument": "sharp-d4.1-report-final.pdf",
+      "sourcePage": "Page 64",
+      "figures": ["FIG-006", "FIG-007", "FIG-008"],
+      "confidence": "HIGH",
+      "keyParameters": {
+        "depth": "1103-1117 m",
+        "apiGravity": "17.6° API",
+        "viscosityAt90C": "267 cP",
+        "viscosityAt60C": "1,700 cP",
+        "viscosityAt30C": "6,667 cP"
+      }
+    },
+    {
+      "id": "INC-001",
+      "title": "BGW-6 Upper Carbonate Pilot CSS Thermal Casing Elongation & Steam Leak",
+      "category": "WELL_INTEGRITY_CASING",
+      "sourceDocument": "4 EXPRESSION OF INTEREST (EOI) NO. OIL/RF/IND/EOI/011/2022",
+      "sourcePage": "Page 4",
+      "figures": ["FIG-005", "FIG-015", "FIG-017"],
+      "confidence": "HIGH",
+      "keyParameters": {
+        "steamTemp": "320°C - 350°C",
+        "pressure": "11 MPa",
+        "standard": "TWCCEP ISO/PAS 12835 required"
+      }
+    },
+    {
+      "id": "INC-002",
+      "title": "BGW-3 Drill String Mechanical Stuck Pipe at 668 m",
+      "category": "WELL_INTEGRITY_CASING",
+      "sourceDocument": "OIL INDIA LIMITED RAJASTHAN FIELD AMENDMENT No. 4",
+      "sourcePage": "Page 3",
+      "figures": ["FIG-002"],
+      "confidence": "HIGH",
+      "keyParameters": {
+        "stuckDepth": "668 m",
+        "totalDepth": "793 m",
+        "overpullForce": "45 Tonnes"
+      }
+    },
+    {
+      "id": "INC-003",
+      "title": "BGW-12 Upper Carbonate CSS Thermal Water Breakthrough & Well Drowning",
+      "category": "THERMAL_CSS",
+      "sourceDocument": "4 EXPRESSION OF INTEREST (EOI) NO. OIL/RF/IND/EOI/011/2022",
+      "sourcePage": "Page 4",
+      "figures": ["FIG-002"],
+      "confidence": "HIGH",
+      "keyParameters": {
+        "apiGravity": "8.6° API",
+        "viscosityAt40C": "38,174 cP",
+        "cumulativeOil": "60 bbls",
+        "waterCut": ">95%"
+      }
+    },
+    {
+      "id": "INC-004",
+      "title": "Heavy Oil Sucker Rod Pump Mechanical Failure & Rig-less Crane Fishing",
+      "category": "ARTIFICIAL_LIFT",
+      "sourceDocument": "SPE/ICoTA Symposium and Exhibition - Well Intervention 2025",
+      "sourcePage": "Page 250",
+      "figures": [],
+      "confidence": "HIGH",
+      "keyParameters": {
+        "viscosity": "10,000 - 13,000 cP",
+        "spm": "8.0 - 12.0 SPM",
+        "downtime": "2 days"
+      }
+    },
+    {
+      "id": "INC-006",
+      "title": "BGW#8 Milestone First Commercial CSS Thermal Cycle Execution",
+      "category": "THERMAL_CSS",
+      "sourceDocument": "Baghewala PPT oil india limited 12.07.2025.pptx",
+      "sourcePage": "Slide 12",
+      "figures": ["FIG-014", "FIG-015"],
+      "confidence": "HIGH",
+      "keyParameters": {
+        "steamTemp": "310°C",
+        "steamPressure": "102 kg/cm²",
+        "selfFlowDays": "68 days",
+        "peakRate": "30 BOPD"
+      }
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { ANIMATION_CONFIG } from '../config';
 import { useScenarioStore } from '../../../simulation/scenario/scenarioStore';
 
@@ -8,9 +8,11 @@ export interface AnimationContextType {
   isPlaying: boolean;
   speed: AnimationSpeedMode;
   strokeOffset: number; // Vertical Y offset in pixels (-amplitude to +amplitude)
+  strokeAmplitude: number;
   walkingBeamAngle: number; // Angle in degrees for surface walking beam rocking
   progress: number; // Continuous time progress scalar (0 to 1 cycle progress)
   activeSpm: number;
+  activeStrokeLength: number;
   play: () => void;
   pause: () => void;
   reset: () => void;
@@ -42,11 +44,14 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
   const lastTimeRef = useRef<number | null>(null);
   const phaseRef = useRef<number>(0);
 
-  let activeSpm = 8.5;
+  let activeSpm = 8.0;
+  let activeStrokeLength = 2.5;
+
   try {
     const store = useScenarioStore();
-    if (store && store.activeScenario && store.activeScenario.inputs) {
-      activeSpm = store.activeScenario.inputs.spm;
+    if (store && store.committedSimulationResult && store.committedSimulationResult.inputs) {
+      activeSpm = store.committedSimulationResult.inputs.spm;
+      activeStrokeLength = store.committedSimulationResult.inputs.strokeLengthMeters;
     }
   } catch {
     // Fallback if rendered outside ScenarioProvider
@@ -54,12 +59,15 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
 
   // Safely clamp physical SPM between 1.0 and 30.0 SPM
   const clampedSpm = Math.max(1.0, Math.min(30.0, activeSpm));
-  // Dynamic stroke cycle duration derived from physical SPM (at nominal 8.5 SPM = 2400ms)
-  const baseCycleDurationMs = (8.5 / clampedSpm) * ANIMATION_CONFIG.baseCycleDurationMs;
+  // Dynamic stroke cycle duration derived from physical SPM (at nominal 8.0 SPM = 2500ms)
+  const baseCycleDurationMs = (8.0 / clampedSpm) * ANIMATION_CONFIG.baseCycleDurationMs;
 
   const speedMultiplier = ANIMATION_CONFIG.speeds[speed];
   const cycleDurationMs = Math.max(400, Math.min(12000, baseCycleDurationMs / speedMultiplier));
-  const amplitude = ANIMATION_CONFIG.visualStrokeAmplitude;
+  // Scale visual stroke displacement amplitude by physical stroke length (nominal 2.5m)
+  const amplitude = ANIMATION_CONFIG.visualStrokeAmplitude * (Math.max(0.5, Math.min(5.0, activeStrokeLength)) / 2.5);
+
+  const lastStateUpdateRef = useRef<number>(0);
 
   const animate = useCallback((time: number) => {
     if (lastTimeRef.current !== null) {
@@ -75,9 +83,13 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
       // Normalized progress (0.0 to 1.0)
       const currentProgress = phaseRef.current / (2 * Math.PI);
 
-      setStrokeOffset(currentOffset);
-      setWalkingBeamAngle(currentAngle);
-      setProgress(currentProgress);
+      // Throttle React state updates to 30 FPS (~33ms) to maintain smooth motion without React VDOM thrashing
+      if (time - lastStateUpdateRef.current >= 30) {
+        lastStateUpdateRef.current = time;
+        setStrokeOffset(currentOffset);
+        setWalkingBeamAngle(currentAngle);
+        setProgress(currentProgress);
+      }
     }
 
     lastTimeRef.current = time;
@@ -131,21 +143,39 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
     setSpeedState(newSpeed);
   }, []);
 
+  const contextValue: AnimationContextType = useMemo(
+    () => ({
+      isPlaying,
+      speed,
+      strokeOffset,
+      strokeAmplitude: amplitude,
+      walkingBeamAngle,
+      progress,
+      activeSpm: clampedSpm,
+      activeStrokeLength,
+      play,
+      pause,
+      reset,
+      setSpeed,
+    }),
+    [
+      isPlaying,
+      speed,
+      strokeOffset,
+      amplitude,
+      walkingBeamAngle,
+      progress,
+      clampedSpm,
+      activeStrokeLength,
+      play,
+      pause,
+      reset,
+      setSpeed,
+    ]
+  );
+
   return (
-    <AnimationContext.Provider
-      value={{
-        isPlaying,
-        speed,
-        strokeOffset,
-        walkingBeamAngle,
-        progress,
-        activeSpm: clampedSpm,
-        play,
-        pause,
-        reset,
-        setSpeed,
-      }}
-    >
+    <AnimationContext.Provider value={contextValue}>
       {children}
     </AnimationContext.Provider>
   );

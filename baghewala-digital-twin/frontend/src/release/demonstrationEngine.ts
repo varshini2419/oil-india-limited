@@ -5,6 +5,7 @@ import { calculateMobilityModel } from '../simulation/mobility/mobilityModel';
 import { calculateProductionModel } from '../simulation/production/productionModel';
 import { evaluateRiskModel } from '../simulation/riskEngine/riskModel';
 import { createScenario } from '../simulation/scenario/scenarioEngine';
+import { BASELINE_INPUT_VALUES } from '../simulation/scenario/defaults';
 import { validateAndNormalizeSchema } from '../simulation/fieldIntegration/telemetrySchemaEngine';
 import { evaluateLiveDataQuality } from '../simulation/fieldIntegration/liveDataQualityEngine';
 
@@ -27,8 +28,11 @@ export function generateDemonstrationScenarios(): DemonstrationScenario[] {
     }
   ): DemonstrationScenario => {
     const scenarioObj = createScenario(title, description, {
+      ...BASELINE_INPUT_VALUES,
       ambientTemperatureC: 40,
       reservoirTemperatureC: inputs.reservoirTemperatureC,
+      reservoirPressureBar: inputs.reservoirPressureBar,
+      waterCutPercent: inputs.waterCutPercent,
       steamInjectionRateTpd: inputs.steamRateTpd,
       steamQualityPercent: 80,
       soakDurationDays: 3,

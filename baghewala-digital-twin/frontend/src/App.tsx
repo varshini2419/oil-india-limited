@@ -8,6 +8,8 @@ import { ResultsPage } from './pages/ResultsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { RealtimeMonitoringPage } from './pages/RealtimeMonitoringPage';
 import { FieldDataIntegrationPage } from './pages/FieldDataIntegrationPage';
+import { HistoricalValidationPage } from './pages/HistoricalValidationPage';
+import { AiEngineeringCopilotPage } from './pages/AiEngineeringCopilotPage';
 import { IntegratedValidationPage } from './pages/IntegratedValidationPage';
 import { OperationalReadinessPage } from './pages/OperationalReadinessPage';
 import { WellDynamicsPage } from './pages/WellDynamicsPage';
@@ -32,6 +34,8 @@ function App() {
           <Route path="results" element={<ResultsPage />} />
           <Route path="realtime-monitoring" element={<RealtimeMonitoringPage />} />
           <Route path="field-data" element={<FieldDataIntegrationPage />} />
+          <Route path="historical-validation" element={<HistoricalValidationPage />} />
+          <Route path="engineering-copilot" element={<AiEngineeringCopilotPage />} />
           <Route path="integrated-validation" element={<IntegratedValidationPage />} />
           <Route path="operational-readiness" element={<OperationalReadinessPage />} />
           <Route path="deployment-readiness" element={<DeploymentReadinessPage />} />

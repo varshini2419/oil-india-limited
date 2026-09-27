@@ -615,7 +615,7 @@ export const WellVisualizationCanvas: React.FC<WellVisualizationCanvasProps> = (
         {/* Safety Non-Actuation Disclaimer Banner */}
         <div className="absolute bottom-3 left-16 bg-slate-950/90 border border-slate-800 px-3 py-1.5 rounded-lg text-[10px] font-mono text-slate-400 backdrop-blur-md z-20 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span>DEMO MODE | REAL FIELD DATA: NOT CONNECTED | 0 Physical Actuation Permitted</span>
+          <span>DEMO MODE | 0 Physical Actuation Permitted</span>
         </div>
       </div>
     </div>

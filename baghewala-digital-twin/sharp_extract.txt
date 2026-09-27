@@ -1,0 +1,799 @@
+=== PAGE 60 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+variations across the salt pillow suggest the primary salt movement to have occurred between the 
+Early Jurassic and Middle Cretaceous. Structural relief of the Lisa Structure was enhanced by  latest 
+Cretaceous to Paleogene inversion that resulted in sub-regional doming across the Fjerritslev Trough 
+(Figure 44). 
+Both the Haldager Sandstone and the Gassum F ormation reservoirs have been offset by faults with 
+heaves of up to a few hundred metres but usually less. Most faults die out within the Lower Cretaceous, 
+but some continue into, and possibly through, the Upper Cretaceous Chalk. It is not clear if certain 
+faults penetrate the Pleistocene, but some sinkholes and fluvial incisions in the top Chalk surface are 
+controlled by underlying structures. 
+2.4.2 In situ stress and seismicity data 
+No earthquakes are known  to have occurred on top of or within  the Lisa Structure (Figure 46). The 
+nearest known earthquakes are related to an earthquake swarm centred around 50 km west of the 
+Lisa Structure. Sørensen et al . (2011) modelled fault plane solutions from well -defined Skagerrak 
+earthquakes and derived a regional stress pattern with maximum compression in the nor thwest by 
+north to southeast by south direction ( Figure 46). They concluded that earthquakes originated from 
+depths of 11–25 km  and relate to  N–S striking faults south of the Sorgenfrei -Tornquist Zone . The 
+seismicity is t herefore attributed to activity over the Sorgenfrei -Tornquist Zone. Recent reanalysis 
+focussing on the most reliable earthquake data suggests a less systematic stress sense signal in the 
+Skagerrak region (Figure 47). 
+ 
+Figure 46. Left: Instrumental earthquakes recorded between 1980 and 2011 in the northern Skagerrak. Dark dots indicate 
+events recorded with the highest confidence. Right: Earthquakes grouped to determined focal mechanisms. Earthquakes are 
+plotted on top of known faults in the region. After Sørensen et al. (2011). 
+
+
+=== PAGE 61 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+ 
+Figure 47. Focal mechanisms filtered and extracted from GEUS’ database with the most reliably recorded earthquakes plotted 
+for the SHARP Project. 
+2.4.3 Rock mechanics and rock failure 
+The current knowledge of the mechanical state of the rocks present in the area is limited. Samples 
+from the Gassum formation have been provided to TU Delft as part of Work Package 3 to measure key 
+properties, including permea bility, porosity, density, V p/Vs, and bulk moduli. In addition, there is 
+information on leak -off pressures from wells in the area. A recent compilation of leak -off pressures 
+from the nearby Felicia -1 well and from onshore wells around Denmark is available in internal GEUS 
+documents and is shown in Figure 48.  
+Borehole breakout observations in the Danish area have been compiled by Ask et al. (1996) and Ask 
+(1997). Work Package 2 has compiled a complete overview of borehole stress observations based on 
+breakouts and drilling induced tensile fractures from the SHARP region of interest. 
+
+
+=== PAGE 62 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+ 
+Figure 48. Leak -off test data from Danish wells. The red dots show wells within 120 km of the Lisa Structure. Lithos tatic 
+pressure assumes an average rock density of 2.4 gm/cc and hydrostatic pressure assumes an average fluid density of 1.05 
+g/cc. Red dashed line is best fit to the leak -off pressures. Data were compiled by N. Springer, L. Kristensen, T. Laier, and 
+P. Frykman at GEUS. 
+  
+
+
+=== PAGE 63 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+2.5 Rajasthan region 
+2.5.1 Structural and basin setting 
+The proposed site, Bhagewala Heavy Oil Field, Rajasthan, India, is a suitable candidate to implement 
+the experience and learnings from other international CO 2 storage projects to accelerate new  CCS 
+initiatives in India. It will also provide an opportunity to fast -track implementation of the next 
+generation monitoring systems for CO 2 storage and CO 2 Enhanced Oil Recovery (E OR) projects. The 
+Bhagewala Oil field, situated in the pericratonic Bikaner-Nagaur Basin in Rajasthan, covers 77,500 km2 
+of the northwestern part of the Indian shield, as depicted in Figure 49. The paleogeographic 
+reconstructions suggest that the Bikaner-Nagaur Basin was formed by extension along the Najd Fault 
+System of the Arabian Plate during the Late Proterozoic to Early Cambrian, and is related to the latest 
+phase of the Pan-African Orogenic event (Pollastro, 1999; Al-Husseini, 2000; Dmitry et al., 2007). The 
+Bikaner-Nagaur basin is relativ ely shallow, with maximum depth to basement estimated to be 1.5 –
+2 km (Dasgupta et al., 1988). This basin contains a 1000 to 1500 m thick Infracambrian to Cambrian 
+mixed evaporite, carbonate, and siliciclastic sequence overlain by a thin sequence of Permian  to 
+Holocene rocks (Pareek, 1981; 1984; Dutta, 1983; Dasgupta et al., 1988). 
+ 
+Figure 49. Location of Bhagewala Oil field (Mandal et al., 2022).  
+
+
+=== PAGE 64 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+In 1991, Oil India Limited (OIL) discovered heavy oil in the Baghewala -1 well (BGW-1, Figure 49) and 
+about 7 bbl of viscous, 17.6°API gravity oil was recovered during a production test at the basal Jodhpur 
+Formation sandstone at a depth interval of 1103–1117 m, as depicted in Figure 50. The heavy oil is a 
+dark, viscous fluid (267 cp at 90°C, 1700 cp at 60°C, 6667 cp at 30°C). This clastic depth interval 
+underlies laminated, organic-rich Infracambrian dolomites of the Bilara Formation. Crude oil similar to 
+that encountered in the Jodhpur Formation occurs at Bilara, Hanseran Evaporite, and Upper Carbonate 
+formations as well ( Figure 51). The BGW -1 well was drilled on a N‒NE trending basement high 
+northeast of the Pokaran High (Figure 49). As depicted in Figure 51, the stratigraphic sequence in the 
+well includes nearly 1400 m of non-fossiliferous sedimentary rocks unconformably overlying Malani 
+Suite volcanic rocks dated at about 745 ± 10 Ma (Crawford and Compston, 1970). Dasgupta and 
+Bulgauda (1994) have tentatively assigned these non-fossiliferous rocks to the Cambrian and 
+Infracambrian based on stratigraphic correlations with the Infracambrian Salt Range Series of Pakistan 
+and the Infracambrian Marwar Supergroup of India. The Cambrian and Infracambrian rocks are 
+overlain by a thick Permian to Triassic sequence  of about 60  m, and nearly 400 m of Jurassic  and 
+younger rocks.  
+ 
+Figure 50. Stratigraphic column for the Baghewala-1 well (Peters et al., 1995; Cozzi et al., 2012). 
+
+
+=== PAGE 65 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+ 
+Figure 51. DD’ seismic section transecting the Baghewala-1 well shows compressional structures bounded by steeply dipping 
+faults (Mandal et al., 2021). 
+Since the discovery of  the oil field in 1991, 20 wells have been completed in the field to date, with 
+average well depth around 1200 m vertical depth. Sustained production of heavy oil (14‒17°API and 
+viscosity of 10,000 cp) commenced from two wells since 2017 using cold production technique s, 
+chemical stimulation and artificial lift. The thermal EOR method using Cyclic Steam Stimulation (CSS) 
+was tested in one pilot well in 2019. The following data are available in the Bhagewala Oil field: 
+• Basic well log suites for 20 wells; 
+• 2D and 3D seismic data, including 210 km2 of 3D seismic data; 
+• Around 275 m of total core length from 10 wells; 
+• Geomechanical test data available from a few wells; 
+• A geological model. 
+In this context, discussions have been initiated by the IITB research group to collect data and core 
+samples from the field operator (OIL) for use in the SHARP Project. 
+As depicted in Figure 51, the thickness of the Nagaur Group gradually thins towards the southwest and 
+pinches out near the Baghewala structure, whereas the Mesozoic section thins toward the northeast. 
+Further, it has been observed that the southwestern part of the basin is dominated by deep -seated 
+NNE‒SSW trending sub -parallel faults. Anticlinal structures have been identified in patches and are 
+primarily bounded by the major fault systems. These anticlines are genetically correlated with 
+Cambrian compression and were confined to the Neoproterozoic‒Cambrian level only. These fault -
+bounded anticlinal structures are proven hydrocarbon traps with dimensions ranging between 10‒50 
+km2, such as the Baghewala structures. Incidentally, the shallow depth sections are mostly undeformed 
+with only a limited number of minor faults. 
+2.5.2 In situ stress conditions 
+A stress map for northwestern India and bordering Pakistan is shown in Figure 52. The dominance of 
+compressional stresses in the Himalayan region and strong varia tions in stress directions across 
+different areas of the Indian Subcontinent are consequences of the unique dynamic tectonic situation 
+(Cloetingh and Wortel, 1985). While the World Stress Map contains an abundance of focal mechanism 
+D D1
+
+=== PAGE 66 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+data in the Himalayan r egion, there are very few stress indicators  available from borehole breakout 
+data, and very little information from which to determine the stress orientation in India’s pericratonic 
+and intracratonic basins. No data is available from the Baghewala field area. Limited data along the N‒
+S striking Cambay and Barmer basins (along the western edge of Figure 52) suggest that SHmax may be 
+oriented parallel or sub-parallel to major basin-bounding faults. 
+ 
+Figure 52. Stress map for northwest India and part of Pakistan, generated using the World Stress Map CASMO service 
+(Heidbach et al., 2016; 2018). 
+Ganguli and Sen (2020) show that in the Ankleshwar region of the Cambay Basin, relative stress 
+magnitudes suggest that a normal faulting re gime is prevalent in po st-rift strata, while a transition 
+from normal to strike -slip faulting occurs within syn -rift strata. It is unclear at present if similar 
+conditions prevail in the older Bikaner-Nagaur Basin. 
+2.5.3 Seismicity data currently available 
+Seismicity data for India are available from the National Center for Seismology (NCS), the nodal agency 
+of the Government of India for monitoring earthquake activity. NCS maintains a national seismic 
+
+
+=== PAGE 67 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+network of more than 150 stations distributed across the coun try. The online data portal provides 
+access to the earthquake catalogue. Data from northwestern India are shown in Figure 53. To date, 
+few events have been recorded from the Bikaner-Nagaur region of interest. 
+ 
+Figure 53. Local magnitude (M L) data courtesy of the National Center for Seismology website 
+(https://riseq.seismo.gov.in/riseq/Earthquake/archive). The shaded background colours refer to the eathquake zones of India. 
+The blue colour refers to zone 2, classified as a low damage risk zone; yellow represents zone 3 and moderate damage risk; 
+orange refers to zone 4 which is classified as high damage risk. Events shown have been recorded since 1997. 
+
+
+=== PAGE 68 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+3 Important issues for further work 
+The primary technical objectives of the SHARP Project will provide the main framework for further 
+work, including: 
+• Development of state -of-the-art basin and site -scale geomechanical models for prospectiv e 
+case study sites in the North Sea; 
+• Production of a new integrated earthquake catalogue and stress map for the North Sea, to be 
+used for seismic hazard assessment in offshore areas; 
+• Characterisation of deformation, failure, flow and seismic properties of caprock and reservoir 
+rocks from North Sea sites and for a previously unstudied site in India;  
+• Reduction of containment risk and costs through targeted monitoring of critical rock 
+deformation and fluid pressure; 
+• Development of cost-effective strategies for monitoring induced seismicity; 
+• Improve subsurface risk management by implementing uncertainty quantification, 
+probabilistic methods and effective workflows for quantitative evaluation of containment 
+risks. 
+Work Package 4 is focused on developing targeted strategies for monitoring rock deformation and fluid 
+pressure impacts resulting from CO 2 storage operations. Updated stress and failure models are a key 
+part of  improving, or ‘sharpening’ these monitoring designs. The current report is intended to 
+summarise ‘round 1’ descriptions of the existing knowledge of the structure, seismicity and in situ 
+stress states of the SHARP case study sites. Existing assessments of rock failure at the sites have also 
+been summarised. The intention is to build-upon and improve on these estimates through collation of 
+updated understanding developed across the breadth of the SHARP Project. Table 6 outlines the 
+prevailing knowledge gaps and uncertainties in understanding identified in the ‘round 1’ assessment. 
+It is clear from Table 6 that the portfolio of case studies includes a range of potential storage sites with 
+a wide variation in the degree of maturity in terms of storage development phase. While detailed site 
+characterisation and rock failure studies have been conducted for the Horda/Smeaheia  and UK SNS 
+Bunter storage play, rock failure characterisation studies at the Aramis site are limited to regional 
+studies. Site specific data are also lac king for the Lisa Structure, where no specific rock failure 
+assessments have been undertaken. The Bhagewala Heavy Oil Field in India is the least mature of the 
+case studies considered in the SHARP project. While the field operator has developed extensive 
+understanding of the field throughout its productive history, detailed studies of its CO 2 storage 
+potential are not available in the public domain. Developing a workflow and scientific basis for rock 
+failure risk assessments for projects at difference level s of maturity is a key objective for the SHARP 
+project. 
+  
+
+=== PAGE 69 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+Table 6. Current knowledge gaps and uncertainties identified in SHARP Work Package 4. 
+Case Study name In situ stress conditions Seismicity data Rock failure understanding 
+Horda/Smeaheia (Norway) Second-order stress effects 
+and the transition from 
+strike-slip to normal stress 
+conditions. Not possible to 
+rule-out stress rotations 
+near faults 
+Fault plane solutions 
+indicate a transitional trend 
+from onshore (more strike-
+slip) to offshore (transition 
+to reverse faulting). Low to 
+moderate seismic activity. 
+Limited amount of focussed 
+laboratory testing 
+undertaken. Improved 
+understanding of material 
+properties required. 
+UK SNS Bunter storage play 
+(UK) 
+Potential impact of 
+Zechstein evaporites on 
+contemporary stress state 
+in the supra-salt section 
+Moderate seismic detection 
+capability in the offshore 
+region due to sparse 
+distribution of 
+seismometers along the 
+coast (M2 and below likely 
+to be missed). Sparse focal 
+mechanism data, and very 
+few offshore, where 
+azimuthal coverage is 
+limited 
+Potential issues related to 
+excessive cooling of upper 
+reservoir and caprock, with 
+halite caprock particularly 
+prone to tensile failure due 
+to high linear thermal 
+expansion coefficient. 
+Worst case failure scenario 
+involves weak overburden 
+fault penetrating through 
+the halite into the reservoir 
+Aramis site (Netherlands)  Limited data from the 
+Aramis site 
+Mechanical properties from 
+wells within the site not 
+available in the public 
+domain – existing studies 
+are based on data from 
+Groningen 
+Lisa Structure (Denmark) No data on in situ stress 
+specifically acquired at the 
+site, and only limited data 
+available regionally 
+No earthquakes known 
+over the structure, but 
+good data is available from 
+the Skagerrak 
+Few data on mechanical 
+properties available, and no 
+rock failure studies 
+conducted for the site to 
+date beyond estimate of 
+fracture pressure from 
+regional LOT compilation 
+Bhagewala Heavy Oil Field 
+(India) 
+Minimal data available in 
+the public domain – limited 
+to data presented by the 
+World Stress Map 
+Limited data is available (no 
+fault plane solutions); 
+however, data were not 
+evaluated in detail at 
+present 
+No specific rock failure 
+studies conducted to date 
+ 
+In the next stage of SHARP Work Package 4, we plan to make more focused assessments of rock failure 
+risks, considering the following themes: 
+1. Where precisely measurements of geomechanical properties are required (i.e., which specific 
+rock units, and when can we rely on analogue data); 
+2. What information is ideally needed prior to injection start-up, and conversely which data could 
+be acquired during field operations to reduce uncertainties; 
+3. How can pre -injection seismicity surveillance be used to improve and quantify risk 
+assessments, especially regarding state of stress estimations; 
+4. How could smart monitoring schemes (e.g., downhole pressure gauges, strain measurement 
+using DAS fibre systems, or strategically placed broadband seismometers ) be used to most 
+effectively monitor rock strain during site operations. 
+Some more general themes that also need to be developed include gaining an improved understanding 
+of deep basement/crustal stresses and associated seismicity as compared with stress and strain 
+distribution in the sedimentary cover.  This issue generally requires a higher quality location and depth 
+
+=== PAGE 70 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+determination for seismic events than is normally achieved using regional seismic station networks.  
+Uncertainties in stress orientation data from borehole measurements are also typically caused by  a 
+mix of poor data quality (or sparse sampling) and true natural stress variations. Integration of datasets 
+(e.g., seismicity data together with downhole core measurements and dynamic pressure tests) is a key 
+part of reducing these uncertainties and thereby making rock failure estimates ‘sharper.’ 
+The maturity of rock failure studies can also be placed within the context of the Storage Readiness 
+Levels (SRL) developed in the ACT -funded ALIGN -CCUS project (Akhurst et al ., 2021). The SRL 
+framework can be used to communicate th e entirety of technical appraisal, permitting and planning 
+activities achieved at a potential CO 2 storage site, while highlighting activities that remain to be 
+completed. As illustrated in Figure 54, the framework complem ents and expands on the Storage 
+Resource Management System (SRMS) developed by the Society of Petroleum Engineers (SPE, 2017). 
+ 
+Figure 54. Complementary equivalence of the SRL framework with the SPE’s SRMS project maturity classes  (after Akhurst et 
+al., 2021). 
+From a rock failure (or storage integrity) perspective, it is possible to identify the characterisation 
+activities that would be required to progress through the SRL framework (Table 7). These may serve as 
+
+
+=== PAGE 71 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+a generic guide to the iterative studies generally required to progress from regional -scale 
+understanding to more detailed site-specific geomechanical characterisation studies. This will include 
+identification of the uncertainties at each sta ge of the rock failure assessment to inform further 
+technical studies (e.g., data mining, analogue studies, laboratory programmes, new data acquisition 
+programmes, baseline surveys, MMV planning etc.) . Rock failure and geomechanical studies provide 
+vital inputs to risk assessment and management processes, and should be continually reviewed as 
+projects develop. Following commissioning of a CO2 storage site, rock failure models should be verified 
+and updated based on operational data such as flow rates, press ure measurements, microseismic 
+observations and other information from the MMV methods deployed. 
+Table 7. Geomechanical requirements for progression through the Storage Readiness Level Framework of Akhurst et al. (2021). 
+SRL Descriptive title Rock failure/geomechanical activities 
+likely to be required to meet SRL 
+SHARP case studies 
+SRL 1 First pass assessment of storage 
+capacity at country-wide or basin 
+scales 
+  
+SRL 2 Site identified as theoretical capacity Initial collation of existing information and 
+identification of activities required to 
+progress the site 
+Bhagewala Heavy Oil 
+Field 
+SRL 3 Screening study to identify an 
+individual storage site and initial 
+storage concept updated 
+Collation of regional data related to 
+structure (major fault/fracture systems), 
+in situ stress, earthquake focal mechanisms 
+and rock mechanical property data 
+Aramis site & Lisa 
+Structure 
+SRL 4 Storage site validated by desktop 
+studies and storage project concept 
+updated 
+Interpretation of site-specific data and 
+development of a detailed 1D 
+geomechanical model 
+UK SNS Bunter 
+Sandstone storage 
+play, and Horda 
+Platform storage play 
+SRL 5a  
+ 
+ 
+ 
+ 
+Storage site validated, firstly by 
+detailed analysis, then in a relevant 
+'real world' setting 
+Detailed risk assessment-led rock failure 
+investigations and risk reduction activities 
+to inform a storage permit application - 
+including 3D geomechanical modelling 
+ 
+SRL 5b New data is acquired where needed, 
+including acquisition of in situ stress 
+measurements and/or laboratory 
+measurements from downhole samples if 
+appropriate 
+ 
+SRL 5c All storage site data will have been 
+acquired, analysed and technical appraisal 
+completed - updated 3D geomechanical 
+modelling 
+ 
+SRL 6 Storage site integrated into a feasible 
+CCS project concept or portfolio of 
+sites (contingent storage resource) 
+Any remaining concerns addressed and 
+residual risks effectively managed 
+ 
+Aurora site (part of 
+Horda Platform 
+storage play) and 
+Endurance (part of 
+the UK SNS Bunter 
+Sandstone storage 
+play) 
+SRL 7 Storage site is permit ready or 
+permitted 
+  
+SRL 8 Commissioning of the storage site 
+and test injection 
+  
+SRL 9 Storage site on injection Updated understanding from operational 
+data 
+e.g. Snøhvit CCS 
+project 
+ 
+ 
+
+=== PAGE 72 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+4 References 
+Akhurst, M., Kirk, K., Neele, F., Grimstad,  A-A., Bentham, M. and Bergmo, P. 2021. Storage Readiness Levels: 
+communicating the maturity of site technical understanding, permitting and planning needed for storage 
+operations using CO2. International Journal of greenhouse Gas Control, 110, 103402. 
+Al-Husseini, M.I. 2000. Origin of the Arabian plate structures: Amar collision and Najd Rift. Geo Arabia, 5, 527–
+542. 
+Allen, M.R., Griffiths, P.A., Craig, J., Fitches, W.R. and Whittington, R.J. 1994. Halokinetic initiation of Mesozoic 
+tectonics in the southern North Sea: a regional model. Geological Magazine, 131 (94), 559‒561. 
+Alnes, H., Eiken, O., Nooner, S., Sasagawa, G., Stenvold, T. and Zumberge, M. 2011. Results from Sleipner gravity 
+monitoring: Updated density and temperature distribution of the CO2 plume. Energy Procedia, 4, 5504‒5511. 
+Armitage, P.J., Worden, R.H., Faulkner, D.H., Aplin, A.C., Butcher, A.R. and Espie, A.A. 2013. Mercia Mudstone 
+Formation caprock to carbon capture and storage sites: petrology and petrophysical characteristics. Journal 
+of the Geological Society, London, 170, 119‒132. 
+Armitage, P.J., Worden, R.H., Faulkner, D.R., Butcher, A.R. and Espie, A.A. 2015. Permeability of the Mercia 
+Mudstone: suitability as caprock to carbon capture and storage sites. Geofluids, 16 (1), 26‒42. 
+Ask, M.V.S., Muller, B., and Stephansson, O. 1996. In situ stress determination from breakouts in the Tornquist 
+Fan, Denmark. Terra Nova, 8, 575‒584. 
+Ask, M.V.S. 1997. In situ stress from breakouts in the Danish Sector of the North Sea. Marine and Petroleum 
+Geology, 14, 231‒243. 
+Bacci, V.O., O'Brien, S., Frank, J. and Anderson, M. 2017. Using a walk -away DAS time -lapse VSP for CO 2 plume 
+monitoring at the Quest CCS Project. CSEG Recorder, 42 (3), 18‒21. 
+Baig, I., Faleide, J.I., Mondol, N.H. and Jahren, J. 2019. Burial and exhumation history controls on shale 
+compaction and thermal maturity along the Norwegian North Sea basin margin areas. Marine and Petroleum 
+Geology, 104, 61‒85. 
+Baptie, B. 2010. Seismogenesis and state of stress in the UK. Tectonophysics, 482, 150‒159. 
+Baptie, B. 2020. Earthquake Seismology 2019/2020. British Geological Survey Open Report, OR/20/039 . 
+Bell, J.S. 1996. In situ stress in sedimentary rocks (part 2): applications of stress measurements. Geoscience 
+Canada, 23 (3), 135‒153. 
+Bell, R.E.,  Jackson, C.A. -L., Whipp, P.S. and Clements, B. 2014. Strain migration during multiphase extension: 
+observations from the northern North Sea. Tectonics, 33, 1936–1963. 
+Bentham, M.S., Green, A. and Gammer, D. 2013. The occurrence of faults in the Bunter San dstone Formation of 
+the UK sector of the Southern North Sea and the potential impact on storage capacity. Energy Procedia, 37, 
+5101‒5109. 
+Bentham, M., Mallows, T., Lowndes, J. and Green, A. 2014. CO 2 STORage Evaluation Database (CO 2Stored). The 
+UK’s online storage atlas. Energy Procedia, 63, 5103‒5113. 
+Bentham, M., Williams, G., Vosper, H., Chadwick, A., Williams, J. and Kirk, K. 2017 . Using pressure recovery at a 
+depleted gas field to understand saline aquifer connectivity. Energy Procedia, 114, 2906‒2920. 
+Bertelsen, F. 1980. Lithostratigraphy and depositional history of the Danish Triassic. Danmarks Geologiske 
+Undersøgelse Serie B, Volume 4. DGU, Denmark. 
+Bifani, R. 1986. Esmond gas complex. In: Brooks, J., Goff, J.C. and van Hoorn, B. (Eds.). Habitat of Palaeozoic Gas 
+in N.W. Europe. Geological Society, London, Special Publications, 23, 209‒221. 
+BP, 2021a. Primary Store Dynamic Model and Report. Key Knowledge Document, NS051-SS-REP-000-00015. 
+BP, 2021b. Primary Store Geological Model and Report. Key Knowledge Document, NS051 -SS-REP-000-00014. 
+BP, 2021c. Primary Store Geomechanical Model & Report. Key Knowledge Document, NS051-SS-REP-000-00012. 
+BP, 2021d. Endurance Well Injectivity Fracturing Study with REVEAL TM. Key Knowledge Document, NS 051-SS-
+REP-000-00017. 
+Brown, K.M., Bekins, B., Clennell, B., Dewhurst, D., and Westbrook, G.K. 1994. Heterogenous hydrofracture 
+development and accretionary fault dynamics. Geology, 22, 259‒262. 
+Cameron, T.D.J., Crosby, A., Balson, P.S., Jeffery, D.H., Lott, G.K., Bulat, J. and Harrison, D.J. 1992. The Geology of 
+the Southern North Sea . United Kingdom Offshore Regional Report. British Geological Survey  and HMSO, 
+London. 
+
+=== PAGE 73 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+Chadwick, A., Williams, G., Delepine, N., Clochard, V., Labat, K., Sturton, S., Buddensiek, M.L., Dillen, M., Nickel, 
+M., Lima, A.L. and Arts, R. 2010. Quantitative analysis of time -lapse seismic monitoring data at the Sleipner 
+CO2 storage operation. The Leading Edge, 29 (2), 170‒177. 
+Chiaramonte, L., White, J.A., Hao, Y. and Ringrose, P. 2013. Probabilistic risk assessment of mechanical 
+deformation due to CO 2 injection in a compartmentalized reservoir. In  47th US Rock 
+Mechanics/Geomechanics Symposium. OnePetro, ARMA-2013-577. 
+Chiaramonte, L., White, J.A. and Trainor‐Guitton, W. 2015. Probabilistic geomechanical analysis of 
+compartmentalization at the Snøhvit CO 2 sequestration project.  Journal of Geophysical Research: Solid 
+Earth, 120 (2), 1195‒1209. 
+Choi, J.C. and Skurtveit , E . 20 21. Tools and Workflows for Fault Stability Assessment used in NCCS . NCCS T9 
+workshop, Oslo, Norway.  
+Choi, J.C, Skurtveit, E., Huynh, K.D.V. and Grande, L. 2022. Uncertainty of Stress Path in Fault Stability Assessment 
+During CO 2 Injection: Comparing Smea heia 3D Geomechanics Model with Analytical Approaches. 
+International Journal of Greenhouse Gas Control, Submitted. 
+Cloetingh, S. and Wortel, R. 1985. Regional stress field of the India Plate. Geophysical Research Letters , 12 (2), 
+77‒80. 
+Cooke-Yarborough, P. and Smith, E. 2003. The Hewett fields: Bloc ks 48/28a, 48/29, 48/30, 52/5a, UK North Sea: 
+Hewitt, Big Dotty, Little Dotty, Della, Dawn and Delilah fields. In: Glyuas, J.G. and Hichens, H.M. (Eds.). United 
+Kingdom Oil an d Gas fields, Commemorative Millennium Volume . Geological Society, London, Memoir, 20, 
+731‒740. 
+Cozzi, A., Rea, G. and Craig, J. 2012. From global geology to hydrocarbon exploration: Ediacaran -Early Cambrian 
+petroleum plays of India, Pakistan and Oman. In: Bhat, G.M., Craig, J., Thurow, J.W., Thusu, B. and Cozzi, A. 
+(Eds.). Geology and Hydrocarbon Potential of Neoproterozoic –Cambrian Basins in Asia . Geological Society, 
+London, Special Publications, 366, 131–162. 
+Crawford, A.R. and Compston, W. 1970. The age  of the Vindhyan system of peninsular India. Geological Society 
+of London Quarterly Journal, 125, 351–371. 
+Dasgupta, S.P., Kumar, V., Chandra, R. and Jairam, M.S. 1988. A framework of the Nagaur-Ganganagar evaporite 
+basin, Rajasthan. Indian Minerals, 42, 57–64. 
+Dasgupta, U. and Bulgauda, S.S. 1994. An overview of the geology and hydrocarbon occurrences in the western 
+part of Bikaner–Nagaur basin. Indian Journal of Petroleum Geology, 3 (1), 1–17. 
+De Lesquen, C., Andrews, J . and Rasheva, S. 2020. Good quality  LWD Images in horizontal wells invalidate the 
+strike-slip theory in the Northern North Sea. ISRM International Symposium-EUROCK 2020, OnePetro, 2020. 
+Dixon, T. and Romanak, K.D. 2015. Improving monitoring protocols for CO 2 geological storage with technica l 
+advances in CO2 attribution monitoring. International Journal of Greenhouse Gas Control, 41, 29‒40. 
+Dixon, T., McCoy, S.T. and Havercroft, I. 2015. Legal and regulatory developments on CCS. International Journal 
+of Greenhouse Gas Control, 40, 431‒448. 
+Dmitry, A., Al -Husseini, M.I. and Yumiko, I. 2007. Review of middle east paleozoic plate tectonics. Geo Arabia, 
+12, 5–56. 
+Duffy, O.B., Bell, R.E., Jackson, C.A.L., Gawthorpe, R.L. and Whipp, P.S. 2015. Fault growth and interactions in a 
+multiphase rift fault network: Horda Platform, Norwegian North Sea. Journal of Structural Geology , 80, 99–
+119.  
+Dutta, A.K. 1983. Geological evolution and hydrocarbon prospects of Rajasthan basins. Petroleum Asia Journal, 
+4, 93–100. 
+EC, 2009. Directive 2009/31/EC of the European Parliament and of the Council of 23 April 2009 on the geological 
+storage of carbon dioxide and amending Council Directive 85/337/EEC, European Parliament and Council 
+Directives 2000/60/EC, 2001/80/EC, 2004/35/EC, 2006/12/EC, 2008/1/EC and Regulation (EC) No 1013/2006. 
+Færseth, R.B. and Ravnas, R.  1998. Evolution of the Oseberg fault -block in context of the northern North Sea 
+structural framework. Marine and Petroleum Geology, 15, 46790. 
+Fellgett, M., Hopper, J.R., Grande, L., Kingdon, A., Williams, J., Dichiarante, A.M. and Filomena, C. 2022. Borehole 
+Stress Observations. SHARP Project Deliverable 2.2. 
+Fjær, E. 2008. Petroleum related rock mechanics. 2nd edition. Elsevier, Amsterdam. 
+Folstad, P.G., Morgan, P., Bertrand, A., Rossing, M. and Lyngnes, B. 2015. Ekofisk Permanent Seismic Monitoring 
+- Results After first 4 years . Keynote Speech at the  Third EAGE Workshop, Conference Proceedings, Volume 
+2015, 1–4. 
+
+=== PAGE 74 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+Fossen, H., Khani, H.F., Faleide, J.I., Ksienzyk, A.K. and Dunlap, W.J. 2017. Post-Caledonian extension in the West 
+Norway–northern North Sea region: the role of structural inheritance. Geological Society, London, Special 
+Publications, 439, 465–486. 
+Furnival, S., Wright, S., Dingwall, S., Bailey, P., Brown, A., Morrison, D. and De Silva, R. 2014. Subsur face 
+Characterisation of a Saline Aquifer Cited for Commercial Scale CO2 Disposal. Energy Procedia, 63, 4926‒4936. 
+Furre, A.K., Eiken, O., Alnes, H., Vevatne, J.N. and Kiær, A.F. 2017. 20 years of monitoring CO 2-injection at 
+Sleipner. Energy Procedia, 114, 3916‒3926. 
+Ganguli, S.S. and Sen, S. 2020. Investigation of present-day in-situ stresses and pore pressure in the south Cambay 
+Basin, western India: Implications for drilling, reservoir development and fault reactivation. Marine and 
+Petroleum Geology, 118, 104422. 
+Gluyas, J.G. and Bagudu, U. 2020. The Endurance CO 2 storage site, Bloc ks 42/25 and 43/21, UK North  Sea. In: 
+Goffey, G. and Gluyas, J.G. (Eds.). United Kingdom Oil and Gas Fields: 50 th Anniversary Commemorative 
+Volume. Geological Society, London, Memoir, 52, 163‒171. 
+Gölke, M. and Coblentz, D. 1996. Origins of the European regional stress field. Tectonophysics, 266, 11‒24. 
+Goertz-Allmann, B.P., Langet, N., Kühn, D., Baird, A., Oates, S., Rowe, C., Harvey, S., Oye, V. and Nakstad, H. 2022. 
+Effective microseismic monitoring of the Quest CCS site, Alberta, Canada . 16th International Conference on 
+Greenhouse Gas Control Technologies, GHGT-16, 23rd‒27th October 2022, Lyon, France. 
+Grande, L., Mondol, N.H., Skurtveit, E.  and Thompson, N. 2022 . Stress estimation from cla y content and 
+mineralogy-EoS well in the Aurora CO 2 storage site, offshore Norway.  16 th International Conference on 
+Greenhouse Gas Control Technologies GHGT-16, 23-27th October 2022, Lyon, France. 
+Griffiths, P.A., Allen, M.R., Craig, J., Fitches, W.R. and  Whittington, R.J. 1995. Distinction between fault and salt 
+control of Mesozoic sedimentation on the southern margin of the Mid-North Sea High. In: Boldy, S.A.R. (Ed.). 
+Permian and Triassic Rifting in Northwest Europe . Geological Society, London, Special P ublications, 91, 145‒
+159. 
+Harris, K., White, D., Melanson, D., Samson, C. and Daley, T.M. 2016. Feasibility of time -lapse VSP monitoring at 
+the Aquistore CO 2 storage site using a distributed acoustic sensing system. International Journal of 
+Greenhouse Gas Control, 50, 248‒260. 
+Harvey, S., Hopkins, J., Kuehl, H., O'Brien, S. and Mateeva, A. 2022. Quest CCS facility: Time -lapse seismic 
+campaigns. International Journal of Greenhouse Gas Control, 117, 103665. 
+Heidbach, O., Reinecker, J., Tingay, M., Müller, B.,  Sperner, B., Fuchs, K. And Wenzel, F. 2007. Plate boundary 
+forces are not enough: Second- and third-order stress patterns highlighted in the World Stress Map database. 
+Tectonics, 26, TC6014. 
+Heidbach, O., Tingay, M., Barth, A., Reinecker, J., Kurfeβ, D. a nd Müller, B. 2008. World Stress Map Database 
+Release 2008. 
+Heidbach, O., Tingay, M., Barth, A., Reinecker, J., Kurfe β, D. and Müller, B. 2010. Global crustal stress pattern 
+based on the World Stress Map database release 2008. Tectonophysics, 482 (1-4), 3‒15. 
+Heidbach, O., Rajabi, M., Reiter, K., Ziegler, M. and WSM Team. 2016. World Stress Map Database Release 2016. 
+GFZ Data Services. 
+Heidbach, O., Rajabi, M., Cui, X., Fuchs, K., Müller, B., Reinecker, J., Reiter, K., Tingay, M., Wenzel, F., Xie, F., 
+Ziegler, O., Zoback, M -L. and Zoback, M. 2018. The World Stress Map database release 2016: Crustal stress 
+pattern across scales. Tectonophysics, 744, 484‒498. 
+Heinemann, N., Wilkinson, M., Pickup, G.E., Haszeldine, R.S. and Cutler, N.A. 2012. CO 2 storage in the offshore 
+UK Bunter Sandstone Formation. International Journal of Greenhouse Gas Control, 6, 210‒219. 
+Hillis, R.R. and Nelson, E.J. 2005. In situ stresses in the North Sea and their applications: petroleum geomechanics 
+from exploration to development. In: Dóre, A.G. and Vining, B.A. (Eds.). Petroleum Geology: North -West 
+Europe and Global Perspectives – Proceedings of the 6 th Petroleum Geology Conference. Geological Society, 
+London, 551‒564. 
+Holden, N., Osmond, J.L., Mulrooney, M.J., Braathen, A., Skurtveit, E. and Sundal, A. 2022. Structural 
+characterization and across -fault seal assessment of the Aurora CO 2 storage site, northern North Sea. 
+Petroleum Geoscience, 28 (4), petgeo2022-2036. 
+Hudson, T.S., Baird, A.F., Kendall, J.M., Kufner, S., Brisbourne, A., Smith, A., Butcher, A.C., Chalari, A. and Clarke, 
+A. 2021. Distributed Acoustic Sensing (DAS) for natural microseismicity studies: A case study from Antarctica. 
+Journal of Geophysical Research: Solid Earth, 126 (7), e2020JB021493. 
+
+=== PAGE 75 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+Hunfeld, L.B., Niemeijer, A.R. and Spiers , C.J. 2017. Frictional properties of simulated fault gouges from the 
+seismogenic groningen gas field under in situ P–T‐chemical conditions. Journal of Geophysical Research: Solid 
+Earth, 122 (11), 8969‒8989. 
+Jalali, R., Forsberg, C.F., Ghoreishian, S.A., Grande, L., Singh, R.M.  and Thompson, N. 2022 . Evaluation of 
+consolidation and stress history in the Quaternary sediments for purpose of CCS developments in the Horda 
+Platform area, the Northern North Sea. 16 th International Conference on Greenhouse Gas Control 
+Technologies, GHGT-16, 23-27th October 2022, Lyon, France. 
+Jenkins, C., Chadwick, A. and Hovorka, S.D. 2015. The state of the art in monitoring and verification —ten years 
+on. International Journal of Greenhouse Gas Control, 40, 312‒349. 
+Liang, W., Yang, C., Zhao, Y., Dusseault, M.B. and Liu, J. 2007. Experimental investigation of mechanical properties 
+of bedded salt rock. International Journal of Rock Mechanics & Mining Sciences, 44, 400‒411. 
+Ligtenberg, H., Okkerman, J. and De Keij zer, M. 2011. Fractures in the Dutch Rotliegend —An Overview. In: 
+Grötsch, J. and Gaupp, R. (Eds.). The Permian Rotliegend of the Netherlands. SEPM Special Publication, 98. 
+Ketter, F.J. 1991. The Esmond, Forbes and Gordon Fields, Block 43/8a, 43/13a, 43/15a, 43/20a, UK North Sea. In: 
+Abbotts, I.L. (Ed.). United Kingdom Oil and Gas Fields, 25 Years Commemorative Volume . Geological Society, 
+London, Memoir, 14, 425‒432. 
+Kingdon, A., Fellgett, M.W. and Williams, J.D.O. 2016. Use of borehole imaging to improve understanding of the 
+in-situ stress orientation of Central and Northern England and its implications for unconventional 
+hydrocarbon resources. Marine and Petroleum Geology, 73, 1‒20. 
+Kingdon, A., Williams, J., Fellgett, M., Rettelbach, N. and Heidbach, O. 2022. Stress Map of Great Britain and 
+Ireland 2022. GFZ Data Services. 
+Kole, P., Cannon, M., Tomic, J. and Bierman, S. 2020. Analysis of and learnings from the first four years on in-situ 
+strain data in Zeerijp-3A. Shell and NAM BV report, February 2020. 
+Kombrink, H., Doornenbal, J.C., Duin, E.J.T., den Dulk, M., ten Veen, J.H. and Witmans, N. 2012. New insights into 
+the geological structure of the Netherlands; r esults of a detailed mapping project. Netherlands Journal of 
+Geosciences, 91 (4), 419‒446. 
+Mandal, A., Saha, D. and Kumar, A. 2022. Structural analysis and seismic stratigraphy for delineation of 
+Neoproterozoic-Cambrian petroleum system in central and eastern part of Bikaner –Nagaur basin, India. 
+Journal of Petroleum Exploration and Production Technology, 12, 1709‒1725. 
+Müller, B., Zoback, M.L., Fuchs, K., Mastin, L., Gregersen, S., Pavoni, N., Stephansson, O.  and Ljunggren, C. 1992. 
+Regional patterns of tectonic stress in Europe. Journal of Geophysical Research, 97 (B8), 11783‒11803. 
+Mondol, N.H., Bjørnarå, T.I., Grande, L.  and Thompson, N. 2022a. Rock physics analysis of Eos caprock shale for 
+the Northern Lights CCS project, offshore Norway. 83rd EAGE Annual Conference & Exhibition, Madrid, Spain, 
+6‒9 June. 
+Mondol, N.H., Bjørnarå, T.I., Grande, L. and Thompson, N. 2022b. Caprock characterization of the Northern Lights 
+CO2 storage project, offshore Norway. EAGE GeoTech, 6th EAGE workshop on CO2 geological storage, London, 
+United Kingdom, 4‒6 April.  
+Mulrooney, M.J., Osmond, J.L. , Skurtveit, E ., Faleide, J.I.  and Braathen, A. 2020. Structural analysis of the 
+Smeaheia fault block, a potential CO2 storage site, northern Horda Platform, North Sea. Marine and Petroleum 
+Geology, 121, 104598. 
+Muntendam-Bos, A.G. and Grobbe , N . 2022. Data-driven spati otemporal assessment of the event -size 
+distribution of the Groningen extraction-induced seismicity catalogue. Scientific Reports, 12 (1), 1‒11. 
+Nielsen, L.H. and Japsen, P. 1991. Deep wells in Denmark 1935 -1990. Lithostratigraphic subdivision. Danmarks 
+Geologiske Undersøgelse Serie A, DGU, 31, 177pp. 
+Nguyen, B.N., Hou, Z., Bacon, D.H., Murray, C.J. and White, M.D. 2016. Three -dimensional mode ling of the 
+reactive transport of CO 2 and its impact on geomechanical properties of reservoir rocks and seals. 
+International Journal of Greenhouse Gas Control, 46, 100‒115. 
+Noy, D.J., Holloway, S., Chadwick, R.A., Williams, J.D.O., Hannis, S.A. and Lahann,  R.W. 2012. Modelling large -
+scale carbon dioxide injection into the Bunter Sandstone in the UK Southern North Sea. International Journal 
+of Greenhouse Gas Control, 9, 220‒233. 
+Orlic, B. 2016. Geomechanical effects of CO 2 storage in depleted gas reservoirs in the Netherlands: Inferences 
+from feasibility studies and comparison with aquifer storage. Journal of Rock Mechanics and Geotechnical 
+Engineering, 8 (6), 846‒859. 
+
+=== PAGE 76 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+Osmond, J.L., Mulrooney, M.J., Holden, N., Skurtveit, E., Faleide, J.I. and Braathen, A. 20 22. Structural traps and 
+seals for expanding CO 2 storage in the northern Horda platform, North Sea. AAPG Bulletin , 106 (9), 1711‒
+1752. 
+Oye, V., Dando, B. , Wüstefeld, A., Jerkins, A. and Koehler, A . 2021. Cost-effective Baseline Studies for Induced 
+Seismicity Monitoring Related to CO 2 Storage Site Preparation. Proceedings of the 15 th Greenhouse Gas 
+Control Technologies Conference, GHGT-15, 15‒18 March 2021. 
+Pareek, H.S. 1981. Basin configuration and sedimentary stratigraphy of western Rajasthan. Journal of t he 
+Geological Society of India, 22, 517–527. 
+Pareek, H.S. 1984. Pre -Quaternary geology and mineral resources 1492 Biomarker Recognition of Source Rock, 
+India of northwestern Rajasthan. Geological Survey of India, Memoir, 115, 99 pp. 
+Pedersen, Å.S., Westerd ahl, H., Thompson, M., Sagary, C.  and Brenne, J.K. 2022. A North Sea case study: Does 
+DAS have potential for Permanent Reservoir Monitoring? EAGE 2022, 83 rd conference, Madrid, Spain. Paper 
+number 170. 
+Peters, K.E., Clark, M.E., Gupta, U.D., McCaffrey, M.A. and Lee, C.Y. 1995. Recognition of an Infracambrian source 
+rock based on biomarkers in the Baghewala-1 Oil, India. AAPG Bulletin, 79, 1481–1494. 
+Phillips, T.B., Fazlikhani, H., Gawthorpe, R.L., Fossen, H., Jackson, C.A.L., Bell. R.E., Faleide, J.I.  and Rotevaten, A.  
+2019. The influence of structural inheritance and multiphase extension on rift development, the northern 
+North Sea. Tectonics, 38, 4099–4126. 
+Pollastro, R.M. 1999. Ghaba Salt Basin province and Fahud Salt Basin province —Oman: geological overview and 
+total petroleum systems. United States Geological Survey Bulletin, 2167, 1–41. 
+Ridder, S.A.L., Biondi, B.L. and Nichols,  D. 2015. Elliptical -anisotropic eikonal phase velocity tomography, 
+Geophysical Research Letters. 42, 758764. 
+Ringrose, P.S., Mathieson, A.S., Wright, I.W., Selama, F., Hansen, O., Bissell, R., Saoula, N. and Midgley, J. 2013. 
+The In Salah CO2 storage project: lessons learned and knowledge transfer. Energy Procedia, 37, 6226‒6236. 
+Ringrose, P., Furre, A.K., Bakke, R., Dehghan Niri, R., Thompson, N., Paasch, B., Mispel, J., Sollid, A., Bussat, S., 
+Vinge, T. and Vold, L. 2018 . Developing optimised and cost -effective solutions for monitoring CO 2 injection 
+from subsea wells. In 1 4th greenhouse gas control technologies conference , GHGT-14, Melbourne, October 
+2018, 21‒26. 
+Ringrose, P. 2020. CO2 Storage Project Design. In: Ringrose, P. (Ed.). How to Store CO2 Underground: Insights from 
+early-mover CCS Projects. Springer Briefs in Earth Sciences, Springer Cham, 85‒126. 
+Ritchie, J.S. and Pratsides, P. 1993. The Caister fields, Block 44/23a, UK North Sea. In: Parker, J.R. (Ed.). Petroleum 
+Geology of Northwest Europe: Proceedings of the Fourth Conference. Geological Society, London. 759‒769. 
+Roth, F. and Fleckenstein, P., 2001. Stress orientations found in north -east Germany differ from the Western 
+European trend. Terra Nova, 13, 289‒296. 
+Rønnekleiv, E., Brenne, J.K., Waagaard, O.H. and Moussakhani, B. 2019. Distributed Acoustic Sensing Fo r 
+Submarine Cable Protection. SubOptic 2019 Conference, New Orleans, Louisiana, USA. Paper OP4-1. 
+Rørstadbotnen, R.A., Dong, H., Landrø, M., Duffaut, K., Growe, K., Kakhkhorov, U., Wienecke, S. and Jacobsen, J. 
+2022. Quick-clay monitoring using DAS. Geophysics, paper accepted.  
+Samuelson, J. and Spiers, C.J. 2012. Fault friction and slip stability not affected by CO 2 storage: Evidence from 
+short-term laboratory experiments on North Sea reservoir sandstones and caprocks. International Journal of 
+Greenhouse Gas Control, 11S, S78‒S90. 
+Seedhouse, J.K. and Racey, A. 1997. Sealing capacity of the Mercia Mudstone Group in the East Irish Sea Basin: 
+Implications for petroleum exploration. Journal of Petroleum Geology, 20, 261‒286. 
+Smith, D.J., Noy, D.J., Chadwick, R. A. and Holloway, S. 2011. The impact of boundary conditions on CO 2 storage 
+capacity estimation in aquifers. Energy Procedia, 4, 4828‒4834. 
+Skurtveit, E., Choi,  J.C., Mulrooney, M., Osmond, J.L. and Braathen, A. 2018. 3D fault integrity screening for 
+Smeaheia CO2 injection site. 14th Greenhouse Gas Control Technologies  Conference, GHGT-14. Melbourne, 
+21‒26 October 2018. 
+Spain, J.D. and Conrad, C.P. 1997. Quantitative analysis of top -seal capacity: Offshore Netherlands, Southern 
+North Sea. Geologie en Mijnbouw, 76, 217‒226. 
+SPE, 2017. CO2 Storage Resources Management System, SRMS. 50pp. 
+Stewart, S.A. and Coward, M.P. 1995. Synthesis of salt tectonics in the southern North Sea, UK. Marine and 
+Petroleum Geology, 12 (5), 457‒475. 
+Sørensen, M.B., Voss, P.H., Havsk ov, J., Gregersen, S. and Atakan, K. 2011. The seismotectonics of western 
+Skagerrak. Journal of Seismology, 15, 599‒611.  
+
+=== PAGE 77 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+Streit, J.E. and Hillis, R.R. 2004. Estimating fault stability and sustainable fluid pressures for underground storage 
+of CO2 in porous rock. Energy, 29, 1445‒1456. 
+Teufel, L.W. 1991. Influence of lithology and geologic structure on in situ stress: examples of stress heterogeneity 
+in reservoirs. In: Lake, L.W., Carroll, H.N. and Wesson, T.C. (Eds.). Reservoir Characterization II . Academi c 
+Press, San Diego, 565‒579. 
+Thompson, N., Andrews, J.S. and Bjørnarå, T.I. 2021. Assessing potential thermo-mechanical impacts on caprock 
+due to CO2 injection – A case study from Northern Lights CCS.  Energies, 14 (16), 5054.   
+Thompson, N., Andrews, J.S., Meneguolo, R. and Wu, L. 2022a. Characterization of the in-situ stress on the Horda 
+platform – A study from the Northern Lights Eos well.  International Journal of Greenhouse Gas Control, 114, 
+103580. 
+Thompson, N. Andrews, J.S., Teixeira Rodrigues, N.E. and Reitan, H. 2022b. Data mining of in-situ stress database 
+towards development of regional and global stress trends and pore pressure relationships. SPE Norway 
+Subsurface Conference, 27th April, Bergen. SPE Paper 209525. 
+Tingay, M., Bentham, P., De Feyte r, A. and Kellner, A. 2011. Present -day stress-field rotations associated with 
+evaporites in the offshore Nile Delta. GSA Bulletin, 123 (5/6), 1171‒1180. 
+Tjaland, N. and Ottemoller, L. 2018. Evaluation of Seismicity in the Northern North Sea. Technical rep ort, NNSN, 
+University of Bergen, 10‒14. 
+Underhill, J.R. 2009. Role of intrusion-induced salt mobility in controlling the formation of the enigmatic ‘Silverpit 
+Crater’, UK Southern North Sea. Petroleum Geoscience, 15, 197‒216. 
+Vasco, D.W., Rucci, A., Ferretti, A., Novali, F., Bissell, R.C., Ringrose, P.S., Mathieson, A.S. and Wright, I.W. 2010. 
+Satellite‐based measurements of surface deformation reveal fluid flow associated with the geological storage 
+of carbon dioxide. Geophysical Research Letters, 37, L03303. 
+Walter, F., Gräff, D., Lindner, F., Paitz, P., Köpfli, M., Chmiel, M. and Fichtner, A. 2020. Distributed acoustic sensing 
+of microseismic sources and wave propagation in glaciated terrain. Nature Communications, 11, 2436. 
+Weemstra, C., Kettlety, T., Kü hn, D., Martuganova, E., Schweitzer, J., Baptie, B.  and Dahl-Jensen, T. 2022. 
+Integrated earthquake locations and magnitudes plus focal mechanisms for the North Sea & construction of 
+a velocity model. SHARP Project Deliverable 2.1. 
+Whipp, P.S., Jackson, C.L., Gawthorpe, R.L., Dreyer, T. and Quinn, D. 2014. Normal fault array evolution above a 
+reactivated rift fabric; a subsurface example from the northern Horda Platform, Norwegian North Sea. Basin 
+Research, 26, 523–549.  
+Wienecke, S., Jacobsen, J., Brenne, J.-K., Landrø, M., Dong, H., Rørstadbotnen, R. A., Kakhkhorov, U. and Growe, 
+K. 2022. Distributed acoustic sensing for quick clay monitoring. EGU General Assembly 2022, Vienna, Austria, 
+23–27 May 2022, EGU22-6538. 
+Williams, J.D.O., Bentham, M., Jin, M., Pickup, G., Mackay, E., Gammer, D. and Green, A. 2013a. The effect of 
+geological structure and heterogeneity on CO2 storage in simple 4-way dip structures; a modelling study from 
+the UK Southern North Sea. Energy Procedia, 37, 3980‒3988. 
+Williams, J.D.O., Jin, M., Pickup, G.E., Hannis, S.D. and Mackay, E.J. 2013b. Modelling carbon dioxide storage 
+within closed structures in the UK Bunter Sandstone Formation. International Journal of Greenhouse Gas 
+Control, 18, 38‒50. 
+Williams, J.D.O., Holloway, S. and Williams, G.A. 2014. Pressure constraints on the CO 2 storage capacity of the 
+saline water -bearing parts of the Bunter Sandstone Formation in the UK Southern North Sea. Petroleum 
+Geoscience, 20, 155‒167. 
+Williams, J.D.O., Fellgett, M.W.,  Kingdon, A. and Williamson, J.P. 2015. In-situ stress orientations in the UK 
+Southern North Sea: Regional trends, deviations and detachment of the post -Zechstein stress field. Marine 
+and Petroleum Geology, 67, 769‒784. 
+White Rose, 2016. K43: Field Development Report, Technical: Storage. Capture Power and National Grid. 234pp. 
+Wu, L., Thorsen, R., Ottesen, S., Meneguolo, R., Hartvedt, K., Ringrose, P. and Nazarian, B.  2021. Petroleum 
+Geoscience, 27 (3), 2020-102.  
+Wu, L., Skurtveit, E., Thompson, N., Michie, E., Fossen, H., Braathen, A., Fisher, Q., Lidstone, A. and Bostrøm, B. 
+2022. Containment Risk Assessment and Management of C O2 Storage on the Horda Platform . 16th 
+International Conference on Greenhouse Gas Control Technologies, GHGT -16, 23-27th October 2022, Lyon, 
+France. 
+Yassir, N.A. and Zerwer, A. 1997. Stress regimes in the Gulf Coast, offshore Louisiana: data from well -bore 
+breakout analysis. AAPG Bulletin, 81 (2), 293‒307. 
+
+=== PAGE 78 ===
+ SHARP Storage – Project no 327342   
+   
+ 
+Zarifi, Z., Köhler, A., Ringrose, P., Ottemöller, L., Furre, A-K, Hansteen, F., Jerkins, A., Oye, V., Dehghan Niri, R. and 
+Bakke, R. 2022a. Background seismicity monitoring to prepare for large -scale CO2 storage offshore Norway. 
+Seismological Research Letters, November 22, 2022. 
+Zarifi, Z., Ringrose, P., Köhler, A., Oye, V. , Ottemöller, L., Bakke, R., Rebel, E ., Dehghan Niri, R., Sørensen, M ., 
+Jerkins, A., Karlsen, M. and Furre, A-K. 2022b. Background seismicity monitoring prior to CO 2 injection in the 
+Horda Platform: The HNET project. 16 th International Conference on Greenhouse Gas Control Technologies, 
+GHGT-16, 23rd‒27th October 2022, Lyon, France. 
+ 
+

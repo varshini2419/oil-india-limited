@@ -16,6 +16,7 @@ import { calculateMobilityModel } from '../mobility/mobilityModel';
 import { calculateProductionModel } from '../production/productionModel';
 import { evaluateRiskModel } from '../riskEngine/riskModel';
 import { createScenario } from '../scenario/scenarioEngine';
+import { BASELINE_INPUT_VALUES } from '../scenario/defaults';
 import type { DigitalTwinState } from '../realtimeMonitoring/types';
 
 export function executeFieldIntegration(
@@ -71,8 +72,10 @@ export function executeFieldIntegration(
     const steamTpd = record.steamRateTpd ?? 80.0;
 
     const scenarioObj = createScenario('Field Integration Execution', 'Live Telemetry State', {
+      ...BASELINE_INPUT_VALUES,
       ambientTemperatureC: 40,
       reservoirTemperatureC: tempC,
+      reservoirPressureBar: pressBar,
       steamInjectionRateTpd: steamTpd,
       steamQualityPercent: (record.steamQuality ?? 0.75) * 100,
       soakDurationDays: 3,

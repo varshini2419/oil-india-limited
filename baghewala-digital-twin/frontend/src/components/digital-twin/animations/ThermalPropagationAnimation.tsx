@@ -13,9 +13,9 @@ export const ThermalPropagationAnimation: React.FC = () => {
 
   try {
     const store = useScenarioStore();
-    if (store && store.thermalResult) {
-      influenceC = store.thermalResult.thermalInfluenceC;
-      predictedTempC = store.thermalResult.predictedReservoirTemperatureC;
+    if (store && store.committedSimulationResult && store.committedSimulationResult.thermal) {
+      influenceC = store.committedSimulationResult.thermal.thermalInfluenceC;
+      predictedTempC = store.committedSimulationResult.thermal.predictedReservoirTemperatureC;
     }
   } catch {
     // Fallback if rendered outside ScenarioProvider

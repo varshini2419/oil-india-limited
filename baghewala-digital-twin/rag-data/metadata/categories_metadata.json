@@ -1,0 +1,54 @@
+{
+  "categories": [
+    {
+      "id": "HISTORICAL_INCIDENT",
+      "name": "Historical Incidents",
+      "description": "Documented field failures, blowouts, leaks, stuck pipe, or operational interruptions."
+    },
+    {
+      "id": "RESERVOIR_GEOLOGY",
+      "name": "Reservoir & Structural Geology",
+      "description": "Lithology, porosity, permeability, formation depth, and structural faulting."
+    },
+    {
+      "id": "THERMAL_CSS",
+      "name": "Thermal Cyclic Steam Stimulation",
+      "description": "Steam injection rates, temperatures, soak periods, VIT tubing, and thermal EOR performance."
+    },
+    {
+      "id": "VISCOSITY_RHEOLOGY",
+      "name": "Crude Viscosity & Rheology",
+      "description": "Temperature-dependent viscosity, Arrhenius slope, API gravity, pour point, and shear response."
+    },
+    {
+      "id": "ARTIFICIAL_LIFT",
+      "name": "Artificial Lift & SRP Mechanicals",
+      "description": "Sucker rod pumping, SPM, stroke length, fluid drag, load index, and fatigue failure."
+    },
+    {
+      "id": "WELL_INTEGRITY_CASING",
+      "name": "Well Integrity & Casing Design",
+      "description": "Thermal casing elongation, premium thread connections (TWCCEP ISO/PAS 12835), and cement seal."
+    },
+    {
+      "id": "SEISMIC_GEOMECHANICAL",
+      "name": "Seismic & Geomechanics",
+      "description": "2D/3D seismic profiles, faulting, in situ stress map (SHmax), and IS 1893 seismic hazard."
+    },
+    {
+      "id": "PRODUCTION",
+      "name": "Field Production & Bowser Logistics",
+      "description": "BOPD production rates, heated tanker bowser transport, ONGC CTF CTF pipeline delivery."
+    },
+    {
+      "id": "OPERATIONAL_CONSTRAINT",
+      "name": "Operational Constraints & Surface Climate",
+      "description": "Thar Desert surface conditions, temperature extremes (-1°C to +50°C), and sandstorm hazards."
+    },
+    {
+      "id": "KNOWLEDGE_GAP",
+      "name": "Documented Knowledge Gaps",
+      "description": "Empirical data gaps identified in official consortium and field technical reports."
+    }
+  ]
+}

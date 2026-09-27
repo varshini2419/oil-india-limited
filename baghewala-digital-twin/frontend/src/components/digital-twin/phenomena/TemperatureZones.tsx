@@ -6,7 +6,8 @@ interface TemperatureZonesProps {
 }
 
 export const TemperatureZones: React.FC<TemperatureZonesProps> = () => {
-  const { thermalResult } = useScenarioStore();
+  const { committedSimulationResult } = useScenarioStore();
+  const thermalResult = committedSimulationResult.thermal;
 
   const {
     baselineReservoirTemperatureC,

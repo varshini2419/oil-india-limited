@@ -7,6 +7,7 @@ import { summarizeReadiness } from './readinessSummaryEngine';
 import { summarizePilotExecution } from './pilotSummaryEngine';
 import { collectEngineeringLimitations } from './engineeringLimitationsEngine';
 import { generateDemoScenarios } from './demoScenarioEngine';
+import { BASELINE_INPUT_VALUES } from '../scenario/defaults';
 
 export function executeFinalValidation(input?: FinalValidationInput): FinalValidationState {
   const timestamp = new Date().toISOString();
@@ -23,11 +24,12 @@ export function executeFinalValidation(input?: FinalValidationInput): FinalValid
   const limitations = collectEngineeringLimitations();
   const activeInputs = input?.pilotExecutionState?.twinState
     ? {
-        reservoirTemperatureC: input.pilotExecutionState.twinState.reservoir.reservoirTemperatureC,
-        steamInjectionRateTpd: input.pilotExecutionState.twinState.css.steamInjectionRateTpd,
-        vfdFrequencyHz: input.pilotExecutionState.twinState.srp.vfdFrequencyHz,
-        spm: input.pilotExecutionState.twinState.srp.spm,
-        strokeLengthMeters: input.pilotExecutionState.twinState.srp.strokeLengthMeters,
+        ...BASELINE_INPUT_VALUES,
+        reservoirTemperatureC: input.pilotExecutionState.twinState.reservoir?.reservoirTemperatureC ?? BASELINE_INPUT_VALUES.reservoirTemperatureC,
+        steamInjectionRateTpd: input.pilotExecutionState.twinState.css?.steamInjectionRateTpd ?? BASELINE_INPUT_VALUES.steamInjectionRateTpd,
+        vfdFrequencyHz: input.pilotExecutionState.twinState.srp?.vfdFrequencyHz ?? BASELINE_INPUT_VALUES.vfdFrequencyHz,
+        spm: input.pilotExecutionState.twinState.srp?.spm ?? BASELINE_INPUT_VALUES.spm,
+        strokeLengthMeters: input.pilotExecutionState.twinState.srp?.strokeLengthMeters ?? BASELINE_INPUT_VALUES.strokeLengthMeters,
         ambientTemperatureC: 40,
         steamQualityPercent: 80,
         soakDurationDays: 5,

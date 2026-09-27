@@ -7,7 +7,8 @@ interface ThermalZoneProps {
 }
 
 export const ThermalZone: React.FC<ThermalZoneProps> = () => {
-  const { thermalResult } = useScenarioStore();
+  const { committedSimulationResult } = useScenarioStore();
+  const thermalResult = committedSimulationResult?.thermal;
   const { thermalZoneCenterX, thermalZoneCenterY, thermalZoneRadiusX, thermalZoneRadiusY } =
     PHENOMENA_LAYOUT_CONFIG;
 

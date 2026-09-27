@@ -1,4 +1,14 @@
-export type SourceType = 'documented' | 'derived' | 'assumption' | 'scenario';
+export type SourceType =
+  | 'documented'
+  | 'derived'
+  | 'assumption'
+  | 'scenario'
+  | 'publication'
+  | 'report'
+  | 'reference'
+  | 'FIELD_LOG'
+  | 'PRODUCTION_TEST'
+  | 'CORE_ANALYSIS';
 export type ConfidenceLevel = 'high' | 'medium' | 'low';
 
 export interface DataSource {

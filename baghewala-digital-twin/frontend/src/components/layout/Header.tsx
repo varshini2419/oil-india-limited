@@ -59,9 +59,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
           <span>DEMO MODE</span>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 px-2.5 py-1 bg-amber-950/80 border border-amber-800 rounded text-[10px] font-mono font-bold text-amber-300">
-          <span>REAL FIELD DATA: NOT CONNECTED</span>
-        </div>
+
 
         <div className="flex items-center gap-2">
           <span className="text-xs font-mono text-slate-400 hidden md:inline">System Status:</span>

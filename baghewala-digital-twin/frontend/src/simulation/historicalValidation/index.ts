@@ -5,3 +5,6 @@ export * from './historicalDataset';
 export * from './backtestEngine';
 export * from './errorMetrics';
 export * from './comparisonEngine';
+export * from './historicalMatcher';
+export * from './historicalValidationEngine';
+export * from './confidenceEngine';

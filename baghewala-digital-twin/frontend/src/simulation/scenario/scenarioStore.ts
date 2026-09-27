@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import type { Scenario, ScenarioInputValues } from './types';
+import React, { createContext, useContext, useState, useEffect, useMemo, useRef, useCallback } from 'react';
+import type { Scenario, ScenarioInputValues, SimulationResult, PressureModelResult, SimulationTrace } from './types';
 import { loadBaseline, createScenario, cloneScenario, updateScenario } from './scenarioEngine';
 import { BASELINE_INPUT_VALUES } from './defaults';
 import type { ThermalResult } from '../thermal';
@@ -33,6 +33,9 @@ export interface ScenarioContextType {
   activeScenario: Scenario;
   savedScenarios: Scenario[];
   presets: Scenario[];
+  committedSimulationResult: SimulationResult;
+  isStale: boolean;
+  commitSimulationRun: () => void;
   thermalResult: ThermalResult;
   baselineThermalResult: ThermalResult;
   viscosityResult: ViscosityResult;
@@ -55,6 +58,7 @@ export interface ScenarioContextType {
   duplicateCurrentScenario: () => void;
   deleteScenario: (scenarioId: string) => void;
   loadPreset: (presetId: string) => void;
+  getSimulationTrace: () => string;
 }
 
 const ScenarioContext = createContext<ScenarioContextType | null>(null);
@@ -146,6 +150,8 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const [savedScenarios, setSavedScenarios] = useState<Scenario[]>([]);
   const [activeScenario, setActiveScenario] = useState<Scenario>(baseline);
+  const [committedScenario, setCommittedScenario] = useState<Scenario>(baseline);
+  const [committedRunTimestamp, setCommittedRunTimestamp] = useState<string>(new Date().toISOString());
 
   // Load from localStorage safely on mount
   useEffect(() => {
@@ -168,6 +174,7 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         const parsedActive = JSON.parse(storedActiveScenarioRaw);
         if (validateScenarioObject(parsedActive)) {
           setActiveScenario(parsedActive);
+          setCommittedScenario(parsedActive);
           return;
         }
       }
@@ -178,8 +185,10 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
         if (foundPreset) {
           setActiveScenario(foundPreset);
+          setCommittedScenario(foundPreset);
         } else if (foundSaved) {
           setActiveScenario(foundSaved);
+          setCommittedScenario(foundSaved);
         }
       }
     } catch (e) {
@@ -188,6 +197,7 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       localStorage.removeItem(ACTIVE_SCENARIO_KEY);
       localStorage.removeItem(ACTIVE_SCENARIO_ID_KEY);
       setActiveScenario(baseline);
+      setCommittedScenario(baseline);
     }
   }, [baseline, presets]);
 
@@ -244,12 +254,12 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const foundPreset = presets.find((p: Scenario) => p.id === scenarioId);
       const foundSaved = savedScenarios.find((s: Scenario) => s.id === scenarioId);
 
-      if (foundPreset) {
-        setActiveScenario(foundPreset);
-        saveToLocalStorage(savedScenarios, foundPreset.id);
-      } else if (foundSaved) {
-        setActiveScenario(foundSaved);
-        saveToLocalStorage(savedScenarios, foundSaved.id);
+      const found = foundPreset || foundSaved;
+      if (found) {
+        setActiveScenario(found);
+        setCommittedScenario(found);
+        setCommittedRunTimestamp(new Date().toISOString());
+        saveToLocalStorage(savedScenarios, found.id);
       }
     },
     [presets, savedScenarios]
@@ -257,6 +267,8 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
 
   const resetCurrentToBaseline = useCallback(() => {
     setActiveScenario(baseline);
+    setCommittedScenario(baseline);
+    setCommittedRunTimestamp(new Date().toISOString());
     saveToLocalStorage(savedScenarios, baseline.id);
   }, [baseline, savedScenarios]);
 
@@ -271,6 +283,8 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         const updated = prev.filter((s: Scenario) => s.id !== scenarioId);
         const nextActive = activeScenario.id === scenarioId ? baseline : activeScenario;
         setActiveScenario(nextActive);
+        setCommittedScenario(nextActive);
+        setCommittedRunTimestamp(new Date().toISOString());
         saveToLocalStorage(updated, nextActive.id);
         return updated;
       });
@@ -283,11 +297,18 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       const found = presets.find((p: Scenario) => p.id === presetId);
       if (found) {
         setActiveScenario(found);
+        setCommittedScenario(found);
+        setCommittedRunTimestamp(new Date().toISOString());
         saveToLocalStorage(savedScenarios, found.id);
       }
     },
     [presets, savedScenarios]
   );
+
+  const commitSimulationRun = useCallback(() => {
+    setCommittedScenario(activeScenario);
+    setCommittedRunTimestamp(new Date().toISOString());
+  }, [activeScenario]);
 
   const baselineThermalResult = useMemo(
     () => calculateThermalModel(baseline),
@@ -317,9 +338,12 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     () =>
       calculateMobilityModel(
         baselineViscosityResult.estimatedViscosityCp,
-        baselineThermalResult.predictedReservoirTemperatureC
+        baselineThermalResult.predictedReservoirTemperatureC,
+        baseline.inputs.permeabilityDarcy,
+        1.0,
+        baselineViscosityResult.estimatedViscosityCp
       ),
-    [baselineViscosityResult, baselineThermalResult]
+    [baselineViscosityResult, baselineThermalResult, baseline]
   );
 
   const mobilityResult = useMemo(
@@ -327,11 +351,11 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       calculateMobilityModel(
         viscosityResult.estimatedViscosityCp,
         thermalResult.predictedReservoirTemperatureC,
-        2.5,
+        activeScenario.inputs.permeabilityDarcy,
         1.0,
         baselineViscosityResult.estimatedViscosityCp
       ),
-    [viscosityResult, thermalResult, baselineViscosityResult]
+    [viscosityResult, thermalResult, baselineViscosityResult, activeScenario.inputs.permeabilityDarcy]
   );
 
   const baselineProductionResult = useMemo(
@@ -339,9 +363,16 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       calculateProductionModel(
         baselineMobilityResult.mobilityDcP,
         baselineThermalResult.predictedReservoirTemperatureC,
-        baselineViscosityResult.estimatedViscosityCp
+        baselineViscosityResult.estimatedViscosityCp,
+        Math.max(5.0, baseline.inputs.reservoirPressureBar - 18.0),
+        baseline.inputs.vfdFrequencyHz,
+        baseline.inputs.spm,
+        baseline.inputs.strokeLengthMeters,
+        undefined,
+        baseline.inputs.waterCutPercent,
+        baseline.inputs.reservoirPressureBar
       ),
-    [baselineMobilityResult, baselineThermalResult, baselineViscosityResult]
+    [baselineMobilityResult, baselineThermalResult, baselineViscosityResult, baseline]
   );
 
   const baselineSRPOptimizationResult = useMemo(
@@ -351,11 +382,16 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         spm: baseline.inputs.spm,
         strokeLengthM: baseline.inputs.strokeLengthMeters,
         oilMobilityDcp: baselineMobilityResult.mobilityDcP,
-        effectiveDrawdownBar: 30.0,
+        effectiveDrawdownBar: Math.max(5.0, baseline.inputs.reservoirPressureBar - 18.0),
         temperatureC: baselineThermalResult.predictedReservoirTemperatureC,
         viscosityCp: baselineViscosityResult.estimatedViscosityCp,
       }),
     [baseline, baselineMobilityResult, baselineThermalResult, baselineViscosityResult]
+  );
+
+  const drawdownBar = useMemo(
+    () => Math.max(5.0, activeScenario.inputs.reservoirPressureBar - 18.0),
+    [activeScenario.inputs.reservoirPressureBar]
   );
 
   const productionResult = useMemo(
@@ -364,13 +400,15 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         mobilityResult.mobilityDcP,
         thermalResult.predictedReservoirTemperatureC,
         viscosityResult.estimatedViscosityCp,
-        30.0,
+        drawdownBar,
         activeScenario.inputs.vfdFrequencyHz,
         activeScenario.inputs.spm,
         activeScenario.inputs.strokeLengthMeters,
-        baselineProductionResult.estimatedProductionBopd
+        baselineProductionResult.estimatedProductionBopd,
+        activeScenario.inputs.waterCutPercent,
+        activeScenario.inputs.reservoirPressureBar
       ),
-    [mobilityResult, thermalResult, viscosityResult, activeScenario, baselineProductionResult]
+    [mobilityResult, thermalResult, viscosityResult, drawdownBar, activeScenario, baselineProductionResult]
   );
 
   const srpOptimizationResult = useMemo(
@@ -380,24 +418,24 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         spm: activeScenario.inputs.spm,
         strokeLengthM: activeScenario.inputs.strokeLengthMeters,
         oilMobilityDcp: mobilityResult.mobilityDcP,
-        effectiveDrawdownBar: 30.0,
+        effectiveDrawdownBar: drawdownBar,
         temperatureC: thermalResult.predictedReservoirTemperatureC,
         viscosityCp: viscosityResult.estimatedViscosityCp,
       }),
-    [activeScenario, mobilityResult, thermalResult, viscosityResult]
+    [activeScenario, mobilityResult, thermalResult, viscosityResult, drawdownBar]
   );
 
   const baselineCSSOptimizationResult = useMemo(
     () =>
       optimizeCSS({
         steamInjectionRateTpd: baseline.inputs.steamInjectionRateTpd,
-        steamInjectionTemperatureC: 300.0,
+        steamInjectionTemperatureC: baseline.inputs.steamInjectionTemperatureC,
         steamQualityFraction: baseline.inputs.steamQualityPercent / 100.0,
         injectionDurationDays: 5.0,
         soakDurationDays: baseline.inputs.soakDurationDays,
         productionDurationDays: 90.0,
         reservoirTemperatureC: baselineThermalResult.predictedReservoirTemperatureC,
-        reservoirPressureBar: 90.0,
+        reservoirPressureBar: baseline.inputs.reservoirPressureBar,
         baselineViscosityCp: baselineViscosityResult.estimatedViscosityCp,
         baselineMobilityDPerCp: baselineMobilityResult.mobilityDcP,
         baselineProductionBopd: baselineProductionResult.estimatedProductionBopd,
@@ -412,13 +450,13 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     () =>
       optimizeCSS({
         steamInjectionRateTpd: activeScenario.inputs.steamInjectionRateTpd,
-        steamInjectionTemperatureC: 300.0,
+        steamInjectionTemperatureC: activeScenario.inputs.steamInjectionTemperatureC,
         steamQualityFraction: activeScenario.inputs.steamQualityPercent / 100.0,
         injectionDurationDays: 5.0,
         soakDurationDays: activeScenario.inputs.soakDurationDays,
         productionDurationDays: 90.0,
         reservoirTemperatureC: thermalResult.predictedReservoirTemperatureC,
-        reservoirPressureBar: 90.0,
+        reservoirPressureBar: activeScenario.inputs.reservoirPressureBar,
         baselineViscosityCp: baselineViscosityResult.estimatedViscosityCp,
         baselineMobilityDPerCp: baselineMobilityResult.mobilityDcP,
         baselineProductionBopd: baselineProductionResult.estimatedProductionBopd,
@@ -463,36 +501,233 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     [thermalResult, viscosityResult, mobilityResult, productionResult, activeScenario, srpOptimizationResult, cssOptimizationResult]
   );
 
+  const isStale = useMemo(
+    () => JSON.stringify(activeScenario.inputs) !== JSON.stringify(committedScenario.inputs),
+    [activeScenario.inputs, committedScenario.inputs]
+  );
+
+  // Dedicated committed simulation solver pipeline driven strictly by committedScenario
+  const committedThermalResult = useMemo(
+    () => calculateThermalModel(committedScenario),
+    [committedScenario]
+  );
+
+  const committedViscosityResult = useMemo(
+    () =>
+      calculateViscosityModel(
+        committedThermalResult.predictedReservoirTemperatureC,
+        baselineThermalResult.predictedReservoirTemperatureC
+      ),
+    [committedThermalResult, baselineThermalResult]
+  );
+
+  const committedMobilityResult = useMemo(
+    () =>
+      calculateMobilityModel(
+        committedViscosityResult.estimatedViscosityCp,
+        committedThermalResult.predictedReservoirTemperatureC,
+        committedScenario.inputs.permeabilityDarcy,
+        1.0,
+        baselineViscosityResult.estimatedViscosityCp
+      ),
+    [committedViscosityResult, committedThermalResult, baselineViscosityResult, committedScenario.inputs.permeabilityDarcy]
+  );
+
+  const committedDrawdownBar = useMemo(
+    () => Math.max(5.0, committedScenario.inputs.reservoirPressureBar - 18.0),
+    [committedScenario.inputs.reservoirPressureBar]
+  );
+
+  const committedProductionResult = useMemo(
+    () =>
+      calculateProductionModel(
+        committedMobilityResult.mobilityDcP,
+        committedThermalResult.predictedReservoirTemperatureC,
+        committedViscosityResult.estimatedViscosityCp,
+        committedDrawdownBar,
+        committedScenario.inputs.vfdFrequencyHz,
+        committedScenario.inputs.spm,
+        committedScenario.inputs.strokeLengthMeters,
+        baselineProductionResult.estimatedProductionBopd,
+        committedScenario.inputs.waterCutPercent,
+        committedScenario.inputs.reservoirPressureBar
+      ),
+    [committedMobilityResult, committedThermalResult, committedViscosityResult, committedDrawdownBar, committedScenario, baselineProductionResult]
+  );
+
+  const committedSRPOptimizationResult = useMemo(
+    () =>
+      optimizeSRP({
+        vfdFrequencyHz: committedScenario.inputs.vfdFrequencyHz,
+        spm: committedScenario.inputs.spm,
+        strokeLengthM: committedScenario.inputs.strokeLengthMeters,
+        oilMobilityDcp: committedMobilityResult.mobilityDcP,
+        effectiveDrawdownBar: committedDrawdownBar,
+        temperatureC: committedThermalResult.predictedReservoirTemperatureC,
+        viscosityCp: committedViscosityResult.estimatedViscosityCp,
+      }),
+    [committedScenario, committedMobilityResult, committedThermalResult, committedViscosityResult, committedDrawdownBar]
+  );
+
+  const committedCSSOptimizationResult = useMemo(
+    () =>
+      optimizeCSS({
+        steamInjectionRateTpd: committedScenario.inputs.steamInjectionRateTpd,
+        steamInjectionTemperatureC: committedScenario.inputs.steamInjectionTemperatureC,
+        steamQualityFraction: committedScenario.inputs.steamQualityPercent / 100.0,
+        injectionDurationDays: 5.0,
+        soakDurationDays: committedScenario.inputs.soakDurationDays,
+        productionDurationDays: 90.0,
+        reservoirTemperatureC: committedThermalResult.predictedReservoirTemperatureC,
+        reservoirPressureBar: committedScenario.inputs.reservoirPressureBar,
+        baselineViscosityCp: baselineViscosityResult.estimatedViscosityCp,
+        baselineMobilityDPerCp: baselineMobilityResult.mobilityDcP,
+        baselineProductionBopd: baselineProductionResult.estimatedProductionBopd,
+        vfdFrequencyHz: committedScenario.inputs.vfdFrequencyHz,
+        spm: committedScenario.inputs.spm,
+        strokeLengthMeters: committedScenario.inputs.strokeLengthMeters,
+      }),
+    [committedScenario, committedThermalResult, baselineViscosityResult, baselineMobilityResult, baselineProductionResult]
+  );
+
+  const committedAIRiskResult = useMemo(
+    () =>
+      analyzeAIRisk({
+        temperatureC: committedThermalResult.predictedReservoirTemperatureC,
+        viscosityCp: committedViscosityResult.estimatedViscosityCp,
+        mobilityDPerCp: committedMobilityResult.mobilityDcP,
+        productionBopd: committedProductionResult.estimatedProductionBopd,
+        vfdFrequencyHz: committedScenario.inputs.vfdFrequencyHz,
+        spm: committedScenario.inputs.spm,
+        strokeLengthMeters: committedScenario.inputs.strokeLengthMeters,
+        steamInjectionRateTpd: committedScenario.inputs.steamInjectionRateTpd,
+        srpLoadIndex: committedSRPOptimizationResult.currentCandidate.loadIndex,
+        cssThermalGainC: committedCSSOptimizationResult.thermalBreakdown.deltaTemperatureC,
+      }),
+    [committedThermalResult, committedViscosityResult, committedMobilityResult, committedProductionResult, committedScenario, committedSRPOptimizationResult, committedCSSOptimizationResult]
+  );
+
+  const committedPressureModelResult: PressureModelResult = useMemo(
+    () => ({
+      reservoirPressureBar: committedScenario.inputs.reservoirPressureBar,
+      flowingPressureBar: 18.0,
+      drawdownBar: committedDrawdownBar,
+      source: 'Jodhpur Sandstone Reservoir Pressure Model',
+    }),
+    [committedScenario.inputs.reservoirPressureBar, committedDrawdownBar]
+  );
+
+  const committedSimulationTrace: SimulationTrace = useMemo(
+    () => ({
+      scenarioId: committedScenario.id,
+      scenarioName: committedScenario.name,
+      runId: `RUN-${committedScenario.id}-${committedRunTimestamp}`,
+      inputs: { ...committedScenario.inputs },
+      derived: {
+        predictedReservoirTemperatureC: committedThermalResult.predictedReservoirTemperatureC,
+        estimatedViscosityCp: committedViscosityResult.estimatedViscosityCp,
+        mobilityDcP: committedMobilityResult.mobilityDcP,
+        estimatedProductionBopd: committedProductionResult.estimatedProductionBopd,
+        totalFluidProductionBfpd: committedProductionResult.totalFluidProductionBfpd,
+        srpLoadIndex: committedSRPOptimizationResult.currentCandidate.loadIndex,
+        riskScore: committedAIRiskResult.riskScore,
+        riskLevel: committedAIRiskResult.riskLevel,
+      },
+      calculatedAt: committedRunTimestamp,
+    }),
+    [committedScenario, committedThermalResult, committedViscosityResult, committedMobilityResult, committedProductionResult, committedSRPOptimizationResult, committedAIRiskResult, committedRunTimestamp]
+  );
+
+  const committedSimulationResult: SimulationResult = useMemo(
+    () => ({
+      thermal: committedThermalResult,
+      viscosity: committedViscosityResult,
+      mobility: committedMobilityResult,
+      production: committedProductionResult,
+      srp: committedSRPOptimizationResult,
+      css: committedCSSOptimizationResult,
+      risk: committedAIRiskResult,
+      pressure: committedPressureModelResult,
+      trace: committedSimulationTrace,
+      inputs: { ...committedScenario.inputs },
+      calculatedAt: committedRunTimestamp,
+    }),
+    [committedThermalResult, committedViscosityResult, committedMobilityResult, committedProductionResult, committedSRPOptimizationResult, committedCSSOptimizationResult, committedAIRiskResult, committedPressureModelResult, committedSimulationTrace, committedScenario, committedRunTimestamp]
+  );
+
+  const getSimulationTrace = useCallback(() => {
+    return JSON.stringify(committedSimulationTrace, null, 2);
+  }, [committedSimulationTrace]);
+
+  const contextValue: ScenarioContextType = useMemo(
+    () => ({
+      activeScenario,
+      savedScenarios,
+      presets,
+      committedSimulationResult,
+      isStale,
+      commitSimulationRun,
+      thermalResult,
+      baselineThermalResult,
+      viscosityResult,
+      baselineViscosityResult,
+      mobilityResult,
+      baselineMobilityResult,
+      productionResult,
+      baselineProductionResult,
+      srpOptimizationResult,
+      baselineSRPOptimizationResult,
+      cssOptimizationResult,
+      baselineCSSOptimizationResult,
+      aiRiskResult,
+      baselineAIRiskResult,
+      updateInput,
+      updateDetails,
+      saveCurrentScenario,
+      loadScenario,
+      resetCurrentToBaseline,
+      duplicateCurrentScenario,
+      deleteScenario,
+      loadPreset,
+      getSimulationTrace,
+    }),
+    [
+      activeScenario,
+      savedScenarios,
+      presets,
+      committedSimulationResult,
+      isStale,
+      commitSimulationRun,
+      thermalResult,
+      baselineThermalResult,
+      viscosityResult,
+      baselineViscosityResult,
+      mobilityResult,
+      baselineMobilityResult,
+      productionResult,
+      baselineProductionResult,
+      srpOptimizationResult,
+      baselineSRPOptimizationResult,
+      cssOptimizationResult,
+      baselineCSSOptimizationResult,
+      aiRiskResult,
+      baselineAIRiskResult,
+      updateInput,
+      updateDetails,
+      saveCurrentScenario,
+      loadScenario,
+      resetCurrentToBaseline,
+      duplicateCurrentScenario,
+      deleteScenario,
+      loadPreset,
+      getSimulationTrace,
+    ]
+  );
+
   return React.createElement(
     ScenarioContext.Provider,
     {
-      value: {
-        activeScenario,
-        savedScenarios,
-        presets,
-        thermalResult,
-        baselineThermalResult,
-        viscosityResult,
-        baselineViscosityResult,
-        mobilityResult,
-        baselineMobilityResult,
-        productionResult,
-        baselineProductionResult,
-        srpOptimizationResult,
-        baselineSRPOptimizationResult,
-        cssOptimizationResult,
-        baselineCSSOptimizationResult,
-        aiRiskResult,
-        baselineAIRiskResult,
-        updateInput,
-        updateDetails,
-        saveCurrentScenario,
-        loadScenario,
-        resetCurrentToBaseline,
-        duplicateCurrentScenario,
-        deleteScenario,
-        loadPreset,
-      },
+      value: contextValue,
     },
     children
   );

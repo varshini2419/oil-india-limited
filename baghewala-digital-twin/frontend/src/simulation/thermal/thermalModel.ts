@@ -59,7 +59,7 @@ export const calculateThermalModel = (
   // 5. Net Modeled Thermal Influence & Predicted Reservoir Temperature
   const modeledThermalInfluenceC = (maxSteamInfluenceC * timeResponseFactor) + ambientReservoirInfluenceC;
   
-  let rawPredictedTemp = baselineReservoirTemperatureC + modeledThermalInfluenceC;
+  let rawPredictedTemp = (scenarioReservoirTemperatureC ?? baselineReservoirTemperatureC) + modeledThermalInfluenceC;
 
   // Check bounds
   let predictedReservoirTemperatureC = rawPredictedTemp;

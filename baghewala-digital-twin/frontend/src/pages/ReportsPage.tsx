@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { PageHeader } from '../components/ui/PageHeader';
 import { Panel } from '../components/ui/Panel';
-import { FileText, Download, ShieldCheck, CheckCircle2, AlertTriangle, FileCode } from 'lucide-react';
+import { Download, AlertTriangle, FileCode, Sparkles } from 'lucide-react';
 import { executeFinalValidation } from '../simulation/finalValidation/finalValidationEngine';
 import { generateFinalReport } from '../simulation/finalValidation/finalReportEngine';
 import { executeFinalEngineeringAssessment } from '../simulation/finalEngineeringAssessment/finalAssessmentEngine';
@@ -11,6 +11,11 @@ import { generatePilotReport } from '../simulation/productionPilot/pilotReportEn
 import { executeReleaseVerification } from '../release/releaseVerification';
 import { evaluateReleaseChecklist } from '../release/releaseChecklist';
 import { generateReleaseManifest } from '../release/releaseManifest';
+import { useScenarioStore } from '../simulation/scenario/scenarioStore';
+import { generateLiveSimulationReport } from '../simulation/reports/liveSimulationReportEngine';
+
+import { generateScenarioComparisonReport } from '../simulation/scenarios/scenarioComparisonReportEngine';
+import { generateHistoricalValidationReport } from '../simulation/validation/validationReportEngine';
 
 interface ActiveReportView {
   title: string;
@@ -23,14 +28,20 @@ interface ActiveReportView {
   markdown: string;
 }
 
-import { useScenarioStore } from '../simulation/scenario/scenarioStore';
-
 export const ReportsPage: React.FC = () => {
-  const { activeScenario } = useScenarioStore();
-  const [selectedReportKey, setSelectedReportKey] = useState<
-    'final-validation' | 'assessment' | 'pilot' | 'release-freeze'
-  >('final-validation');
+  const scenarioStore = useScenarioStore();
+  const { activeScenario, presets, savedScenarios } = scenarioStore;
 
+  const [selectedReportKey, setSelectedReportKey] = useState<
+    'live-simulation' | 'scenario-comparison' | 'historical-validation' | 'final-validation' | 'assessment' | 'pilot' | 'release-freeze'
+  >('live-simulation');
+
+  // Live simulation report
+  const liveSimReport = generateLiveSimulationReport(scenarioStore);
+  const scenarioCompReport = generateScenarioComparisonReport(presets, savedScenarios);
+  const historicalValReport = generateHistoricalValidationReport(activeScenario.inputs);
+
+  // Other system reports
   const pilotState = executeProductionPilotWorkflow('SCENARIO_A_NORMAL', 0, false, activeScenario.inputs);
   const pilotReport = generatePilotReport(pilotState);
 
@@ -70,6 +81,74 @@ export const ReportsPage: React.FC = () => {
 
   const getActiveReportData = (): ActiveReportView => {
     switch (selectedReportKey) {
+      case 'live-simulation':
+        const liveSections = [
+          {
+            title: '1. Active Scenario Inputs Summary',
+            content: `Scenario: ${liveSimReport.scenarioName}\nTemp: ${liveSimReport.inputsSummary.reservoirTemperatureC}°C | Steam: ${liveSimReport.inputsSummary.steamInjectionRateTpd} TPD (${liveSimReport.inputsSummary.steamQualityPercent}%) | VFD: ${liveSimReport.inputsSummary.vfdFrequencyHz} Hz | SPM: ${liveSimReport.inputsSummary.spm} SPM | Stroke: ${liveSimReport.inputsSummary.strokeLengthMeters} m`
+          },
+          {
+            title: '2. Calculated Physics Results',
+            content: `Modeled Temp: ${liveSimReport.calculatedResults.predictedReservoirTempC.toFixed(1)}°C (${liveSimReport.calculatedResults.thermalState})\nCrude Viscosity: ${liveSimReport.calculatedResults.estimatedViscosityCp.toLocaleString()} cP (${liveSimReport.calculatedResults.viscosityChangePercent}%)\nMobility (k/μ): ${liveSimReport.calculatedResults.mobilityDcP.toFixed(4)} D/cP (+${liveSimReport.calculatedResults.mobilityChangePercent}%)\nEstimated Production: ${liveSimReport.calculatedResults.estimatedProductionBopd.toFixed(2)} BOPD (+${liveSimReport.calculatedResults.productionChangePercent}%)\nSRP Load Index: ${liveSimReport.calculatedResults.srpLoadIndex.toFixed(1)} / 100 (${liveSimReport.calculatedResults.srpPprlLbs.toLocaleString()} lbs PPRL)\nSystem Risk Level: ${liveSimReport.calculatedResults.riskLevel} (${liveSimReport.calculatedResults.riskScore}/100)`
+          },
+          {
+            title: '3. Parameter Transition Matrix (Baseline vs Current)',
+            content: liveSimReport.parameterDeltas.map(d => `${d.parameter}: Baseline ${d.baselineValue} -> Current ${d.currentValue} (Delta: ${d.delta})`).join('\n')
+          },
+          {
+            title: '4. Active Risks & System Constraints',
+            content: liveSimReport.activeRisks.length > 0
+              ? liveSimReport.activeRisks.map(r => `[${r.severity}] ${r.title}: ${r.explanation}\nAdvisory: ${r.advisory}`).join('\n\n')
+              : '✓ All parameters operating safely within documented bounds.'
+          },
+          {
+            title: '5. Grounded Historical RAG Evidence',
+            content: liveSimReport.groundedEvidence.map(e => `[${e.category}] ${e.title}\nSource: ${e.document} Page ${e.page} (Confidence: ${e.confidence})\nWhy Relevant: ${e.matchExplanation}`).join('\n\n')
+          },
+          {
+            title: '6. Documented Knowledge Gaps (SHARP D4.1 Table 6)',
+            content: liveSimReport.knowledgeGaps.map(g => `${g.id}: ${g.title} (${g.topic})\nGap: ${g.documentedGap}\nSource: ${g.source} | Impact: ${g.impact}`).join('\n\n')
+          },
+          {
+            title: '7. AI Engineering Explanation & Advisory Actions',
+            content: `${liveSimReport.aiExplanation}\n\nRecommended Actions:\n` + liveSimReport.advisoryActions.map(a => `- ${a.title} [Priority: ${a.priority}]\n  Action: ${a.action}\n  Expected Impact: ${a.expectedImpact}`).join('\n')
+          }
+        ];
+        return {
+          title: `LIVE SIMULATION ENGINEERING REPORT — ${liveSimReport.scenarioName.toUpperCase()}`,
+          id: liveSimReport.reportId,
+          timestamp: liveSimReport.generatedAt,
+          status: liveSimReport.calculatedResults.riskLevel === 'CRITICAL' ? 'CRITICAL_RISK' : (liveSimReport.calculatedResults.riskLevel === 'HIGH' ? 'HIGH_RISK' : 'OPTIMAL_OPERATION'),
+          disclaimer: liveSimReport.disclaimer,
+          sections: liveSections,
+          rawState: liveSimReport,
+          markdown: liveSimReport.markdownReport
+        };
+
+      case 'scenario-comparison':
+        return {
+          title: `WHAT-IF SCENARIO COMPARISON REPORT (${scenarioCompReport.matrix.snapshots.length} SCENARIOS)`,
+          id: scenarioCompReport.reportId,
+          timestamp: scenarioCompReport.generatedAt,
+          status: scenarioCompReport.status,
+          disclaimer: scenarioCompReport.disclaimer,
+          sections: scenarioCompReport.sections,
+          rawState: scenarioCompReport.matrix,
+          markdown: scenarioCompReport.markdownReport,
+        };
+
+      case 'historical-validation':
+        return {
+          title: `HISTORICAL VALIDATION REPORT (PROTOTYPE FIELD DATA)`,
+          id: historicalValReport.reportId,
+          timestamp: historicalValReport.generatedAt,
+          status: historicalValReport.status,
+          disclaimer: historicalValReport.disclaimer,
+          sections: historicalValReport.sections,
+          rawState: historicalValReport.calibrationMetrics,
+          markdown: historicalValReport.markdownReport,
+        };
+
       case 'final-validation':
         return {
           title: finalValReport.title,
@@ -156,137 +235,150 @@ export const ReportsPage: React.FC = () => {
     <div className="space-y-6">
       <PageHeader
         title="Simulation Reports & Engineering Documentation"
-        subtitle="Exportable engineering reports, executive summaries, audit traces, and release certificates"
+        subtitle="Dynamic live scenario report, exportable engineering summaries, audit traces, and release certificates"
         badgeText="Step 6.2 Certified Workstation"
       />
 
-      {/* Report Selection Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-3 font-mono text-xs">
+      {/* Report Selection Tabs */}
+      <div className="flex flex-wrap gap-2 border-b border-slate-800 pb-2 font-mono text-xs">
         <button
-          onClick={() => setSelectedReportKey('final-validation')}
-          className={`p-4 rounded-lg border text-left transition-all cursor-pointer ${
-            selectedReportKey === 'final-validation'
-              ? 'bg-slate-900 border-sky-500 text-sky-300 ring-1 ring-sky-500'
-              : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+          onClick={() => setSelectedReportKey('live-simulation')}
+          className={`px-3 py-1.5 rounded font-bold transition-colors flex items-center gap-1.5 ${
+            selectedReportKey === 'live-simulation'
+              ? 'bg-sky-900 text-sky-200 border border-sky-700'
+              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
           }`}
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-slate-500">STEP 5.13 REPORT</span>
-            <FileText className="w-4 h-4 text-sky-400" />
-          </div>
-          <div className="font-bold text-slate-100">Final Validation</div>
-          <div className="text-[10px] text-slate-500 mt-1">22-section engineering trace</div>
+          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+          <span>Live Simulation Report</span>
+        </button>
+
+        <button
+          onClick={() => setSelectedReportKey('scenario-comparison')}
+          className={`px-3 py-1.5 rounded font-bold transition-colors flex items-center gap-1.5 ${
+            selectedReportKey === 'scenario-comparison'
+              ? 'bg-sky-900 text-sky-200 border border-sky-700'
+              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+          }`}
+        >
+          <span>Scenario Comparison Report</span>
+        </button>
+
+        <button
+          onClick={() => setSelectedReportKey('historical-validation')}
+          className={`px-3 py-1.5 rounded font-bold transition-colors flex items-center gap-1.5 ${
+            selectedReportKey === 'historical-validation'
+              ? 'bg-sky-900 text-sky-200 border border-sky-700'
+              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+          }`}
+        >
+          <span>Historical Validation Report</span>
+        </button>
+
+        <button
+          onClick={() => setSelectedReportKey('final-validation')}
+          className={`px-3 py-1.5 rounded font-bold transition-colors ${
+            selectedReportKey === 'final-validation'
+              ? 'bg-sky-900 text-sky-200 border border-sky-700'
+              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+          }`}
+        >
+          Final Validation Package
         </button>
 
         <button
           onClick={() => setSelectedReportKey('assessment')}
-          className={`p-4 rounded-lg border text-left transition-all cursor-pointer ${
+          className={`px-3 py-1.5 rounded font-bold transition-colors ${
             selectedReportKey === 'assessment'
-              ? 'bg-slate-900 border-sky-500 text-sky-300 ring-1 ring-sky-500'
-              : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+              ? 'bg-sky-900 text-sky-200 border border-sky-700'
+              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
           }`}
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-slate-500">STEP 5.12 REPORT</span>
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-          </div>
-          <div className="font-bold text-slate-100">Engineering Assessment</div>
-          <div className="text-[10px] text-slate-500 mt-1">15 traceable findings</div>
+          Final Engineering Assessment
         </button>
 
         <button
           onClick={() => setSelectedReportKey('pilot')}
-          className={`p-4 rounded-lg border text-left transition-all cursor-pointer ${
+          className={`px-3 py-1.5 rounded font-bold transition-colors ${
             selectedReportKey === 'pilot'
-              ? 'bg-slate-900 border-sky-500 text-sky-300 ring-1 ring-sky-500'
-              : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+              ? 'bg-sky-900 text-sky-200 border border-sky-700'
+              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
           }`}
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-slate-500">STEP 5.11 REPORT</span>
-            <CheckCircle2 className="w-4 h-4 text-indigo-400" />
-          </div>
-          <div className="font-bold text-slate-100">Production Pilot</div>
-          <div className="text-[10px] text-slate-500 mt-1">8 pilot scenario matrix</div>
+          Production Pilot Audit
         </button>
 
         <button
           onClick={() => setSelectedReportKey('release-freeze')}
-          className={`p-4 rounded-lg border text-left transition-all cursor-pointer ${
+          className={`px-3 py-1.5 rounded font-bold transition-colors ${
             selectedReportKey === 'release-freeze'
-              ? 'bg-slate-900 border-sky-500 text-sky-300 ring-1 ring-sky-500'
-              : 'bg-slate-950 border-slate-800 text-slate-400 hover:border-slate-700 hover:text-slate-200'
+              ? 'bg-sky-900 text-sky-200 border border-sky-700'
+              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
           }`}
         >
-          <div className="flex items-center justify-between mb-1">
-            <span className="text-[10px] text-slate-500">STEP 6.2 CERTIFICATE</span>
-            <FileCode className="w-4 h-4 text-amber-400" />
-          </div>
-          <div className="font-bold text-slate-100">Release Freeze Cert</div>
-          <div className="text-[10px] text-slate-500 mt-1">484/484 verified test audit</div>
+          Release & Freeze Manifest
         </button>
       </div>
 
-      {/* Active Report Header & Action Panel */}
-      <Panel title={activeReport.title}>
-        <div className="space-y-4">
-          <div className="flex flex-wrap items-center justify-between gap-4 p-4 bg-slate-950 border border-slate-800 rounded-lg font-mono text-xs">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-slate-400">
-                <span>REPORT ID:</span>
-                <span className="font-bold text-slate-200">{activeReport.id}</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-400">
-                <span>GENERATED:</span>
-                <span className="text-slate-300">{activeReport.timestamp}</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-700 font-bold text-sky-400 uppercase">
-                {activeReport.status}
-              </span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => handleDownloadText(activeReport.markdown, `${activeReport.id}.md`)}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded bg-sky-950 border border-sky-800 text-sky-300 hover:bg-sky-900 font-mono text-xs font-semibold transition-colors cursor-pointer"
-              >
-                <Download className="w-4 h-4" />
-                <span>Export Markdown (.md)</span>
-              </button>
-              <button
-                onClick={() => handleDownloadJSON(activeReport.rawState, `${activeReport.id}.json`)}
-                className="inline-flex items-center gap-2 px-3 py-2 rounded bg-slate-900 border border-slate-700 text-slate-300 hover:bg-slate-800 font-mono text-xs font-semibold transition-colors cursor-pointer"
-              >
-                <Download className="w-4 h-4" />
-                <span>Export JSON Data</span>
-              </button>
-            </div>
+      {/* Main Report View Panel */}
+      <Panel
+        title={activeReport.title}
+        subtitle={`ID: ${activeReport.id} | Generated: ${activeReport.timestamp}`}
+        action={
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => handleDownloadText(activeReport.markdown, `${activeReport.id}.md`)}
+              className="px-2.5 py-1 rounded bg-sky-950 text-sky-300 hover:bg-sky-900 border border-sky-800 font-mono text-xs font-bold transition-colors inline-flex items-center gap-1"
+            >
+              <Download className="w-3.5 h-3.5" />
+              Markdown (.md)
+            </button>
+            <button
+              onClick={() => handleDownloadJSON(activeReport.rawState, `${activeReport.id}.json`)}
+              className="px-2.5 py-1 rounded bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700 font-mono text-xs font-bold transition-colors inline-flex items-center gap-1"
+            >
+              <FileCode className="w-3.5 h-3.5" />
+              JSON (.json)
+            </button>
+          </div>
+        }
+      >
+        <div className="space-y-4 font-mono text-xs">
+          {/* Status Header */}
+          <div className="flex items-center justify-between p-3 bg-slate-950 rounded border border-slate-800">
+            <span className="text-slate-400 text-xs">Report Status Determination:</span>
+            <span className={`px-2.5 py-1 rounded text-xs font-bold ${
+              activeReport.status.includes('OPTIMAL') || activeReport.status.includes('READY') || activeReport.status.includes('PASSED')
+                ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                : 'bg-amber-950 text-amber-300 border border-amber-800'
+            }`}>
+              {activeReport.status}
+            </span>
           </div>
 
-          {/* Mandatory Advisory Governance Box */}
-          <div className="flex items-start gap-3 p-3 bg-amber-950/40 border border-amber-800/80 rounded-lg text-xs font-mono text-amber-300">
-            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold uppercase tracking-wider block mb-0.5">Safety & Advisory Governance</span>
-              <span>{activeReport.disclaimer}</span>
-            </div>
-          </div>
-
-          {/* Report Sections Content Preview */}
-          <div className="space-y-4 max-h-[480px] overflow-y-auto pr-2 custom-scrollbar">
-            {activeReport.sections.map((sec, idx) => (
-              <div key={idx} className="bg-slate-950 border border-slate-800 rounded-lg p-4 font-mono text-xs space-y-2">
-                <h4 className="font-bold text-sky-300 text-sm border-b border-slate-800 pb-1">
-                  {sec.title}
-                </h4>
-                <p className="text-slate-300 whitespace-pre-wrap font-sans text-xs leading-relaxed">
-                  {sec.content}
-                </p>
+          {/* Report Content Sections */}
+          <div className="space-y-3">
+            {activeReport.sections.map((section, idx) => (
+              <div key={idx} className="bg-slate-950 p-4 rounded border border-slate-800 space-y-2">
+                <div className="text-[11px] font-bold text-sky-400 uppercase tracking-wider">
+                  {section.title}
+                </div>
+                <div className="text-slate-300 text-xs font-sans whitespace-pre-wrap leading-relaxed">
+                  {section.content}
+                </div>
               </div>
             ))}
+          </div>
+
+          {/* Safety Disclaimer */}
+          <div className="bg-amber-950/30 border border-amber-800/60 p-3.5 rounded text-amber-200 text-xs font-sans">
+            <div className="flex items-center gap-2 font-mono font-bold text-amber-300 uppercase tracking-wider mb-1">
+              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>Mandated Safety Disclaimer</span>
+            </div>
+            <p className="text-[11px] text-amber-100/90 leading-relaxed">
+              {activeReport.disclaimer}
+            </p>
           </div>
         </div>
       </Panel>

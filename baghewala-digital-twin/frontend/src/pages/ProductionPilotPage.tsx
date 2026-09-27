@@ -268,18 +268,18 @@ export const ProductionPilotPage: React.FC = () => {
             SIMULATED / WHAT-IF
           </span>
         </div>
-        <p className="text-slate-300">{executionState.activeScenario.description}</p>
+        <p className="text-slate-300">{executionState.activeScenario?.description ?? 'Simulated pilot scenario execution.'}</p>
       </div>
 
       {/* Row 2: 13 Pilot KPI Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-3 text-xs">
-        {Object.values(executionState.kpis).slice(0, 6).map((kpi) => (
-          <div key={kpi.key} className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-lg">
+        {Object.values(executionState.kpis).slice(0, 6).map((kpi: any) => (
+          <div key={kpi.key ?? kpi.id} className="bg-slate-900 border border-slate-800 rounded-xl p-3.5 shadow-lg">
             <div className="text-slate-400 text-[11px] mb-1 flex items-center justify-between">
               <span className="truncate">{kpi.label}</span>
               <span className="text-[10px] text-slate-500">{kpi.unit}</span>
             </div>
-            <div className="text-xl font-black text-white my-1">{kpi.formattedValue}</div>
+            <div className="text-xl font-black text-white my-1">{kpi.formattedValue ?? kpi.value}</div>
             <div className="text-[10px] text-slate-500 truncate">{kpi.sourceModule}</div>
           </div>
         ))}
@@ -309,7 +309,7 @@ export const ProductionPilotPage: React.FC = () => {
               </div>
               <div className="bg-slate-950 p-2.5 rounded border border-slate-800 flex justify-between items-center">
                 <span>Oil Mobility:</span>
-                <strong className="text-indigo-400">{executionState.twinState.reservoir.oilMobilityDcP.toFixed(6)} D/cP</strong>
+                <strong className="text-indigo-400">{(executionState.twinState.reservoir.oilMobilityDcP ?? 0.0005).toFixed(6)} D/cP</strong>
               </div>
               <div className="bg-slate-950 p-2.5 rounded border border-slate-800 flex justify-between items-center">
                 <span>Production Rate:</span>
@@ -348,13 +348,13 @@ export const ProductionPilotPage: React.FC = () => {
           <div className="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
             <h2 className="text-sm font-bold text-white flex items-center gap-2">
               <ShieldAlert className="w-4 h-4 text-rose-400" />
-              AI RISK ADVISORY ({executionState.riskEvents.length})
+              AI RISK ADVISORY ({executionState.riskEvents?.length ?? 0})
             </h2>
             <span className="text-slate-500 text-[11px]">Advisory Only</span>
           </div>
 
           <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1">
-            {executionState.riskEvents.map((evt) => (
+            {(executionState.riskEvents ?? []).map((evt: any) => (
               <div
                 key={evt.eventId}
                 className={`p-3 rounded-lg border flex items-start justify-between gap-3 ${
@@ -399,8 +399,8 @@ export const ProductionPilotPage: React.FC = () => {
             </div>
             <div className="p-2 rounded bg-slate-950 border border-slate-800 flex justify-between items-center">
               <span>Telemetry Feed:</span>
-              <span className={executionState.readinessGates.telemetryReady ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
-                {executionState.readinessGates.telemetryReady ? 'READY ✓' : 'SIMULATED'}
+              <span className={executionState.readinessGates.realFieldPilotReady ? 'text-emerald-400 font-bold' : 'text-amber-400 font-bold'}>
+                {executionState.readinessGates.realFieldPilotReady ? 'READY ✓' : 'SIMULATED'}
               </span>
             </div>
             <div className="p-2 rounded bg-slate-950 border border-slate-800 flex justify-between items-center">

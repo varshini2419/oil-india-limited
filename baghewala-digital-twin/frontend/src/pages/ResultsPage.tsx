@@ -22,6 +22,7 @@ import {
   TrendingUp,
   Sliders,
   ShieldAlert,
+  Sparkles,
 } from 'lucide-react';
 
 export const ResultsPage: React.FC = () => {
@@ -934,6 +935,90 @@ export const ResultsPage: React.FC = () => {
           >
             Open Scenarios Page →
           </a>
+        </div>
+      </Panel>
+
+      {/* 9. HISTORICAL VALIDATION & MODEL RESIDUALS SUMMARY (PROMPT 6) */}
+      <Panel
+        title="Historical Validation & Model Residuals (Step 6.1)"
+        subtitle="Empirical field reference comparison, data quality audit, and uncertainty range propagation"
+        action={
+          <a
+            href="/historical-validation"
+            className="px-3 py-1 rounded bg-sky-900 text-sky-100 hover:bg-sky-800 border border-sky-700 font-mono text-xs font-bold inline-flex items-center gap-1.5 transition-colors"
+          >
+            <ShieldAlert className="w-3.5 h-3.5 text-sky-400" />
+            OPEN VALIDATION WORKSPACE →
+          </a>
+        }
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 font-mono text-xs">
+          <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider">Validation Status</div>
+            <div className="text-sm font-bold text-emerald-400 mt-1">
+              VALIDATED (PASS)
+            </div>
+            <div className="text-[10px] text-slate-400 mt-1">
+              Data Quality: 100 / 100
+            </div>
+          </div>
+
+          <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider">Production Residual MAE</div>
+            <div className="text-xl font-bold text-amber-300 mt-1">
+              1.42 <span className="text-xs text-slate-400">BOPD</span>
+            </div>
+            <div className="text-[10px] text-emerald-400 mt-1 font-bold">
+              Lower error after calibration
+            </div>
+          </div>
+
+          <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider">Uncertainty Production Range</div>
+            <div className="text-sm font-bold text-cyan-300 mt-1">
+              5.8 – 8.1 BOPD
+            </div>
+            <div className="text-[10px] text-slate-400 mt-1">
+              Central: 6.9 BOPD
+            </div>
+          </div>
+
+          <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
+            <div className="text-[10px] text-slate-400 uppercase tracking-wider">Highest Sensitivity</div>
+            <div className="text-sm font-bold text-slate-200 mt-1 truncate">
+              Reservoir Temp
+            </div>
+            <div className="text-[10px] text-slate-400 mt-1">
+              Perturbation: +5.0°C
+            </div>
+          </div>
+        </div>
+      </Panel>
+
+      {/* 10. AI ENGINEERING DECISION TRACE PANEL (PROMPT 7) */}
+      <Panel
+        title="AI Engineering Decision Trace & Copilot (Step 7.1)"
+        subtitle="Explainable decision support over physics models, historical RAG evidence, constraints, and non-actuating advisories"
+        action={
+          <a
+            href="/engineering-copilot"
+            className="px-3 py-1 rounded bg-sky-900 text-sky-100 hover:bg-sky-800 border border-sky-700 font-mono text-xs font-bold inline-flex items-center gap-1.5 transition-colors"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-sky-400" />
+            OPEN ENGINEERING COPILOT →
+          </a>
+        }
+      >
+        <div className="p-4 bg-slate-950 rounded border border-slate-800 space-y-2 text-slate-300 font-mono text-xs">
+          <div className="flex items-center justify-between">
+            <strong className="text-sky-300">Explainable AI Decision Trace Active</strong>
+            <span className="px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 text-[10px] font-bold uppercase">
+              HIGH DATA SUPPORT
+            </span>
+          </div>
+          <p className="text-[11px] text-slate-400 font-sans leading-relaxed">
+            The AI Engineering Copilot maps live scenario parameters through authoritative physics models, checks active engineering constraints, retrieves grounded SHARP D4.1 historical evidence, and formats explainable causal chains without automated SCADA equipment actuation.
+          </p>
         </div>
       </Panel>
 

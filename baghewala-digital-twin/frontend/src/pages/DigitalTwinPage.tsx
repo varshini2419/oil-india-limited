@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { PageHeader } from '../components/ui/PageHeader';
 import { DigitalTwinViewport } from '../components/digital-twin';
-import { Play, Sliders, AlertTriangle } from 'lucide-react';
+import { Play, Sliders } from 'lucide-react';
 import { getActiveModelMode } from '../simulation/historicalCalibration/parameterRegistry';
 import { useScenarioStore } from '../simulation/scenario';
 
@@ -25,10 +25,6 @@ export const DigitalTwinPage: React.FC = () => {
         <div className="flex items-center gap-2 font-bold">
           <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse" />
           <span>DEMO MODE — SIMULATED DEMONSTRATION DATA</span>
-        </div>
-        <div className="text-[11px] text-amber-300 font-semibold flex items-center gap-1.5">
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <span>REAL FIELD DATA: NOT CONNECTED (Advisory Support Only)</span>
         </div>
       </div>
 

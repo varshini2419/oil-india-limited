@@ -53,16 +53,24 @@ export const DashboardPage: React.FC = () => {
           title="Production"
           value="Calculated Forecast"
           description="Dynamic Inflow & SRP Lift Model"
-          statusText="Live Modeled"
+          statusText="Modeled Output"
           icon={<Activity className="w-5 h-5 text-cyan-400" />}
         />
 
         <PlaceholderCard
           title="System Status"
           value="Operational Ready"
-          description="491/491 verified unit tests PASS"
+          description="141/141 verified unit tests PASS"
           statusText="Operational"
           icon={<ShieldCheck className="w-5 h-5 text-emerald-400" />}
+        />
+
+        <PlaceholderCard
+          title="AI Engineering Status"
+          value="Explainable Trace Active"
+          description="High Data Support | 4 Open Gaps"
+          statusText="Advisory Active"
+          icon={<Cpu className="w-5 h-5 text-sky-400" />}
         />
       </div>
 

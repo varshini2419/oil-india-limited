@@ -1,5 +1,6 @@
 import type { SourceType } from '../../data/baghewala';
 import type { RiskLevel } from '../riskEngine/types';
+import type { ScenarioInputValues } from '../scenario/types';
 
 export type UncertaintyType = 'PERCENTAGE' | 'ABSOLUTE_RANGE' | 'UNIFORM_BOUNDED';
 
@@ -117,6 +118,42 @@ export interface CorrelationResult {
   outputMetricName: string;
   correlationCoefficient: number; // -1.0 to +1.0
   interpretation: string;
+}
+
+export interface SensitivityRankingEntry {
+  rank: number;
+  parameterId: string;
+  parameterName: string;
+  unit: string;
+  lowValue: number;
+  baselineValue: number;
+  highValue: number;
+  lowProductionBopd: number;
+  baselineProductionBopd: number;
+  highProductionBopd: number;
+  productionDeltaBopd: number;
+  normalizedSensitivity: number; // 0.0 - 1.0
+}
+
+export interface ParameterContribution {
+  parameterName: string;
+  contributionPercent: number;
+}
+
+export interface CommittedUncertaintyResult {
+  baselineInputs: ScenarioInputValues;
+  baselineProductionBopd: number;
+  minimumProductionBopd: number;
+  maximumProductionBopd: number;
+  p10: number; // engineering sensitivity bound (10th percentile of perturbation outputs)
+  p50: number; // engineering sensitivity bound (50th percentile)
+  p90: number; // engineering sensitivity bound (90th percentile)
+  productionRangeBopd: number;
+  boundsTypeLabel: 'engineering sensitivity bounds';
+  sensitivityRanking: SensitivityRankingEntry[];
+  parameterContributions: ParameterContribution[];
+  calculatedAt: string;
+  disclaimer: string;
 }
 
 export interface UncertaintyValidationResult {

@@ -14,6 +14,8 @@ import { evaluateCandidate, computeParetoClassifications } from './scenarioEvalu
 import { rankAndRecommendScenarios } from './decisionEngine';
 import { buildScenarioComparisonRows } from './comparisonEngine';
 
+import { generateEngineeringDecisionTrace } from './traceEngine';
+
 export function runScenarioOptimization(
   input?: ScenarioOptimizationInput
 ): ScenarioOptimizationResult {
@@ -71,7 +73,7 @@ export function runScenarioOptimization(
   const feasibleCount = rankedEvaluations.filter((e) => e.isFeasible).length;
   const nonDominatedCount = rankedEvaluations.filter((e) => e.paretoClassification === 'NON_DOMINATED').length;
 
-  return {
+  const baseResult: ScenarioOptimizationResult = {
     objective,
     constraints,
     modelMode,
@@ -84,6 +86,9 @@ export function runScenarioOptimization(
     calculatedAt: new Date().toISOString(),
     disclaimer: SCENARIO_OPTIMIZATION_DISCLAIMER,
   };
+
+  baseResult.trace = generateEngineeringDecisionTrace(baseResult);
+  return baseResult;
 }
 
 export * from './types';
@@ -93,3 +98,5 @@ export * from './scenarioGenerator';
 export * from './scenarioEvaluator';
 export * from './decisionEngine';
 export * from './comparisonEngine';
+export * from './predictionEngine';
+export * from './traceEngine';

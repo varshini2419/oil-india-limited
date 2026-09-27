@@ -19,6 +19,7 @@ export function buildScenarioComparisonRows(
       viscosityCp: ev.viscosityCp,
       mobilityDcP: ev.mobilityDcP,
       estimatedProductionBopd: ev.estimatedProductionBopd,
+      totalFluidProductionBfpd: ev.totalFluidProductionBfpd,
       p10ProductionBopd: ev.uncertainty.p10ProductionBopd,
       p50ProductionBopd: ev.uncertainty.p50ProductionBopd,
       p90ProductionBopd: ev.uncertainty.p90ProductionBopd,
@@ -26,13 +27,18 @@ export function buildScenarioComparisonRows(
       spm: ev.candidate.inputs.spm,
       strokeLengthM: ev.candidate.inputs.strokeLengthMeters,
       steamRateTpd: ev.candidate.inputs.steamInjectionRateTpd,
+      waterCutPercent: ev.candidate.inputs.waterCutPercent,
       srpLoadIndex: ev.srpLoadIndex,
       cssEffectivenessScore: ev.cssPerformanceScore,
       riskLevel: ev.riskLevel,
       confidence: ev.confidence,
       constraintStatus: ev.status,
       paretoClassification: ev.paretoClassification,
+      feasibility: ev.feasibility,
       isRecommended: isRec,
+      historicalError: ev.historicalError,
+      uncertaintyRangeBopd: ev.uncertaintyRangeBopd,
+      confidenceLevel: ev.confidenceLevel,
     };
   });
 }

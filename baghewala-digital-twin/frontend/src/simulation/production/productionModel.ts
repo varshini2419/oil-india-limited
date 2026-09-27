@@ -25,7 +25,9 @@ export const calculateProductionModel = (
   vfdFrequencyHz: number = REFERENCE_VFD_HZ,
   spm: number = REFERENCE_SPM,
   strokeLengthM: number = REFERENCE_STROKE_LENGTH_M,
-  baselineProductionInputBopd?: number
+  baselineProductionInputBopd?: number,
+  waterCutPercent: number = 20.0,
+  reservoirPressureBar: number = 48.0
 ): ProductionResult => {
   const validation = validateProductionInputs(
     oilMobilityDcp,
@@ -36,11 +38,18 @@ export const calculateProductionModel = (
   );
   const warnings: string[] = [...validation.warnings];
 
+  const wc = Math.max(0, Math.min(99.9, waterCutPercent ?? 20.0));
+  const resPres = reservoirPressureBar ?? 48.0;
+
   // Handle invalid inputs safely
   if (!validation.isValid) {
     const fallbackBopd = 0.0;
     return {
       estimatedProductionBopd: fallbackBopd,
+      totalFluidProductionBfpd: 0.0,
+      estimatedProductionLitresPerHour: 0.0,
+      waterCutPercent: wc,
+      reservoirPressureBar: resPres,
       productionUnit: 'BOPD',
       baselineProductionBopd: fallbackBopd,
       productionChangeBopd: 0.0,
@@ -68,6 +77,8 @@ export const calculateProductionModel = (
         baselineProductionBopd: fallbackBopd,
         productionChangeBopd: 0.0,
         productionChangePercent: 0.0,
+        totalFluidProductionBfpd: 0.0,
+        estimatedProductionLitresPerHour: 0.0,
       },
       inputSources: {
         mobility: 'derived',
@@ -109,6 +120,8 @@ export const calculateProductionModel = (
   }
 
   const estimatedProductionBopd = Number(rawProductionBopd.toFixed(2));
+  const totalFluidProductionBfpd = Number((estimatedProductionBopd / (1 - wc / 100)).toFixed(2));
+  const estimatedProductionLitresPerHour = Number(((estimatedProductionBopd * 158.9873) / 24).toFixed(2));
 
   // 4. Baseline Production comparison
   const baselineProductionBopd = baselineProductionInputBopd ?? 0.75; // Default unheated baseline ~0.75 BOPD
@@ -136,10 +149,16 @@ export const calculateProductionModel = (
     baselineProductionBopd,
     productionChangeBopd,
     productionChangePercent,
+    totalFluidProductionBfpd,
+    estimatedProductionLitresPerHour,
   };
 
   return {
     estimatedProductionBopd,
+    totalFluidProductionBfpd,
+    estimatedProductionLitresPerHour,
+    waterCutPercent: wc,
+    reservoirPressureBar: resPres,
     productionUnit: 'BOPD',
     baselineProductionBopd,
     productionChangeBopd,

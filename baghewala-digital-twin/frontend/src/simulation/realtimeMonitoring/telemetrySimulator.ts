@@ -60,6 +60,9 @@ export class TelemetrySimulator {
     this.timerId = setInterval(() => {
       this.stepForward();
     }, actualInterval);
+    if (this.timerId && typeof (this.timerId as any).unref === 'function') {
+      (this.timerId as any).unref();
+    }
   }
 
   public pause(): void {

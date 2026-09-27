@@ -1,4 +1,5 @@
 import { createScenario } from '../scenario/scenarioEngine';
+import { BASELINE_INPUT_VALUES } from '../scenario/defaults';
 import { calculateThermalModel } from '../thermal/thermalModel';
 import { calculateViscosityModel } from '../viscosity/viscosityModel';
 import { calculateMobilityModel } from '../mobility/mobilityModel';
@@ -59,6 +60,7 @@ export function evaluateSamplePipeline(inputs: SampledScenarioInputs): {
     'UNCERTAINTY_SAMPLE',
     'Transient scenario for Monte Carlo uncertainty evaluation',
     {
+      ...BASELINE_INPUT_VALUES,
       ambientTemperatureC: 35.0,
       reservoirTemperatureC: inputs.reservoirTemperatureC,
       steamInjectionRateTpd: inputs.steamInjectionRateTpd,

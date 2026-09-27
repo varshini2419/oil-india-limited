@@ -1,0 +1,54 @@
+{
+  "sources": [
+    {
+      "id": "SRC-001",
+      "document": "sharp-d4.1-report-final.pdf",
+      "title": "ACT SHARP Consortium Storage Report D4.1 — Geological Characterization of Baghewala Oil Field",
+      "author": "ACT SHARP Consortium (Mandal et al., Peters et al., Cozzi et al.)",
+      "year": 2022,
+      "sourceQuality": 1.0,
+      "pageRange": "Pages 1-120",
+      "keyTopics": ["BGW-1 Rheology", "Jodhpur Sandstone", "Seismic Profiles", "In Situ Stress Map", "Seismicity"]
+    },
+    {
+      "id": "SRC-002",
+      "document": "4 EXPRESSION OF INTEREST (EOI) NO. OIL/RF/IND/EOI/011/2022",
+      "title": "OIL India Limited EOI 011/2022 — Upper Carbonate Heavy Oil Development",
+      "author": "Oil India Limited Rajasthan Field",
+      "year": 2022,
+      "sourceQuality": 0.95,
+      "pageRange": "Pages 1-6",
+      "keyTopics": ["Upper Carbonate", "BGW-6 Thermal Casing Leak", "BGW-12 Water Drowning", "Viscosity 38,174 cP"]
+    },
+    {
+      "id": "SRC-003",
+      "document": "EOI/OIL/RF/DRLG/01/2025-26",
+      "title": "OIL Drilling Department EOI 2025-26 — Thermal Well Casing & Premium Thread Connections",
+      "author": "Oil India Limited Drilling Department",
+      "year": 2025,
+      "sourceQuality": 0.95,
+      "pageRange": "Pages 1-6",
+      "keyTopics": ["ISO/PAS 12835 TWCCEP", "Thermal Connections", "VAM SWI", "Tenaris Blue", "320°C Steam"]
+    },
+    {
+      "id": "SRC-004",
+      "document": "Baghewala PPT oil india limited 12.07.2025.pptx",
+      "title": "Baghewala Heavy Oil Field Operations & CSS Performance Presentation",
+      "author": "Oil India Limited Field Operations",
+      "year": 2025,
+      "sourceQuality": 0.85,
+      "pageRange": "Slides 1-25",
+      "keyTopics": ["BGW#8 1st CSS Cycle", "VIT Tubing", "44 Field Wells Inventory", "30 BOPD Self-Flow"]
+    },
+    {
+      "id": "SRC-005",
+      "document": "SPE/ICoTA Symposium and Exhibition - Well Intervention 2025",
+      "title": "Rig-less Sucker Rod Overshoot Fishing & Heavy Oil Artificial Lift Operations",
+      "author": "SPE/ICoTA Well Intervention Symposium",
+      "year": 2025,
+      "sourceQuality": 0.90,
+      "pageRange": "Page 250",
+      "keyTopics": ["SRP Rod Parting", "Heavy Oil Drag", "Rig-less Crane Fishing"]
+    }
+  ]
+}
