@@ -1,5 +1,6 @@
 import React from 'react';
 import { WELL_LAYOUT_CONFIG } from '../config';
+import { useScenarioStore } from '../../../simulation/scenario';
 
 interface OilFlowPathProps {
   flowIntensity?: number; // Future simulation compatibility prop
@@ -7,12 +8,17 @@ interface OilFlowPathProps {
 
 export const OilFlowPath: React.FC<OilFlowPathProps> = () => {
   const { wellCenterX, casingWidth } = WELL_LAYOUT_CONFIG;
+  const { committedSimulationResult, isStale } = useScenarioStore();
+  const mobility = committedSimulationResult.mobility.mobilityDcP;
+  const viscosity = committedSimulationResult.viscosity.estimatedViscosityCp;
+  const flowIntensity = Math.max(0.25, Math.min(1, mobility * 2500));
+  const flowOpacity = Math.max(0.35, Math.min(0.95, 1 - viscosity / 80000));
   const leftCasingX = wellCenterX - casingWidth / 2;
   const rightCasingX = wellCenterX + casingWidth / 2;
 
   // Static directional arrow markers for inflow paths
   return (
-    <g id="component-oil-flow-path" className="oil-flow-path-group">
+    <g id="component-oil-flow-path" className="oil-flow-path-group" opacity={isStale ? 0.45 : flowOpacity}>
       <defs>
         {/* Static Arrow Marker definition for Oil Inflow */}
         <marker
@@ -33,7 +39,7 @@ export const OilFlowPath: React.FC<OilFlowPathProps> = () => {
         d={`M 260 720 Q 400 720 ${leftCasingX - 10} 720`}
         fill="none"
         stroke="#f59e0b"
-        strokeWidth="2.5"
+        strokeWidth={1.5 + flowIntensity * 2}
         strokeDasharray="6 4"
         markerEnd="url(#oil-inflow-arrow)"
       />
@@ -41,7 +47,7 @@ export const OilFlowPath: React.FC<OilFlowPathProps> = () => {
         d={`M 280 770 Q 420 760 ${leftCasingX - 10} 735`}
         fill="none"
         stroke="#f59e0b"
-        strokeWidth="2.5"
+        strokeWidth={1.5 + flowIntensity * 2}
         strokeDasharray="6 4"
         markerEnd="url(#oil-inflow-arrow)"
       />
@@ -51,7 +57,7 @@ export const OilFlowPath: React.FC<OilFlowPathProps> = () => {
         d={`M 940 720 Q 800 720 ${rightCasingX + 10} 720`}
         fill="none"
         stroke="#f59e0b"
-        strokeWidth="2.5"
+        strokeWidth={1.5 + flowIntensity * 2}
         strokeDasharray="6 4"
         markerEnd="url(#oil-inflow-arrow)"
       />
@@ -59,7 +65,7 @@ export const OilFlowPath: React.FC<OilFlowPathProps> = () => {
         d={`M 920 770 Q 780 760 ${rightCasingX + 10} 735`}
         fill="none"
         stroke="#f59e0b"
-        strokeWidth="2.5"
+        strokeWidth={1.5 + flowIntensity * 2}
         strokeDasharray="6 4"
         markerEnd="url(#oil-inflow-arrow)"
       />

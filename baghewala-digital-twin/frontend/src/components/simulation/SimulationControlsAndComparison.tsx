@@ -78,6 +78,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
       
       {/* SECTION 4: SIMULATION CONTROLS PANEL */}
       <Panel
+        className="simulation-reveal"
         title="SIMULATION CONTROLS & BOUNDARY PARAMETERS"
         subtitle="Adjust weather, reservoir thermal state, steam injection, and artificial lift setpoints to evaluate well performance"
         action={
@@ -126,7 +127,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
 
             {/* 1. WEATHER & AMBIENT BOUNDARY */}
-            <div className="p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
+            <div className="simulation-card p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                 <div className="flex items-center gap-1.5 text-sky-400 font-bold">
                   <Wind className="w-4 h-4" />
@@ -150,7 +151,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="1"
                   value={inputs.ambientTemperatureC}
                   onChange={(e) => handleSliderChange('ambientTemperatureC', parseFloat(e.target.value))}
-                  className="w-full accent-sky-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-sky-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -167,7 +168,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="5"
                   value={inputs.humidityPercent}
                   onChange={(e) => handleSliderChange('humidityPercent', parseFloat(e.target.value))}
-                  className="w-full accent-sky-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-sky-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -184,7 +185,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="2"
                   value={inputs.windSpeedKmh}
                   onChange={(e) => handleSliderChange('windSpeedKmh', parseFloat(e.target.value))}
-                  className="w-full accent-sky-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-sky-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
               
@@ -194,7 +195,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
             </div>
 
             {/* 2. THERMAL & STEAM INJECTION */}
-            <div className="p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
+            <div className="simulation-card p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                 <div className="flex items-center gap-1.5 text-rose-400 font-bold">
                   <Thermometer className="w-4 h-4" />
@@ -218,7 +219,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="1"
                   value={inputs.reservoirTemperatureC}
                   onChange={(e) => handleSliderChange('reservoirTemperatureC', parseFloat(e.target.value))}
-                  className="w-full accent-rose-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-rose-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -235,7 +236,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="5"
                   value={inputs.steamInjectionRateTpd}
                   onChange={(e) => handleSliderChange('steamInjectionRateTpd', parseFloat(e.target.value))}
-                  className="w-full accent-rose-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-rose-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -252,7 +253,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="5"
                   value={inputs.steamQualityPercent}
                   onChange={(e) => handleSliderChange('steamQualityPercent', parseFloat(e.target.value))}
-                  className="w-full accent-rose-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-rose-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -262,7 +263,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
             </div>
 
             {/* 3. ARTIFICIAL LIFT & PUMP MECHANICS */}
-            <div className="p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
+            <div className="simulation-card p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                 <div className="flex items-center gap-1.5 text-amber-400 font-bold">
                   <Zap className="w-4 h-4" />
@@ -286,7 +287,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="0.5"
                   value={inputs.spm}
                   onChange={(e) => handleSliderChange('spm', parseFloat(e.target.value))}
-                  className="w-full accent-amber-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-amber-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -303,7 +304,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="0.1"
                   value={inputs.strokeLengthMeters}
                   onChange={(e) => handleSliderChange('strokeLengthMeters', parseFloat(e.target.value))}
-                  className="w-full accent-amber-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-amber-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -320,7 +321,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="1"
                   value={inputs.vfdFrequencyHz}
                   onChange={(e) => handleSliderChange('vfdFrequencyHz', parseFloat(e.target.value))}
-                  className="w-full accent-amber-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-amber-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -330,7 +331,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
             </div>
 
             {/* 4. FLUID PROPERTIES & WATER CUT */}
-            <div className="p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
+            <div className="simulation-card p-3.5 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
               <div className="flex items-center justify-between border-b border-slate-800 pb-2">
                 <div className="flex items-center gap-1.5 text-purple-400 font-bold">
                   <Droplet className="w-4 h-4" />
@@ -354,7 +355,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
                   step="2"
                   value={inputs.waterCutPercent}
                   onChange={(e) => handleSliderChange('waterCutPercent', parseFloat(e.target.value))}
-                  className="w-full accent-purple-500 bg-slate-900 rounded cursor-pointer"
+                  className="simulation-range w-full accent-purple-500 bg-slate-900 rounded cursor-pointer"
                 />
               </div>
 
@@ -381,6 +382,7 @@ export const SimulationControlsAndComparison: React.FC = () => {
 
       {/* SECTION 5: BEFORE / AFTER SIMULATION RESULTS COMPARISON */}
       <Panel
+        className="simulation-reveal"
         title="BEFORE vs AFTER SIMULATION RESULTS COMPARISON"
         subtitle="Direct comparative delta evaluation between Baseline Reference Scenario vs Active Simulated Scenario"
       >

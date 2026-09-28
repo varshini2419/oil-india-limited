@@ -114,15 +114,9 @@ export const PhenomenaExplanationPanel: React.FC<PhenomenaExplanationPanelProps>
             <span className="text-[10px] px-2 py-0.5 rounded bg-slate-800 text-sky-300 border border-slate-700 font-bold uppercase">
               {phenomenon.title}
             </span>
-            {['gas_interference', 'scale_corrosion'].includes(phenomenon.id) ? (
-              <span className="text-[9px] px-2 py-0.5 rounded bg-amber-950/80 text-amber-300 border border-amber-800/80 font-bold uppercase" title="Visualization overlay only — no direct backend numerical solver connected">
-                CONCEPTUAL DEMO OVERLAY
-              </span>
-            ) : (
-              <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 font-bold uppercase">
-                CALCULATED SIMULATION DYNAMICS
-              </span>
-            )}
+            <span className="text-[9px] px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/80 font-bold uppercase">
+              CALCULATED SIMULATION DYNAMICS
+            </span>
           </div>
 
           {/* Voice Controls Bar */}

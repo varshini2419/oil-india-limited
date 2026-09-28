@@ -119,43 +119,6 @@ export const WELL_PHENOMENA: WellPhenomenon[] = [
     }
   },
   {
-    id: 'gas_interference',
-    title: 'Gas Interference & Inflow',
-    category: 'Multiphase Fluid Flow',
-    shortDescription: 'Free gas breakout entering the pump barrel during upstroke, causing gas locking and volumetric efficiency loss.',
-    affectedComponents: ['Downhole Pump Intake', 'Standing Valve', 'Travelling Valve', 'Pump Barrel'],
-    triggerCondition: 'Gas-Oil Ratio (GOR) elevated, Bottomhole Pressure < Bubble Point Pressure',
-    simulationValuesUsed: ['productionResult.volumetricEfficiencyPercent', 'srpOptimizationResult.pumpOffRiskScore', 'aiRiskResult.primaryRiskType'],
-    inputPreset: {
-      reservoirTemperatureC: 55.0,
-      steamInjectionRateTpd: 40.0,
-      spm: 10.0,
-      strokeLengthMeters: 3.0,
-      vfdFrequencyHz: 52.0
-    },
-    explanationText: {
-      whatIsHappening: 'Entrained free gas expands in the pump chamber during the upstroke. On the downstroke, gas compresses rather than forcing open the travelling valve, causing partial gas locking.',
-      whyItIsHappening: 'Bottomhole flowing pressure drops below the fluid bubble point, liberating solution gas from the heavy oil stream at the pump suction intake.',
-      parametersResponsible: [
-        'Solution Gas-Oil Ratio (GOR)',
-        'Bottomhole Flowing Pressure (Pwf)',
-        'Pump Intake Submergence Depth',
-        'Gas Anchor Separation Efficiency'
-      ],
-      expectedSimulatedEffect: 'Plunger stroke displacement loss, erratic polish rod dynacard trace, lower volumetric efficiency (<60%), and localized pump-off alerts.'
-    },
-    visualizationState: {
-      statusColor: 'cyan',
-      rodStressLevel: 0.45,
-      thermalGlowIntensity: 0.4,
-      fluidViscosityVisual: 'medium',
-      gasBubbleDensity: 0.9,
-      frictionResistance: 0.3,
-      motorLoadPercentage: 68,
-      rodAnimationSpeedFactor: 0.9
-    }
-  },
-  {
     id: 'rod_overload',
     title: 'Rod Mechanical Overload',
     category: 'Structural Mechanics',
@@ -227,43 +190,6 @@ export const WELL_PHENOMENA: WellPhenomenon[] = [
       frictionResistance: 0.5,
       motorLoadPercentage: 98,
       rodAnimationSpeedFactor: 1.3
-    }
-  },
-  {
-    id: 'scale_corrosion',
-    title: 'Scale & Corrosion / Friction',
-    category: 'Tubing & Metal Degradation',
-    shortDescription: 'Mineral scale deposition and corrosive fluid wear increasing internal friction and rod wall rubbing.',
-    affectedComponents: ['Tubing Inner Wall', 'Rod Guides', 'Pump Barrel Liners', 'Subsurface Valves'],
-    triggerCondition: 'Produced Water Cut > 40%, Long Operational Cycle, Scale Deposition Factor High',
-    simulationValuesUsed: ['srpOptimizationResult.tubingFrictionLossPsi', 'aiRiskResult.corrosionRiskScore'],
-    inputPreset: {
-      reservoirTemperatureC: 52.0,
-      steamInjectionRateTpd: 30.0,
-      spm: 7.0,
-      strokeLengthMeters: 3.0,
-      vfdFrequencyHz: 48.0
-    },
-    explanationText: {
-      whatIsHappening: 'Carbonate scale deposition restricts effective tubing inner diameter while CO2/H2S corrosive pitting increases mechanical friction along sucker rod centralizer guides.',
-      whyItIsHappening: 'Water cut ingress and mineral precipitation under changing thermal/pressure regimes deposit hard scale along the rod string and pump plunger surfaces.',
-      parametersResponsible: [
-        'Produced Water Cut (%)',
-        'Fluid Salinity & Mineral Hardness',
-        'Subsurface Metal Metallurgy',
-        'Mechanical Rubbing Drag Coefficient'
-      ],
-      expectedSimulatedEffect: 'Increased mechanical drag loss, higher polish rod load differential between upstroke and downstroke, and tubing wear alerts.'
-    },
-    visualizationState: {
-      statusColor: 'orange',
-      rodStressLevel: 0.65,
-      thermalGlowIntensity: 0.5,
-      fluidViscosityVisual: 'high',
-      gasBubbleDensity: 0.25,
-      frictionResistance: 0.9,
-      motorLoadPercentage: 78,
-      rodAnimationSpeedFactor: 0.8
     }
   }
 ];

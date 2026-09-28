@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { DigitalTwinCanvas } from './DigitalTwinCanvas';
 import { DigitalTwinLegend } from './DigitalTwinLegend';
 import { DEFAULT_TWIN_CONFIG } from './config';
 import {
   AnimationProvider,
   useAnimation,
-  type AnimationSpeedMode,
 } from './animations';
 import { Grid, ZoomIn, ZoomOut, RotateCcw, Eye, Play, Pause, RotateCcw as ResetIcon, Terminal, Activity, CheckCircle2, AlertCircle } from 'lucide-react';
 import { useScenarioStore } from '../../simulation/scenario';
@@ -18,7 +17,7 @@ const ViewportToolbar: React.FC<{
   onZoomOut: () => void;
   onResetZoom: () => void;
 }> = ({ gridVisible, onToggleGrid, zoom, onZoomIn, onZoomOut, onResetZoom }) => {
-  const { isPlaying, speed, play, pause, reset, setSpeed, activeSpm } = useAnimation();
+  const { isPlaying, play, pause, reset, activeSpm } = useAnimation();
 
   return (
     <div className="bg-slate-900/90 border-b border-slate-800 px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
@@ -69,17 +68,10 @@ const ViewportToolbar: React.FC<{
 
         {/* Animation Speed Selector (Visual multiplier overlay) */}
         <div className="flex items-center gap-1.5 font-mono text-xs text-slate-400">
-          <span className="text-[11px] hidden md:inline">Speed Multiplier:</span>
-          <select
-            value={speed}
-            onChange={(e) => setSpeed(e.target.value as AnimationSpeedMode)}
-            aria-label="Animation speed"
-            className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-sky-500 font-mono"
-          >
-            <option value="slow">SLOW (0.5x)</option>
-            <option value="normal">NORMAL (1.0x)</option>
-            <option value="fast">FAST (2.0x)</option>
-          </select>
+          <span className="text-[11px] hidden md:inline">Physical cycle:</span>
+          <span className="bg-slate-950 border border-slate-800 rounded px-2 py-1 text-xs text-sky-300 font-bold font-mono">
+            {activeSpm.toFixed(1)} SPM
+          </span>
         </div>
 
         {/* Animation Status Badge */}
@@ -146,6 +138,28 @@ const ViewportToolbar: React.FC<{
       </div>
     </div>
   );
+};
+
+const AutoPlayOnSimulationRun: React.FC = () => {
+  const { committedSimulationResult } = useScenarioStore();
+  const { reset, play, pause, activeSpm } = useAnimation();
+  const initialRunId = useRef(committedSimulationResult.trace.runId);
+
+  useEffect(() => {
+    const runId = committedSimulationResult.trace.runId;
+    if (runId === initialRunId.current) return;
+    initialRunId.current = runId;
+
+    reset();
+    play();
+
+    const cycleDuration = Math.max(1000, Math.min(60000, 60000 / Math.max(activeSpm, 1)));
+    const pauseTimer = window.setTimeout(() => pause(), cycleDuration + 120);
+
+    return () => window.clearTimeout(pauseTimer);
+  }, [activeSpm, committedSimulationResult.trace.runId, pause, play, reset]);
+
+  return null;
 };
 
 const DigitalTwinFooterContent: React.FC<{ gridVisible: boolean }> = ({ gridVisible }) => {
@@ -251,6 +265,44 @@ const DigitalTwinFooterContent: React.FC<{ gridVisible: boolean }> = ({ gridVisi
   );
 };
 
+const LiveViewportTelemetry: React.FC = () => {
+  const { committedSimulationResult, isStale } = useScenarioStore();
+  const { inputs, thermal, viscosity, production, srp, risk } = committedSimulationResult;
+
+  return (
+    <div className="absolute bottom-3 left-3 right-3 pointer-events-none font-mono">
+      <div className="bg-slate-950/90 border border-sky-800/80 rounded-lg px-3 py-2 shadow-xl backdrop-blur-sm">
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b border-slate-800 pb-1.5 text-[10px]">
+          <div className="flex items-center gap-1.5 font-bold text-sky-300">
+            <span className={`h-2 w-2 rounded-full ${isStale ? 'bg-amber-400' : 'bg-emerald-400 animate-pulse'}`} />
+            <span>{isStale ? 'EDITED INPUTS — RUN REQUIRED' : 'LIVE COMMITTED MODEL STATE'}</span>
+          </div>
+          <span className="text-slate-400">Cycle {inputs.soakDurationDays > 0 ? 'SOAK / PRODUCTION' : 'BASELINE'} · {inputs.spm.toFixed(1)} SPM · {inputs.vfdFrequencyHz.toFixed(0)} Hz</span>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-3 gap-y-1 pt-1.5 text-[10px]">
+          <TelemetryValue label="T_RES" value={`${thermal.predictedReservoirTemperatureC.toFixed(1)} °C`} tone="text-rose-300" />
+          <TelemetryValue label="VISCOSITY" value={`${viscosity.estimatedViscosityCp.toLocaleString()} cP`} tone="text-purple-300" />
+          <TelemetryValue label="MOBILITY" value={`${mobilityValue(committedSimulationResult.mobility.mobilityDcP)} D/cP`} tone="text-amber-300" />
+          <TelemetryValue label="OIL RATE" value={`${production.estimatedProductionBopd.toFixed(2)} BOPD`} tone="text-emerald-300" />
+          <TelemetryValue label="SRP LOAD" value={`${srp.currentCandidate.loadIndex.toFixed(0)} %`} tone="text-amber-300" />
+          <TelemetryValue label="STEAM" value={`${inputs.steamInjectionRateTpd.toFixed(0)} TPD`} tone="text-rose-300" />
+          <TelemetryValue label="RISK" value={`${risk.riskLevel} ${risk.riskScore}/100`} tone={risk.riskLevel === 'LOW' ? 'text-emerald-300' : 'text-amber-300'} />
+          <TelemetryValue label="FLOW" value={inputs.waterCutPercent > 50 ? 'WATER-RICH' : 'OIL-RICH'} tone="text-sky-300" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const mobilityValue = (value: number) => value.toFixed(5);
+
+const TelemetryValue: React.FC<{ label: string; value: string; tone: string }> = ({ label, value, tone }) => (
+  <div className="min-w-0">
+    <span className="block text-[8px] text-slate-500">{label}</span>
+    <strong className={`block truncate ${tone}`}>{value}</strong>
+  </div>
+);
+
 export const DigitalTwinViewport: React.FC = () => {
   const [gridVisible, setGridVisible] = useState(DEFAULT_TWIN_CONFIG.gridVisible);
   const [zoom, setZoom] = useState(DEFAULT_TWIN_CONFIG.defaultZoom);
@@ -269,6 +321,7 @@ export const DigitalTwinViewport: React.FC = () => {
 
   return (
     <AnimationProvider>
+      <AutoPlayOnSimulationRun />
       <div className="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden flex flex-col shadow-2xl">
         {/* Viewport Control Bar Header */}
         <ViewportToolbar
@@ -299,6 +352,8 @@ export const DigitalTwinViewport: React.FC = () => {
               <span>↖ Fluid Flow (Viscosity-Controlled Inflow)</span>
             </div>
           </div>
+
+          <LiveViewportTelemetry />
         </div>
 
         {/* Viewport Footer Bar & Legend */}

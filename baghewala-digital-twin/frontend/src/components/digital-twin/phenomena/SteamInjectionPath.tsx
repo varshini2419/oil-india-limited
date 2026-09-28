@@ -1,5 +1,6 @@
 import React from 'react';
 import { WELL_LAYOUT_CONFIG } from '../config';
+import { useScenarioStore } from '../../../simulation/scenario';
 
 interface SteamInjectionPathProps {
   steamRate?: number; // Future simulation compatibility prop
@@ -7,10 +8,14 @@ interface SteamInjectionPathProps {
 
 export const SteamInjectionPath: React.FC<SteamInjectionPathProps> = () => {
   const { wellCenterX, surfaceY, casingWidth } = WELL_LAYOUT_CONFIG;
+  const { committedSimulationResult, isStale } = useScenarioStore();
+  const steamRate = committedSimulationResult.inputs.steamInjectionRateTpd;
+  const steamQuality = committedSimulationResult.inputs.steamQualityPercent;
+  const steamIntensity = Math.max(0.2, Math.min(1, steamRate / 100));
   const leftAnnulusX = wellCenterX - casingWidth / 2 + 25;
 
   return (
-    <g id="component-steam-injection-path" className="steam-injection-group">
+    <g id="component-steam-injection-path" className="steam-injection-group" opacity={isStale ? 0.45 : steamIntensity}>
       <defs>
         {/* Arrow Marker for Downward Steam Path */}
         <marker
@@ -31,7 +36,7 @@ export const SteamInjectionPath: React.FC<SteamInjectionPathProps> = () => {
         d={`M ${wellCenterX - 220} ${surfaceY - 45} L ${leftAnnulusX} ${surfaceY - 45} L ${leftAnnulusX} ${surfaceY}`}
         fill="none"
         stroke="#ef4444"
-        strokeWidth="3"
+        strokeWidth={2 + steamIntensity * 2}
         strokeDasharray="6 4"
       />
 
@@ -42,7 +47,7 @@ export const SteamInjectionPath: React.FC<SteamInjectionPathProps> = () => {
         x2={leftAnnulusX}
         y2={690}
         stroke="#ef4444"
-        strokeWidth="2.5"
+        strokeWidth={2 + steamIntensity * 1.5}
         strokeDasharray="6 4"
         markerEnd="url(#steam-downflow-arrow)"
       />
@@ -96,7 +101,7 @@ export const SteamInjectionPath: React.FC<SteamInjectionPathProps> = () => {
           fontFamily="monospace"
           textAnchor="middle"
         >
-          STEAM / THERMAL INPUT — CONCEPTUAL
+          STEAM INPUT — {steamRate.toFixed(0)} TPD · QUALITY {steamQuality.toFixed(0)}%
         </text>
       </g>
     </g>

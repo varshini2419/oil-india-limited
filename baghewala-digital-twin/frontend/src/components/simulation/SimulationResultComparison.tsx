@@ -154,10 +154,10 @@ export const SimulationResultComparison: React.FC = () => {
         </span>
       }
     >
-      <div className="space-y-6 font-mono text-xs">
+      <div className="space-y-6 font-mono text-xs simulation-comparison">
 
         {/* MODELED SCENARIO RESULT SUMMARY BAR */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 p-3 bg-slate-950 rounded-lg border border-sky-900/60 shadow-lg">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 p-3 bg-slate-950 rounded-lg border border-sky-900/60 shadow-lg simulation-reveal simulation-live">
           <div className="space-y-1">
             <span className="text-[10px] text-slate-500 block font-bold">THERMAL STATE</span>
             <span className="text-rose-400 font-bold text-sm">
@@ -202,29 +202,29 @@ export const SimulationResultComparison: React.FC = () => {
         </div>
 
         {/* PHYSICS CAUSAL CHAIN FLOW BANNER */}
-        <div className="p-2.5 bg-slate-900/90 rounded border border-slate-800 text-[10px] font-mono text-slate-300">
+        <div className="p-2.5 bg-slate-900/90 rounded border border-slate-800 text-[10px] font-mono text-slate-300 simulation-reveal">
           <div className="text-[9px] uppercase font-bold text-sky-400 mb-1">
             PHYSICS DEPENDENCY PROPAGATION CHAIN
           </div>
           <div className="flex flex-wrap items-center justify-between gap-1 text-center font-bold text-[10px]">
-            <span className="px-2 py-1 bg-slate-950 rounded border border-slate-800 text-sky-300">SCENARIO CHANGE</span>
+            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-slate-800 text-sky-300">SCENARIO CHANGE</span>
             <span className="text-slate-500">→</span>
-            <span className="px-2 py-1 bg-slate-950 rounded border border-rose-900/60 text-rose-300">THERMAL</span>
+            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-rose-900/60 text-rose-300">THERMAL</span>
             <span className="text-slate-500">→</span>
-            <span className="px-2 py-1 bg-slate-950 rounded border border-purple-900/60 text-purple-300">VISCOSITY</span>
+            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-purple-900/60 text-purple-300">VISCOSITY</span>
             <span className="text-slate-500">→</span>
-            <span className="px-2 py-1 bg-slate-950 rounded border border-emerald-900/60 text-emerald-300">MOBILITY</span>
+            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-emerald-900/60 text-emerald-300">MOBILITY</span>
             <span className="text-slate-500">→</span>
-            <span className="px-2 py-1 bg-slate-950 rounded border border-sky-900/60 text-sky-300">PRODUCTION</span>
+            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-sky-900/60 text-sky-300">PRODUCTION</span>
             <span className="text-slate-500">→</span>
-            <span className="px-2 py-1 bg-slate-950 rounded border border-amber-900/60 text-amber-300">SRP LIFT</span>
+            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-amber-900/60 text-amber-300">SRP LIFT</span>
             <span className="text-slate-500">→</span>
-            <span className="px-2 py-1 bg-slate-950 rounded border border-rose-800 text-rose-300">RISK</span>
+            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-rose-800 text-rose-300">RISK</span>
           </div>
         </div>
         
         {/* Two-Column Side-by-Side Comparison Table */}
-        <div className="overflow-x-auto border border-slate-800 rounded-lg shadow-xl">
+        <div className="overflow-x-auto border border-slate-800 rounded-lg shadow-xl simulation-reveal">
           <table className="w-full text-left text-[11px]">
             <thead className="bg-slate-950 text-slate-400 uppercase font-mono border-b border-slate-800">
               <tr>
@@ -246,7 +246,7 @@ export const SimulationResultComparison: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-800/60 bg-slate-950/40 font-mono">
               {comparisonItems.map((item, idx) => (
-                <tr key={idx} className="hover:bg-slate-900/60 transition-colors">
+                <tr key={idx} className="simulation-table-row hover:bg-slate-900/60 transition-colors">
                   <td className="p-3 font-bold text-slate-200">
                     <div>{item.name}</div>
                     <span className="text-[9px] text-slate-500 font-sans">{item.category}</span>
@@ -269,7 +269,7 @@ export const SimulationResultComparison: React.FC = () => {
         </div>
 
         {/* WHY DID THIS CHANGE? SECTION */}
-        <div className="p-4 bg-slate-950 rounded-lg border border-slate-800 space-y-3">
+        <div className="p-4 bg-slate-950 rounded-lg border border-slate-800 space-y-3 simulation-reveal">
           <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
             <HelpCircle className="w-4 h-4 text-sky-400" />
             <h4 className="font-bold text-sky-300 text-xs tracking-wide uppercase">
@@ -291,7 +291,7 @@ export const SimulationResultComparison: React.FC = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {whyChangedDeltas.map((delta, i) => (
-                <div key={i} className="p-3 bg-slate-900/80 rounded border border-slate-800 space-y-2">
+                <div key={i} className="simulation-card p-3 bg-slate-900/80 rounded border border-slate-800 space-y-2">
                   <div className="flex justify-between items-center border-b border-slate-800/80 pb-1.5 text-xs">
                     <strong className="text-slate-200">{delta.parameterName}</strong>
                     <span className="text-amber-400 font-bold text-[10px]">{delta.delta}</span>

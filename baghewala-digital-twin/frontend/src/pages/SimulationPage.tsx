@@ -4,6 +4,7 @@ import { AiEngineeringExplanationPanel } from '../components/simulation/AiEngine
 import { SimulationHistoricalIncidents } from '../components/simulation/SimulationHistoricalIncidents';
 import { DigitalTwinViewport } from '../components/digital-twin/DigitalTwinViewport';
 import { NormalOperatingConditionPanel } from '../components/simulation/NormalOperatingConditionPanel';
+import { MLViscosityControlPanel } from '../components/simulation/MLViscosityControlPanel';
 import { SimulationControlsAndComparison } from '../components/simulation/SimulationControlsAndComparison';
 import { SimulationResultComparison } from '../components/simulation/SimulationResultComparison';
 import { SimulationReportModal } from '../components/simulation/SimulationReportModal';
@@ -263,6 +264,7 @@ export const SimulationPage: React.FC = () => {
       {/* ACTIVE WORKSTATION TAB CONTENT */}
       {activeWorkstationTab === 'RESULTS' && (
         <div className="space-y-6">
+          <MLViscosityControlPanel />
           <NormalOperatingConditionPanel />
           <SimulationResultComparison />
         </div>

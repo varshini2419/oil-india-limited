@@ -3,10 +3,12 @@ import { calculateViscosityModel } from './viscosity';
 import { calculateMobilityModel } from './mobility';
 import { calculateProductionModel } from './production';
 import { optimizeSRP } from './srpOptimization';
+import { optimizeCSS } from './cssOptimization';
 import { analyzeAIRisk } from './riskEngine';
 import { queryBaghewalaKnowledgeBase } from '../services/baghewalaRagEngine';
 import { generateLiveSimulationReport } from './reports/liveSimulationReportEngine';
 import { setLatestHistoricalIncidentStateForTest } from '../components/simulation/SimulationHistoricalIncidents';
+import { loadBaseline, createScenario } from './scenario/scenarioEngine';
 import type { Scenario } from './scenario/types';
 
 export function testCompleteEndToEndFlow(): { success: boolean; logs: string[] } {
@@ -18,27 +20,7 @@ export function testCompleteEndToEndFlow(): { success: boolean; logs: string[] }
 
   try {
     // 1. Define Baseline Scenario
-    const baselineScenario: Scenario = {
-      id: 'BAGHEWALA_BASELINE',
-      name: 'Baseline Cold Production',
-      description: 'Unheated baseline reservoir operating state',
-      inputs: {
-        reservoirTemperatureC: 48.0,
-        steamInjectionRateTpd: 0,
-        steamQualityPercent: 0,
-        soakDurationDays: 0,
-        vfdFrequencyHz: 50,
-        spm: 8.0,
-        strokeLengthMeters: 3.4,
-        ambientTemperatureC: 35.0,
-        humidityPercent: 40,
-        windSpeedKmh: 15,
-        waterCutPercent: 34,
-        reservoirPressureBar: 48.0,
-        permeabilityDarcy: 1.2,
-        steamInjectionTemperatureC: 0
-      }
-    };
+    const baselineScenario: Scenario = loadBaseline();
 
     // Calculate baseline physics
     const baseThermal = calculateThermalModel(baselineScenario);
@@ -53,11 +35,10 @@ export function testCompleteEndToEndFlow(): { success: boolean; logs: string[] }
 
     // 2. User Changes Parameters & Triggers RUN SIMULATION
     log('\n[STEP 2] User Changes Parameters (Thermal CSS + SRP Optimization) & Clicks RUN SIMULATION:');
-    const modifiedScenario: Scenario = {
-      id: 'SCENARIO_CSS_THERMAL_EOR',
-      name: 'Commercial CSS Cycle 1 + High SPM Lift',
-      description: 'Thermal steam injection at 60 TPD, 310°C with 10.0 SPM lift',
-      inputs: {
+    const modifiedScenario: Scenario = createScenario(
+      'Commercial CSS Cycle 1 + High SPM Lift',
+      'Thermal steam injection at 60 TPD, 310°C with 10.0 SPM lift',
+      {
         ...baselineScenario.inputs,
         reservoirTemperatureC: 82.0,
         steamInjectionRateTpd: 60,
@@ -68,7 +49,7 @@ export function testCompleteEndToEndFlow(): { success: boolean; logs: string[] }
         strokeLengthMeters: 3.4,
         steamInjectionTemperatureC: 310
       }
-    };
+    );
 
     // Calculate modified scenario physics
     const modThermal = calculateThermalModel(modifiedScenario);
@@ -168,6 +149,23 @@ export function testCompleteEndToEndFlow(): { success: boolean; logs: string[] }
 
     // 4. Pass Results into Report Engine & Generate Grounded Decision Report
     log('\n[STEP 4] Passing Results to Live Simulation Report Engine & Generating Grounded Report:');
+    const modCss = optimizeCSS({
+      steamInjectionRateTpd: 60,
+      steamInjectionTemperatureC: 310,
+      steamQualityFraction: 0.75,
+      injectionDurationDays: 10,
+      soakDurationDays: 14,
+      productionDurationDays: 90,
+      reservoirTemperatureC: 82.0,
+      reservoirPressureBar: 48.0,
+      baselineViscosityCp: baseViscosity.estimatedViscosityCp,
+      baselineMobilityDPerCp: baseMobility.mobilityDcP,
+      baselineProductionBopd: baseProduction.estimatedProductionBopd,
+      vfdFrequencyHz: 45,
+      spm: 10.0,
+      strokeLengthMeters: 3.4
+    });
+
     const reportData = generateLiveSimulationReport({
       activeScenario: modifiedScenario,
       thermalResult: modThermal,
@@ -179,15 +177,7 @@ export function testCompleteEndToEndFlow(): { success: boolean; logs: string[] }
       productionResult: modProduction,
       baselineProductionResult: baseProduction,
       srpOptimizationResult: modSrp,
-      cssOptimizationResult: {
-        optimalSoakDays: 14,
-        optimalSteamTpd: 60,
-        expectedThermalGainC: 34,
-        projectedViscosityCp: modViscosity.estimatedViscosityCp,
-        projectedProductionBopd: modProduction.estimatedProductionBopd,
-        thermalEfficiencyScore: 88,
-        recommendation: 'Proceed with cycle 1 steam soak.'
-      },
+      cssOptimizationResult: modCss,
       aiRiskResult: modRisk
     });
 

@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.health import router as health_router
 from app.api.rag import router as rag_router
+from app.api.simulation import router as simulation_router
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -23,6 +24,7 @@ app.add_middleware(
 app.include_router(health_router, prefix=settings.API_PREFIX)
 app.include_router(rag_router, prefix=settings.API_PREFIX)
 app.include_router(rag_router, prefix="")
+app.include_router(simulation_router, prefix=settings.API_PREFIX)
 
 if __name__ == "__main__":
     import uvicorn

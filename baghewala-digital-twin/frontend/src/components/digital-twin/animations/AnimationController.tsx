@@ -59,11 +59,10 @@ export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }
 
   // Safely clamp physical SPM between 1.0 and 30.0 SPM
   const clampedSpm = Math.max(1.0, Math.min(30.0, activeSpm));
-  // Dynamic stroke cycle duration derived from physical SPM (at nominal 8.0 SPM = 2500ms)
-  const baseCycleDurationMs = (8.0 / clampedSpm) * ANIMATION_CONFIG.baseCycleDurationMs;
-
-  const speedMultiplier = ANIMATION_CONFIG.speeds[speed];
-  const cycleDurationMs = Math.max(400, Math.min(12000, baseCycleDurationMs / speedMultiplier));
+  // One complete visual stroke follows the committed physical SPM value.
+  // Keep the configured speed state for API compatibility, but do not let a
+  // presentation multiplier override the operating scenario.
+  const cycleDurationMs = Math.max(1000, Math.min(60000, 60000 / clampedSpm));
   // Scale visual stroke displacement amplitude by physical stroke length (nominal 2.5m)
   const amplitude = ANIMATION_CONFIG.visualStrokeAmplitude * (Math.max(0.5, Math.min(5.0, activeStrokeLength)) / 2.5);
 

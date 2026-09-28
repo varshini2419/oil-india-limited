@@ -604,14 +604,6 @@ export const WellVisualizationCanvas: React.FC<WellVisualizationCanvasProps> = (
           </div>
         </div>
 
-        {/* Conceptual Visual Overlay Banner when Gas Interference or Scale/Corrosion is active */}
-        {['gas_interference', 'scale_corrosion'].includes(phenomenon.id) && (
-          <div className="absolute top-3 right-4 bg-amber-950/90 border border-amber-800/90 px-3 py-1.5 rounded-lg text-[10px] font-mono text-amber-300 backdrop-blur-md z-20 font-bold shadow-lg animate-fade-in flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-            <span>CONCEPTUAL DEMO OVERLAY — VISUALIZATION ONLY</span>
-          </div>
-        )}
-
         {/* Safety Non-Actuation Disclaimer Banner */}
         <div className="absolute bottom-3 left-16 bg-slate-950/90 border border-slate-800 px-3 py-1.5 rounded-lg text-[10px] font-mono text-slate-400 backdrop-blur-md z-20 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400" />

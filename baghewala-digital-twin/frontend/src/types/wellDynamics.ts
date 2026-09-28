@@ -4,10 +4,8 @@ export type PhenomenonId =
   | 'normal_operation'
   | 'temperature_thermal'
   | 'high_viscosity'
-  | 'gas_interference'
   | 'rod_overload'
-  | 'motor_pump_overload'
-  | 'scale_corrosion';
+  | 'motor_pump_overload';
 
 export type WellComponentId =
   | 'motor'

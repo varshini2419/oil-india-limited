@@ -1,7 +1,7 @@
 import React from 'react';
 import type { WellPhenomenon, PhenomenonId } from '../../types/wellDynamics';
 import { WELL_PHENOMENA } from '../../config/wellDynamicsPhenomena';
-import { Activity, Flame, ShieldAlert, Wind, Zap, Cpu, Wrench } from 'lucide-react';
+import { Activity, Flame, ShieldAlert, Zap, Cpu } from 'lucide-react';
 
 interface PhenomenaSelectorProps {
   selectedId: PhenomenonId;
@@ -16,14 +16,10 @@ const getPhenomenonIcon = (id: PhenomenonId) => {
       return <Flame className="w-4 h-4 text-orange-400" />;
     case 'high_viscosity':
       return <ShieldAlert className="w-4 h-4 text-purple-400" />;
-    case 'gas_interference':
-      return <Wind className="w-4 h-4 text-cyan-400" />;
     case 'rod_overload':
       return <Zap className="w-4 h-4 text-red-400" />;
     case 'motor_pump_overload':
       return <Cpu className="w-4 h-4 text-amber-400" />;
-    case 'scale_corrosion':
-      return <Wrench className="w-4 h-4 text-orange-300" />;
     default:
       return <Activity className="w-4 h-4 text-sky-400" />;
   }
@@ -55,14 +51,14 @@ export const PhenomenaSelector: React.FC<PhenomenaSelectorProps> = ({ selectedId
         <div>
           <h2 className="text-sm font-bold font-mono text-white flex items-center gap-2">
             <Activity className="w-4 h-4 text-sky-400" />
-            WELL PHENOMENA (7)
+            WELL PHENOMENA ({WELL_PHENOMENA.length})
           </h2>
           <p className="text-[11px] text-slate-400 font-mono mt-0.5">
             Select physical condition to inspect well dynamics
           </p>
         </div>
         <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-sky-950 text-sky-300 border border-sky-800 font-bold">
-          7 CONFIGS
+          {WELL_PHENOMENA.length} TRAINED CONFIGS
         </span>
       </div>
 
@@ -98,15 +94,9 @@ export const PhenomenaSelector: React.FC<PhenomenaSelectorProps> = ({ selectedId
               <div className="flex items-center justify-between text-[10px] font-mono text-slate-500 pt-1 border-t border-slate-800/60 mt-0.5">
                 <div className="flex items-center gap-2">
                   <span>{item.affectedComponents.length} Components</span>
-                  {['gas_interference', 'scale_corrosion'].includes(item.id) ? (
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-950/80 text-amber-300 border border-amber-800/60 font-bold">
-                      CONCEPTUAL
-                    </span>
-                  ) : (
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 font-bold">
-                      CALCULATED
-                    </span>
-                  )}
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 font-bold">
+                    CALCULATED
+                  </span>
                 </div>
                 <span className="text-slate-400 hover:text-sky-300 transition-colors font-bold">
                   {isSelected ? '● ACTIVE' : 'Inspect →'}
