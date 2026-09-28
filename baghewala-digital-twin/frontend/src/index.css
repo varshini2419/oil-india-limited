@@ -4,11 +4,47 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  color-scheme: light dark;
+  color-scheme: light;
 }
 
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
+}
+
+/* Keep the existing utility-driven layout and behavior while applying a light theme. */
+[class*="bg-slate-"] {
+  background-color: #ffffff !important;
+}
+
+[class*="border-slate-"] {
+  border-color: #dbe3ec !important;
+}
+
+[class~="text-slate-100"],
+[class~="text-slate-200"],
+[class~="text-slate-300"] {
+  color: #1e293b !important;
+}
+
+[class~="text-slate-400"],
+[class~="text-slate-500"] {
+  color: #64748b !important;
+}
+
+[class~="text-slate-900"],
+[class~="text-slate-950"] {
+  color: #0f172a !important;
+}
+
+[class~="hover:bg-slate-800"]:hover,
+[class~="hover:bg-slate-800\/60"]:hover,
+[class~="hover:bg-slate-700"]:hover {
+  background-color: #f1f5f9 !important;
+}
+
+[class~="hover:text-slate-200"]:hover,
+[class~="hover:text-slate-300"]:hover {
+  color: #0f172a !important;
 }
