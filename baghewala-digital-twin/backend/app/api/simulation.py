@@ -11,6 +11,7 @@ Endpoints:
   GET  /simulation/model-info         – model metadata and performance metrics
 """
 
+import copy
 from fastapi import APIRouter, HTTPException
 from app.schemas.simulation_schemas import (
     SimulationInput,
@@ -111,7 +112,7 @@ def simulate(body: SimulationInput):
 def model_info():
     """Return trained model metadata, performance metrics, and feature schemas."""
     svc = _get_svc()
-    meta = svc.metadata.copy()
+    meta = copy.deepcopy(svc.metadata)
     # Strip full feature lists from inline response (they are large)
     for model_key in meta.get("models", {}):
         metrics = meta["models"][model_key].get("metrics", {})

@@ -1,8 +1,17 @@
 import React from 'react';
-import { Panel } from '../ui/Panel';
 import { useScenarioStore, BASELINE_INPUT_VALUES } from '../../simulation/scenario';
 import { analyzeWhyStateChanged } from '../../simulation/copilot/decisionTraceEngine';
-import { HelpCircle } from 'lucide-react';
+import {
+  HelpCircle,
+  Activity,
+  Flame,
+  Droplet,
+  TrendingUp,
+  Gauge,
+  ShieldAlert,
+  ArrowRight,
+  Layers,
+} from 'lucide-react';
 
 export const SimulationResultComparison: React.FC = () => {
   const {
@@ -145,202 +154,226 @@ export const SimulationResultComparison: React.FC = () => {
   ];
 
   return (
-    <Panel
-      title="SIMULATION RESULT — REFERENCE vs MODELED SCENARIO"
-      subtitle="Comprehensive 14-parameter side-by-side comparison between Reference Baseline vs Active Simulated Scenario"
-      action={
-        <span className="px-2.5 py-1 rounded bg-sky-950 text-sky-300 border border-sky-800 font-mono text-[10px] font-bold">
-          [MODELED SCENARIO DELTA EVALUATION]
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-md space-y-6 font-sans">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-5">
+        <div>
+          <div className="flex items-center gap-2 text-[10px] font-mono font-bold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-1">
+            <Activity className="w-3.5 h-3.5" />
+            <span>Comparative Physics Engine</span>
+          </div>
+          <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100 tracking-tight">
+            Simulation Results — Reference vs Modeled Scenario
+          </h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+            Comprehensive 14-parameter side-by-side analysis between baseline reference state and active simulated candidate.
+          </p>
+        </div>
+
+        <span className="text-[10px] font-mono font-bold px-3 py-1.5 rounded-xl bg-sky-50 dark:bg-sky-950/60 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-800 shrink-0 self-start sm:self-auto shadow-sm">
+          SINGLE SOURCE OF TRUTH
         </span>
-      }
-    >
-      <div className="space-y-6 font-mono text-xs simulation-comparison">
+      </div>
 
-        {/* MODELED SCENARIO RESULT SUMMARY BAR */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 p-3 bg-slate-950 rounded-lg border border-sky-900/60 shadow-lg simulation-reveal simulation-live">
-          <div className="space-y-1">
-            <span className="text-[10px] text-slate-500 block font-bold">THERMAL STATE</span>
-            <span className="text-rose-400 font-bold text-sm">
-              {thermalResult.predictedReservoirTemperatureC.toFixed(1)} °C
-            </span>
-            <span className="text-[9px] text-slate-400 block font-mono">[MODEL-CALCULATED]</span>
+      {/* 5 KEY METRIC SUMMARY CARDS */}
+      <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+        {/* Thermal */}
+        <div className="p-4 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2 hover:border-rose-300 dark:hover:border-rose-800 transition-colors shadow-sm">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-rose-600 dark:text-rose-400 uppercase tracking-wider">
+            <Flame className="w-3.5 h-3.5" />
+            <span>Thermal State</span>
           </div>
-
-          <div className="space-y-1">
-            <span className="text-[10px] text-slate-500 block font-bold">OIL VISCOSITY</span>
-            <span className="text-purple-400 font-bold text-sm">
-              {viscosityResult.estimatedViscosityCp.toLocaleString()} cP
-            </span>
-            <span className="text-[9px] text-slate-400 block font-mono">[MODEL-CALCULATED]</span>
-          </div>
-
-          <div className="space-y-1">
-            <span className="text-[10px] text-slate-500 block font-bold">PRODUCTION YIELD</span>
-            <span className="text-sky-300 font-bold text-sm">
-              {productionResult.estimatedProductionBopd.toFixed(2)} BOPD
-            </span>
-            <span className="text-[9px] text-slate-400 block font-mono">[MODEL-CALCULATED]</span>
-          </div>
-
-          <div className="space-y-1">
-            <span className="text-[10px] text-slate-500 block font-bold">SRP ROD LOAD</span>
-            <span className="text-amber-400 font-bold text-sm">
-              {srpOptimizationResult.currentCandidate.loadIndex.toFixed(0)} %
-            </span>
-            <span className="text-[9px] text-slate-400 block font-mono">[MODEL-CALCULATED]</span>
-          </div>
-
-          <div className="space-y-1 col-span-2 sm:col-span-1">
-            <span className="text-[10px] text-slate-500 block font-bold">RISK STATE</span>
-            <span className={`font-bold text-sm ${
-              aiRiskResult.riskLevel === 'HIGH' ? 'text-rose-400' : (aiRiskResult.riskLevel === 'MODERATE' ? 'text-amber-400' : 'text-emerald-400')
-            }`}>
-              {aiRiskResult.riskLevel} ({aiRiskResult.riskScore}/100)
-            </span>
-            <span className="text-[9px] text-slate-400 block font-mono">[MODEL-PREDICTED]</span>
-          </div>
+          <span className="text-rose-600 dark:text-rose-400 font-bold text-xl font-mono block">
+            {thermalResult.predictedReservoirTemperatureC.toFixed(1)} °C
+          </span>
+          <span className="text-[10px] text-slate-400 font-mono block">MODEL-CALCULATED</span>
         </div>
 
-        {/* PHYSICS CAUSAL CHAIN FLOW BANNER */}
-        <div className="p-2.5 bg-slate-900/90 rounded border border-slate-800 text-[10px] font-mono text-slate-300 simulation-reveal">
-          <div className="text-[9px] uppercase font-bold text-sky-400 mb-1">
-            PHYSICS DEPENDENCY PROPAGATION CHAIN
+        {/* Viscosity */}
+        <div className="p-4 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2 hover:border-purple-300 dark:hover:border-purple-800 transition-colors shadow-sm">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider">
+            <Droplet className="w-3.5 h-3.5" />
+            <span>Oil Viscosity</span>
           </div>
-          <div className="flex flex-wrap items-center justify-between gap-1 text-center font-bold text-[10px]">
-            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-slate-800 text-sky-300">SCENARIO CHANGE</span>
-            <span className="text-slate-500">→</span>
-            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-rose-900/60 text-rose-300">THERMAL</span>
-            <span className="text-slate-500">→</span>
-            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-purple-900/60 text-purple-300">VISCOSITY</span>
-            <span className="text-slate-500">→</span>
-            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-emerald-900/60 text-emerald-300">MOBILITY</span>
-            <span className="text-slate-500">→</span>
-            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-sky-900/60 text-sky-300">PRODUCTION</span>
-            <span className="text-slate-500">→</span>
-            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-amber-900/60 text-amber-300">SRP LIFT</span>
-            <span className="text-slate-500">→</span>
-            <span className="simulation-chain-step px-2 py-1 bg-slate-950 rounded border border-rose-800 text-rose-300">RISK</span>
-          </div>
+          <span className="text-purple-600 dark:text-purple-400 font-bold text-xl font-mono block truncate">
+            {viscosityResult.estimatedViscosityCp.toLocaleString()} cP
+          </span>
+          <span className="text-[10px] text-slate-400 font-mono block">MODEL-CALCULATED</span>
         </div>
-        
-        {/* Two-Column Side-by-Side Comparison Table */}
-        <div className="overflow-x-auto border border-slate-800 rounded-lg shadow-xl simulation-reveal">
-          <table className="w-full text-left text-[11px]">
-            <thead className="bg-slate-950 text-slate-400 uppercase font-mono border-b border-slate-800">
-              <tr>
-                <th className="p-3">Parameter Metric</th>
-                <th className="p-3 text-emerald-400">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-emerald-400" />
-                    <span>REFERENCE CONDITION</span>
-                  </div>
-                </th>
-                <th className="p-3 text-sky-400">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-sky-400" />
-                    <span>SIMULATED CONDITION</span>
-                  </div>
-                </th>
-                <th className="p-3 text-amber-400">Delta (Δ) Shift</th>
+
+        {/* Production */}
+        <div className="p-4 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2 hover:border-sky-300 dark:hover:border-sky-800 transition-colors shadow-sm">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Production Yield</span>
+          </div>
+          <span className="text-sky-600 dark:text-sky-400 font-bold text-xl font-mono block">
+            {productionResult.estimatedProductionBopd.toFixed(2)} <span className="text-xs">BOPD</span>
+          </span>
+          <span className="text-[10px] text-slate-400 font-mono block">MODEL-CALCULATED</span>
+        </div>
+
+        {/* SRP Load */}
+        <div className="p-4 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2 hover:border-amber-300 dark:hover:border-amber-800 transition-colors shadow-sm">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+            <Gauge className="w-3.5 h-3.5" />
+            <span>SRP Rod Load</span>
+          </div>
+          <span className="text-amber-600 dark:text-amber-400 font-bold text-xl font-mono block">
+            {srpOptimizationResult.currentCandidate.loadIndex.toFixed(0)} %
+          </span>
+          <span className="text-[10px] text-slate-400 font-mono block">MODEL-CALCULATED</span>
+        </div>
+
+        {/* Risk State */}
+        <div className="p-4 bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-2 hover:border-emerald-300 dark:hover:border-emerald-800 transition-colors shadow-sm col-span-2 sm:col-span-1">
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
+            <ShieldAlert className="w-3.5 h-3.5 text-rose-500" />
+            <span>Risk State</span>
+          </div>
+          <span className={`font-bold text-xl font-mono block ${
+            aiRiskResult.riskLevel === 'HIGH'
+              ? 'text-rose-600 dark:text-rose-400'
+              : aiRiskResult.riskLevel === 'MODERATE'
+              ? 'text-amber-600 dark:text-amber-400'
+              : 'text-emerald-600 dark:text-emerald-400'
+          }`}>
+            {aiRiskResult.riskLevel}
+          </span>
+          <span className="text-[10px] text-slate-400 font-mono block">SCORE: {aiRiskResult.riskScore}/100</span>
+        </div>
+      </div>
+
+      {/* PROPAGATION PIPELINE STRIP */}
+      <div className="p-4 bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-100 dark:border-slate-800 space-y-3">
+        <div className="flex items-center gap-2 text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+          <Layers className="w-4 h-4" />
+          <span>Physics Dependency Propagation Chain</span>
+        </div>
+        <div className="flex flex-wrap items-center justify-between gap-2 text-center text-xs font-bold">
+          <span className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-sky-700 dark:text-sky-300 shadow-sm">
+            SCENARIO CHANGE
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 shadow-sm">
+            THERMAL
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-purple-200 dark:border-purple-900/60 text-purple-700 dark:text-purple-300 shadow-sm">
+            VISCOSITY
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-emerald-200 dark:border-emerald-900/60 text-emerald-700 dark:text-emerald-300 shadow-sm">
+            MOBILITY
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-sky-200 dark:border-sky-900/60 text-sky-700 dark:text-sky-300 shadow-sm">
+            PRODUCTION
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-amber-200 dark:border-amber-900/60 text-amber-700 dark:text-amber-300 shadow-sm">
+            SRP LIFT
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+          <span className="px-3 py-1.5 bg-white dark:bg-slate-900 rounded-xl border border-rose-200 dark:border-rose-900/60 text-rose-700 dark:text-rose-300 shadow-sm">
+            RISK
+          </span>
+        </div>
+      </div>
+      
+      {/* TWO-COLUMN SIDE-BY-SIDE COMPARISON TABLE */}
+      <div className="overflow-x-auto border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
+        <table className="w-full text-left text-sm font-medium">
+          <thead className="bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 uppercase font-bold text-[11px] tracking-wider border-b border-slate-200 dark:border-slate-800">
+            <tr>
+              <th className="p-4">Parameter Metric</th>
+              <th className="p-4 text-emerald-700 dark:text-emerald-400">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                  <span>REFERENCE CONDITION</span>
+                </div>
+              </th>
+              <th className="p-4 text-sky-700 dark:text-sky-400">
+                <div className="flex items-center gap-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-sky-500" />
+                  <span>SIMULATED CONDITION</span>
+                </div>
+              </th>
+              <th className="p-4 text-amber-700 dark:text-amber-400">Delta (Δ) Shift</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 bg-white dark:bg-slate-900/40">
+            {comparisonItems.map((item, idx) => (
+              <tr key={idx} className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                <td className="p-4 font-bold text-slate-800 dark:text-slate-200">
+                  <div>{item.name}</div>
+                  <span className="text-[10px] text-slate-400 font-sans font-semibold uppercase tracking-wider">{item.category}</span>
+                </td>
+                <td className="p-4 text-emerald-700 dark:text-emerald-400 font-mono font-bold">{item.refValue}</td>
+                <td className="p-4 text-sky-700 dark:text-sky-400 font-mono font-bold">{item.simValue}</td>
+                <td className="p-4 font-bold font-mono">
+                  <span className={`px-2.5 py-1 rounded-lg text-xs shadow-sm ${
+                    item.delta.includes('+')
+                      ? 'bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-900/60'
+                      : (item.delta.includes('-')
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-900/60'
+                        : 'bg-slate-100 text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700')
+                  }`}>
+                    {item.delta}
+                  </span>
+                </td>
               </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-800/60 bg-slate-950/40 font-mono">
-              {comparisonItems.map((item, idx) => (
-                <tr key={idx} className="simulation-table-row hover:bg-slate-900/60 transition-colors">
-                  <td className="p-3 font-bold text-slate-200">
-                    <div>{item.name}</div>
-                    <span className="text-[9px] text-slate-500 font-sans">{item.category}</span>
-                  </td>
-                  <td className="p-3 text-emerald-300 font-semibold">{item.refValue}</td>
-                  <td className="p-3 text-sky-300 font-bold">{item.simValue}</td>
-                  <td className="p-3 font-bold">
-                    <span className={`px-2 py-0.5 rounded text-[10px] ${
-                      item.delta.includes('+')
-                        ? 'bg-rose-950/60 text-rose-300 border border-rose-800/60'
-                        : (item.delta.includes('-') ? 'bg-emerald-950/60 text-emerald-300 border border-emerald-800/60' : 'bg-slate-900 text-slate-400 border border-slate-800')
-                    }`}>
-                      {item.delta}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* WHY DID THIS CHANGE? SECTION */}
+      <div className="p-6 bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800/80 pb-3">
+          <div className="flex items-center gap-2">
+            <HelpCircle className="w-5 h-5 text-sky-500" />
+            <h3 className="font-bold text-slate-800 dark:text-slate-100 text-sm tracking-wide uppercase">
+              WHY DID THIS CHANGE? — CAUSAL DECISION TRACE
+            </h3>
+          </div>
+          <span className="text-[10px] text-slate-500 font-bold bg-white dark:bg-slate-900 px-3 py-1 rounded-lg border border-slate-200 dark:border-slate-800">
+            decisionTraceEngine
+          </span>
         </div>
 
-        {/* WHY DID THIS CHANGE? SECTION */}
-        <div className="p-4 bg-slate-950 rounded-lg border border-slate-800 space-y-3 simulation-reveal">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
-            <HelpCircle className="w-4 h-4 text-sky-400" />
-            <h4 className="font-bold text-sky-300 text-xs tracking-wide uppercase">
-              WHY DID THIS CHANGE? — CAUSAL DECISION TRACE
-            </h4>
-            <span className="text-[9px] text-slate-500 font-sans ml-auto">
-              Sourced directly from decisionTraceEngine
-            </span>
+        {whyChangedDeltas.length === 0 ? (
+          <div className="text-slate-500 dark:text-slate-400 font-medium text-xs p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 text-center">
+            No parameter variations detected against baseline reference. Active scenario matches normal operating condition.
           </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {whyChangedDeltas.map((delta, i) => (
+              <div key={i} className="p-5 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 space-y-3 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition-all">
+                <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-2 text-sm">
+                  <strong className="text-slate-800 dark:text-slate-100 font-bold">{delta.parameterName}</strong>
+                  <span className="text-amber-600 dark:text-amber-400 font-bold font-mono text-xs px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-900/60">
+                    {delta.delta}
+                  </span>
+                </div>
 
-          <div className="text-[10px] text-slate-400 italic">
-            Each downstream change is calculated from the preceding modeled physical state.
-          </div>
-
-          {whyChangedDeltas.length === 0 ? (
-            <div className="text-slate-400 italic text-[11px] p-2">
-              No parameter variations detected against baseline reference. Active scenario matches normal operating condition.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-              {whyChangedDeltas.map((delta, i) => (
-                <div key={i} className="simulation-card p-3 bg-slate-900/80 rounded border border-slate-800 space-y-2">
-                  <div className="flex justify-between items-center border-b border-slate-800/80 pb-1.5 text-xs">
-                    <strong className="text-slate-200">{delta.parameterName}</strong>
-                    <span className="text-amber-400 font-bold text-[10px]">{delta.delta}</span>
+                <div className="text-xs text-slate-600 dark:text-slate-300 space-y-2">
+                  <div className="text-[11px] text-sky-600 dark:text-sky-400 font-bold uppercase tracking-wider">
+                    Affected Model: {delta.affectedModel}
                   </div>
-
-                  <div className="text-[11px] text-slate-300 space-y-1">
-                    <div className="flex items-center gap-1 text-[10px] text-sky-400 font-semibold">
-                      <span>Affected: {delta.affectedModel}</span>
-                    </div>
-                    <div className="text-slate-400 font-sans text-xs">
-                      {delta.causalExplanation}
-                    </div>
-                    <div className="p-2 bg-slate-950 rounded border border-slate-900 text-[10px] text-emerald-300 font-mono">
-                      <strong>Physics Shift:</strong> {delta.intermediatePhysicsChange}
-                    </div>
+                  <div className="font-medium leading-relaxed">
+                    {delta.causalExplanation}
+                  </div>
+                  <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-100 dark:border-slate-800 font-mono text-xs text-emerald-700 dark:text-emerald-400 shadow-inner">
+                    <strong className="text-slate-500 font-bold">Physics Shift:</strong> <br/>{delta.intermediatePhysicsChange}
                   </div>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* MODELED INTERPRETATION PANEL */}
-        <div className="p-4 bg-slate-900/80 rounded-lg border border-sky-900/60 font-mono text-xs space-y-2">
-          <div className="flex items-center gap-2 border-b border-slate-800 pb-1.5 font-bold text-sky-300 text-xs">
-            <span>MODELED INTERPRETATION</span>
-            <span className="text-[9px] text-slate-500 font-sans ml-auto">[NON-ACTUATING DECISION ADVISORY]</span>
+              </div>
+            ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[11px] text-slate-300">
-            <div className="p-2 bg-slate-950 rounded border border-slate-800">
-              <strong className="text-rose-400 block text-[10px]">THERMAL INTERPRETATION</strong>
-              Modeled heating reduces heavy-oil resistance in the matrix near-wellbore zone.
-            </div>
-            <div className="p-2 bg-slate-950 rounded border border-slate-800">
-              <strong className="text-purple-400 block text-[10px]">FLUID RHEOLOGY</strong>
-              Lower viscosity increases modeled effective Darcy mobility ($k/\mu$).
-            </div>
-            <div className="p-2 bg-slate-950 rounded border border-slate-800">
-              <strong className="text-sky-300 block text-[10px]">PRODUCTION INFLOW</strong>
-              Improved mobility changes modeled Vogel IPR heavy-oil inflow potential.
-            </div>
-            <div className="p-2 bg-slate-950 rounded border border-slate-800">
-              <strong className="text-amber-400 block text-[10px]">SRP MECHANICS & RISK</strong>
-              Higher lift demand alters rod-load envelope and multi-physics risk evaluation.
-            </div>
-          </div>
-        </div>
-
+        )}
       </div>
-    </Panel>
+
+    </div>
   );
 };

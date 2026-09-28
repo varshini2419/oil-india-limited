@@ -13,37 +13,37 @@ export const DeviationAlertsPanel: React.FC<Props> = ({ alerts }) => {
   const warningCount = alerts.filter((a) => a.severity === 'WARNING').length;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+    <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-6 shadow-sm font-sans">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
         <div className="flex items-center space-x-3">
-          <div className={`p-2 rounded-lg border ${
+          <div className={`p-2.5 rounded-xl border shadow-sm ${
             criticalCount > 0
-              ? 'bg-red-500/10 border-red-500/30 text-red-400'
+              ? 'bg-rose-100 border-rose-200 text-rose-600 dark:bg-rose-950/40 dark:border-rose-800/80 dark:text-rose-400'
               : warningCount > 0
-              ? 'bg-amber-500/10 border-amber-500/30 text-amber-400'
-              : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+              ? 'bg-amber-100 border-amber-200 text-amber-600 dark:bg-amber-950/40 dark:border-amber-800/80 dark:text-amber-400'
+              : 'bg-emerald-100 border-emerald-200 text-emerald-600 dark:bg-emerald-950/40 dark:border-emerald-800/80 dark:text-emerald-400'
           }`}>
             {criticalCount > 0 ? <AlertOctagon className="w-5 h-5" /> : warningCount > 0 ? <AlertTriangle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
           </div>
           <div>
-            <h3 className="text-base font-semibold text-slate-100">DETERMINISTIC DEVIATION ALERTS</h3>
-            <p className="text-xs text-slate-400">Engineering Threshold Monitoring & Physical Anomaly Detection</p>
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">DETERMINISTIC DEVIATION ALERTS</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">Engineering Threshold Monitoring & Physical Anomaly Detection</p>
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex flex-wrap items-center gap-3">
           {criticalCount > 0 && (
-            <span className="px-2.5 py-1 bg-red-500/10 text-red-400 border border-red-500/30 text-xs font-semibold rounded-lg font-mono">
+            <span className="px-3 py-1.5 bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800/80 text-xs font-bold rounded-lg font-mono shadow-sm tracking-wide">
               {criticalCount} CRITICAL
             </span>
           )}
           {warningCount > 0 && (
-            <span className="px-2.5 py-1 bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-semibold rounded-lg font-mono">
+            <span className="px-3 py-1.5 bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/80 text-xs font-bold rounded-lg font-mono shadow-sm tracking-wide">
               {warningCount} WARNING
             </span>
           )}
           {!hasAlerts && (
-            <span className="px-2.5 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-semibold rounded-lg font-mono">
+            <span className="px-3 py-1.5 bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/80 text-xs font-bold rounded-lg font-mono shadow-sm tracking-wide">
               ALL NOMINAL
             </span>
           )}
@@ -51,7 +51,7 @@ export const DeviationAlertsPanel: React.FC<Props> = ({ alerts }) => {
       </div>
 
       {/* Configurable Threshold Reference */}
-      <div className="p-3 bg-slate-950/60 border border-slate-800/80 rounded-lg text-xs font-mono text-slate-400 flex flex-wrap gap-x-6 gap-y-1">
+      <div className="p-4 bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/80 rounded-xl text-xs font-mono text-slate-500 dark:text-slate-400 flex flex-wrap gap-x-6 gap-y-2 shadow-sm font-medium">
         <span>Production Error: Warning &ge; {DEVIATION_THRESHOLDS.PRODUCTION.WARNING_PCT}%, Critical &ge; {DEVIATION_THRESHOLDS.PRODUCTION.CRITICAL_PCT}%</span>
         <span>Pressure: Warning &ge; {DEVIATION_THRESHOLDS.PRESSURE.WARNING_BAR} bar, Critical &ge; {DEVIATION_THRESHOLDS.PRESSURE.CRITICAL_BAR} bar</span>
         <span>Temp: Warning &ge; {DEVIATION_THRESHOLDS.TEMPERATURE.WARNING_C}°C, Critical &ge; {DEVIATION_THRESHOLDS.TEMPERATURE.CRITICAL_C}°C</span>
@@ -60,40 +60,40 @@ export const DeviationAlertsPanel: React.FC<Props> = ({ alerts }) => {
 
       {/* Alert List */}
       {!hasAlerts ? (
-        <div className="p-4 bg-emerald-950/20 border border-emerald-800/30 rounded-lg text-emerald-400 text-xs flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+        <div className="p-5 bg-emerald-50/50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-800/30 rounded-xl text-emerald-700 dark:text-emerald-400 text-sm flex items-center gap-3 shadow-sm font-medium">
+          <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
           No physical or telemetry deviations detected. Observed field state aligns within nominal operating limits.
         </div>
       ) : (
-        <div className="space-y-2.5">
+        <div className="space-y-4">
           {alerts.map((alert) => {
             const isCrit = alert.severity === 'CRITICAL';
             return (
               <div
                 key={alert.id}
-                className={`p-3.5 rounded-lg border space-y-1.5 ${
-                  isCrit ? 'bg-red-950/30 border-red-800/50 text-red-200' : 'bg-amber-950/30 border-amber-800/50 text-amber-200'
+                className={`p-5 rounded-2xl border space-y-3 shadow-sm transition-all ${
+                  isCrit ? 'bg-rose-50/50 dark:bg-rose-950/30 border-rose-200 dark:border-rose-800/50' : 'bg-amber-50/50 dark:bg-amber-950/30 border-amber-200 dark:border-amber-800/50'
                 }`}
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2">
-                    <ShieldAlert className={`w-4 h-4 ${isCrit ? 'text-red-400' : 'text-amber-400'}`} />
-                    <span className="font-mono text-xs font-bold uppercase tracking-wider">{alert.type.replace(/_/g, ' ')}</span>
+                    <ShieldAlert className={`w-5 h-5 ${isCrit ? 'text-rose-500 dark:text-rose-400' : 'text-amber-500 dark:text-amber-400'}`} />
+                    <span className={`font-mono text-sm font-bold uppercase tracking-wider ${isCrit ? 'text-rose-700 dark:text-rose-300' : 'text-amber-700 dark:text-amber-300'}`}>{alert.type.replace(/_/g, ' ')}</span>
                   </div>
-                  <span className={`px-2 py-0.5 text-[10px] font-mono font-bold uppercase rounded ${
-                    isCrit ? 'bg-red-500/20 text-red-300 border border-red-500/40' : 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                  <span className={`px-3 py-1 text-xs font-mono font-bold uppercase rounded-lg shadow-sm ${
+                    isCrit ? 'bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-500/20 dark:text-rose-300 dark:border-rose-500/40' : 'bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-500/20 dark:text-amber-300 dark:border-amber-500/40'
                   }`}>
                     {alert.severity}
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-300 leading-relaxed">{alert.engineeringMessage}</p>
+                <p className={`text-sm leading-relaxed font-medium ${isCrit ? 'text-rose-800 dark:text-rose-200/90' : 'text-amber-800 dark:text-amber-200/90'}`}>{alert.engineeringMessage}</p>
 
-                <div className="flex items-center gap-4 text-[11px] font-mono text-slate-400 pt-1 border-t border-slate-800/50">
-                  <span>Measured: <strong className="text-slate-200">{alert.measuredValue}</strong></span>
-                  <span>Expected: <strong className="text-slate-200">{alert.expectedValue}</strong></span>
-                  <span>Deviation: <strong className={isCrit ? 'text-red-400' : 'text-amber-400'}>{alert.deviation}</strong></span>
-                  <span>Threshold: <strong className="text-slate-300">{alert.threshold}</strong></span>
+                <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-slate-500 dark:text-slate-400 pt-3 border-t border-slate-200/60 dark:border-slate-800/50">
+                  <span>Measured: <strong className="text-slate-700 dark:text-slate-200">{alert.measuredValue}</strong></span>
+                  <span>Expected: <strong className="text-slate-700 dark:text-slate-200">{alert.expectedValue}</strong></span>
+                  <span>Deviation: <strong className={isCrit ? 'text-rose-600 dark:text-rose-400' : 'text-amber-600 dark:text-amber-400'}>{alert.deviation}</strong></span>
+                  <span>Threshold: <strong className="text-slate-600 dark:text-slate-300">{alert.threshold}</strong></span>
                 </div>
               </div>
             );

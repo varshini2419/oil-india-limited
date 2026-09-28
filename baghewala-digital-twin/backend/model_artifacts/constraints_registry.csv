@@ -1,0 +1,19 @@
+id,name,phase,unit,rule_text,column,limit
+I01,Injection pressure below fracture-pressure envelope,INJECTION,MPa,P_wellhead <= p_inj_max MPa,inj_pressure_wh_mpa,<= 12.0 MPa
+I02,Steam rate within generator capacity,INJECTION,m3/d,rate <= 250 m3/d CWE,steam_inj_rate_m3d,<= 250 m3/d
+I03,Minimum bottomhole steam quality,INJECTION,fraction,x_bottomhole >= 0.35,steam_quality_bh,>= 0.35
+I04,Wellhead steam quality window,INJECTION,fraction,0.50 <= x_wellhead <= 0.85,steam_quality_wh,0.50 - 0.85
+P01,Pump speed inside drive limits,PRODUCTION,SPM,spm_lo <= SPM <= spm_hi,spm,2.8 - 7.7 SPM
+P02,VFD frequency window,PRODUCTION,Hz,20 <= Hz <= 55,vfd_hz,20 - 55 Hz
+P03,Unit structural load,PRODUCTION,kN,PPRL <= 0.9 * unit_rating kN,pprl_kn,<= 90.9 kN
+P04,Motor loading,PRODUCTION,%,motor load <= 100 %,motor_load_pct,<= 100 %
+P05,Rod stress (modified Goodman),PRODUCTION,-,sigma_max / allowable <= 1.0,goodman_ratio,<= 1.0
+P06,No rod floating,PRODUCTION,%,MPRL >= 10 % of buoyant rod weight,mprl_pct_buoyant_rod_wt,>= 10 %
+P07,No severe fluid pound,PRODUCTION,%,pump fillage >= 60 %,pump_fillage_pct,>= 60 %
+P08,Minimum pump intake pressure,PRODUCTION,MPa,PIP >= 0.25 MPa,pump_intake_pressure_mpa,>= 0.25 MPa
+P09,Wellhead fluid temperature,PRODUCTION,C,T_wellhead <= 200 C,fluid_temp_wellhead_c,<= 200 C
+P10,Flowline back-pressure,PRODUCTION,MPa,tubing head pressure <= 1.2 MPa,tubing_head_pressure_mpa,<= 1.2 MPa
+K01,Injection duration,CYCLE,d,6 <= days <= 30,cycle_injection_days,6 - 30 d
+K02,Soak duration,CYCLE,d,3 <= days <= 20,cycle_soak_days,3 - 20 d
+K03,Steam volume per metre of net pay,CYCLE,m3/m,60 <= m3/m <= 220,cycle_steam_per_m_pay,60 - 220 m3/m
+K04,Cycle oil-steam ratio at end of cycle,CYCLE,m3/m3,COSR >= 0.25,cycle_final_cosr,>= 0.25

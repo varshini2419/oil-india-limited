@@ -80,54 +80,54 @@ export const ProductionPilotPanel: React.FC = () => {
   const lastDeviations = pilotState.activeDeviations;
 
   return (
-    <section className="bg-slate-950 border border-slate-800 rounded-2xl p-6 space-y-6 shadow-2xl">
+    <section className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-6 shadow-sm font-sans">
       {/* Header & Controls */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
-        <div className="space-y-1">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-200 dark:border-slate-800 pb-6">
+        <div className="space-y-2">
           <div className="flex items-center space-x-2">
-            <span className="px-2.5 py-0.5 text-[10px] uppercase font-mono font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 rounded">
+            <span className="px-3 py-1 text-[10px] uppercase font-mono font-bold text-sky-700 bg-sky-100 border border-sky-200 dark:text-sky-300 dark:bg-sky-950/40 dark:border-sky-800 rounded-md shadow-sm tracking-wide">
               PHASE 6 — PRODUCTION PILOT
             </span>
-            <span className="px-2.5 py-0.5 text-[10px] uppercase font-mono font-bold text-slate-400 bg-slate-800 border border-slate-700 rounded">
+            <span className="px-3 py-1 text-[10px] uppercase font-mono font-bold text-slate-600 bg-slate-100 border border-slate-200 dark:text-slate-400 dark:bg-slate-800 dark:border-slate-700 rounded-md shadow-sm tracking-wide">
               NON-ACTUATING DECISION SUPPORT
             </span>
           </div>
-          <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
-            <Radio className="w-5 h-5 text-cyan-400 animate-pulse" />
+          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <Radio className="w-6 h-6 text-sky-500 animate-pulse" />
             Production Pilot & Real-Time Digital Twin Validation
           </h2>
-          <p className="text-xs text-slate-400">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Real-time telemetry ingestion, physics prediction comparison, and deterministic deviation detection.
           </p>
         </div>
 
         {/* Play / Pause / Step Controls */}
         <div className="flex items-center space-x-3">
-          <div className="flex items-center space-x-1.5 bg-slate-900 border border-slate-800 rounded-xl p-1.5">
+          <div className="flex items-center space-x-2 bg-slate-50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-xl p-2 shadow-sm">
             <button
               onClick={togglePlay}
-              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm ${
                 isPlaying
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30'
-                  : 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30'
+                  ? 'bg-amber-100 text-amber-700 border border-amber-200 hover:bg-amber-200 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-800/80 dark:hover:bg-amber-900/60'
+                  : 'bg-emerald-100 text-emerald-700 border border-emerald-200 hover:bg-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800/80 dark:hover:bg-emerald-900/60'
               }`}
             >
-              {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+              {isPlaying ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current" />}
               <span>{isPlaying ? 'PAUSE TELEMETRY' : 'PLAY TELEMETRY'}</span>
             </button>
 
             <button
               onClick={() => handleNextStep(selectedProfile)}
               disabled={isPlaying}
-              className="flex items-center space-x-1 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-50 transition-all"
+              className="flex items-center space-x-1 px-4 py-2 rounded-lg text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-100 disabled:opacity-50 transition-all shadow-sm dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700"
             >
-              <SkipForward className="w-3.5 h-3.5" />
+              <SkipForward className="w-4 h-4" />
               <span>STEP</span>
             </button>
 
             <button
               onClick={handleReset}
-              className="p-1.5 text-slate-400 hover:text-slate-200 rounded-lg hover:bg-slate-800 transition-all"
+              className="p-2 text-slate-500 hover:text-slate-800 rounded-lg hover:bg-slate-200 transition-all dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800"
               title="Reset Pilot State"
             >
               <RotateCcw className="w-4 h-4" />
@@ -137,15 +137,15 @@ export const ProductionPilotPanel: React.FC = () => {
       </div>
 
       {/* Simulator Profile Selector & State Isolation Notice */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-3 bg-slate-900 border border-slate-800 rounded-xl space-y-1.5">
-          <label className="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
-            <Cpu className="w-3.5 h-3.5 text-cyan-400" /> Demo Telemetry Profile
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="p-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-xl space-y-2 shadow-sm">
+          <label className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
+            <Cpu className="w-4 h-4 text-sky-500" /> Demo Telemetry Profile
           </label>
           <select
             value={selectedProfile}
             onChange={(e) => handleProfileChange(e.target.value as PilotSimulatorProfile)}
-            className="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-1.5 text-xs text-slate-200 font-mono focus:outline-none focus:border-cyan-500"
+            className="w-full bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-800 dark:text-slate-200 font-bold focus:outline-none focus:ring-2 focus:ring-sky-500/20 focus:border-sky-500 shadow-sm transition-all cursor-pointer"
           >
             <option value="NORMAL">NORMAL — Nominal Telemetry</option>
             <option value="PRODUCTION_DECLINE">PRODUCTION DECLINE — Decreasing Output</option>
@@ -157,11 +157,11 @@ export const ProductionPilotPanel: React.FC = () => {
           </select>
         </div>
 
-        <div className="md:col-span-2 p-3 bg-blue-950/20 border border-blue-800/30 rounded-xl flex items-center justify-between">
-          <div className="flex items-center space-x-3 text-xs text-blue-300">
-            <Info className="w-5 h-5 text-blue-400 flex-shrink-0" />
-            <div>
-              <span className="font-semibold text-slate-200">State Isolation Architecture: </span>
+        <div className="md:col-span-2 p-4 bg-sky-50/50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/40 rounded-xl flex items-center justify-between shadow-sm">
+          <div className="flex items-center space-x-3 text-sm text-slate-600 dark:text-slate-400">
+            <Info className="w-6 h-6 text-sky-500 flex-shrink-0" />
+            <div className="leading-relaxed">
+              <span className="font-bold text-slate-800 dark:text-slate-200">State Isolation Architecture: </span>
               PLAY/PAUSE animates pilot telemetry into an isolated state. RUN SIMULATION remains the sole mechanism that commits new physics scenarios to ScenarioStore.
             </div>
           </div>
@@ -178,28 +178,28 @@ export const ProductionPilotPanel: React.FC = () => {
       <DeviationAlertsPanel alerts={lastDeviations} />
 
       {/* 4. Risk & Confidence Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Operational Risk */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4 text-amber-400" /> Real-Time Pilot Risk Level
+        <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" /> Real-Time Pilot Risk Level
             </div>
             <span
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-mono uppercase ${
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold font-mono tracking-wider shadow-sm ${
                 riskLevel === 'CRITICAL'
-                  ? 'bg-red-500/20 text-red-400 border border-red-500/40'
+                  ? 'bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80'
                   : riskLevel === 'WARNING'
-                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
+                  ? 'bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-800/80'
                   : riskLevel === 'WATCH'
-                  ? 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/40'
-                  : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                  ? 'bg-yellow-100 text-yellow-700 border border-yellow-200 dark:bg-yellow-950/60 dark:text-yellow-400 dark:border-yellow-800/80'
+                  : 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800/80'
               }`}
             >
               RISK: {riskLevel}
             </span>
           </div>
-          <p className="text-xs text-slate-300 leading-relaxed">
+          <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
             {riskLevel === 'CRITICAL'
               ? 'Critical physical deviation or telemetry failure active. Immediate engineering review recommended.'
               : riskLevel === 'WARNING'
@@ -211,32 +211,32 @@ export const ProductionPilotPanel: React.FC = () => {
         </div>
 
         {/* Engineering Confidence */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="text-xs text-slate-400 font-semibold uppercase tracking-wider flex items-center gap-1.5">
-              <Shield className="w-4 h-4 text-cyan-400" /> Engineering Confidence
+        <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 space-y-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div className="text-sm text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider flex items-center gap-2">
+              <Shield className="w-5 h-5 text-sky-500" /> Engineering Confidence
             </div>
             <span
-              className={`px-3 py-1 rounded-lg text-xs font-bold font-mono uppercase ${
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold font-mono tracking-wider shadow-sm ${
                 confidence.level === 'HIGH'
-                  ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                  ? 'bg-emerald-100 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:border-emerald-800/80'
                   : confidence.level === 'MODERATE'
-                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40'
-                  : 'bg-red-500/20 text-red-400 border border-red-500/40'
+                  ? 'bg-amber-100 text-amber-700 border border-amber-200 dark:bg-amber-950/60 dark:text-amber-400 dark:border-amber-800/80'
+                  : 'bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800/80'
               }`}
             >
               CONFIDENCE: {confidence.level} ({confidence.score}%)
             </span>
           </div>
-          <div className="space-y-1 text-xs text-slate-300">
+          <div className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
             {confidence.supportingFactors.slice(0, 2).map((sf, idx) => (
-              <div key={idx} className="flex items-center gap-1 text-emerald-400">
-                <span>✓</span> <span>{sf}</span>
+              <div key={idx} className="flex items-center gap-2">
+                <span className="text-emerald-500 font-bold">✓</span> <span className="leading-relaxed">{sf}</span>
               </div>
             ))}
             {confidence.riskWarnings.slice(0, 2).map((rw, idx) => (
-              <div key={idx} className="flex items-center gap-1 text-amber-400">
-                <span>⚠</span> <span>{rw}</span>
+              <div key={idx} className="flex items-center gap-2">
+                <span className="text-amber-500 font-bold">⚠</span> <span className="leading-relaxed">{rw}</span>
               </div>
             ))}
           </div>
@@ -244,11 +244,11 @@ export const ProductionPilotPanel: React.FC = () => {
       </div>
 
       {/* 5. Non-Actuating Engineering Insight Callout */}
-      <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-xl space-y-2">
-        <div className="text-xs font-semibold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-          <Info className="w-4 h-4 text-cyan-400" /> NON-ACTUATING ENGINEERING INSIGHT
+      <div className="p-5 bg-sky-50/50 dark:bg-sky-950/20 border border-sky-200 dark:border-sky-800/60 rounded-2xl space-y-3 shadow-sm">
+        <div className="text-sm font-bold text-sky-700 dark:text-sky-400 uppercase tracking-wider flex items-center gap-2">
+          <Info className="w-5 h-5" /> NON-ACTUATING ENGINEERING INSIGHT
         </div>
-        <p className="text-xs text-slate-300 leading-relaxed font-mono">
+        <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed font-mono bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 shadow-inner">
           {lastComparison
             ? `Observed production is ${lastComparison.productionErrorPct}% (${lastComparison.actualProductionBOPD} BOPD) compared to current physics prediction (${lastComparison.predictedProductionBOPD} BOPD). ${
                 lastDeviations.length > 0
@@ -257,7 +257,7 @@ export const ProductionPilotPanel: React.FC = () => {
               }`
             : 'Awaiting valid telemetry stream for engineering evaluation.'}
         </p>
-        <div className="pt-2 border-t border-slate-800/80 text-[10px] text-slate-500 font-mono">
+        <div className="pt-2 text-xs text-slate-500 dark:text-slate-400 font-mono italic">
           DISCLAIMER: Non-actuating engineering decision support. All values represent demonstration telemetry. No automated field or pump control.
         </div>
       </div>

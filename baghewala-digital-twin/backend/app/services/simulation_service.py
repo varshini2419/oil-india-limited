@@ -4,6 +4,7 @@ Simulation service: ML inference + physics-based forward simulation + 18-rule co
 All 18 operating constraints (I01-I04, P01-P10, K01-K04) from constraints_registry.csv
 are implemented exactly as they were evaluated during dataset generation and training.
 """
+import sys
 import joblib
 import json
 import math
@@ -12,14 +13,24 @@ from typing import Any
 import pandas as pd
 import numpy as np
 
+# Ensure pickle compatibility for scikit-learn HistGradientBoosting models
+try:
+    import sklearn._loss._loss
+    sys.modules['_loss'] = sklearn._loss._loss
+except Exception:
+    pass
+
 # ---------------------------------------------------------------------------
 # Paths – resolve relative to this file so it works from any cwd
 # ---------------------------------------------------------------------------
 _THIS_DIR = Path(__file__).resolve().parent
 # backend/model_artifacts
 ARTIFACTS_DIR = _THIS_DIR.parent.parent / "model_artifacts"
-# sih-digital-twin root where well_static.csv and constraints_registry.csv live
-DATA_DIR = _THIS_DIR.parent.parent.parent.parent.parent
+# search locations for well_static.csv and constraints_registry.csv
+DATA_DIR = ARTIFACTS_DIR
+if not (DATA_DIR / "well_static.csv").exists():
+    DATA_DIR = _THIS_DIR.parent.parent.parent / "data"
+
 
 
 # =========================================================================
@@ -274,6 +285,13 @@ def _derive_quantities(d: dict, well: dict) -> dict:
     out.setdefault("pump_intake_pressure_mpa", 1.0)
     out.setdefault("days_since_steam_off", 30.0)
 
+    # Oil / liquid rate defaults
+    out.setdefault("oil_rate_m3d", 5.0)
+    wc = out.get("water_cut_pct", 50.0) or 50.0
+    oil = out.get("oil_rate_m3d", 5.0) or 5.0
+    out.setdefault("liquid_rate_m3d", oil / max(1 - wc / 100, 0.03))
+    out.setdefault("water_rate_m3d", out["liquid_rate_m3d"] - oil)
+
     # Rolling feature defaults (approximate from point values)
     for col in ["fluid_temp_pump_c", "mprl_pct_buoyant_rod_wt", "liquid_rate_m3d",
                 "oil_rate_m3d", "pump_fillage_pct"]:
@@ -288,13 +306,6 @@ def _derive_quantities(d: dict, well: dict) -> dict:
     out.setdefault("lab_visc_last", 3000.0)
     out.setdefault("days_since_lab", 3.0)
     out.setdefault("running_frac7", 1.0)
-
-    # Oil / liquid rate defaults
-    out.setdefault("oil_rate_m3d", 5.0)
-    wc = out.get("water_cut_pct", 50.0) or 50.0
-    oil = out.get("oil_rate_m3d", 5.0) or 5.0
-    out.setdefault("liquid_rate_m3d", oil / max(1 - wc / 100, 0.03))
-    out.setdefault("water_rate_m3d", out["liquid_rate_m3d"] - oil)
 
     return out
 
@@ -479,7 +490,7 @@ class SimulationService:
                 "recommended": target_spm,
                 "unit": "SPM",
                 "constraint": f"P01 (>= {min_spm} SPM), P06 (Rod Float)",
-                "impact": "Lowering stroke velocity drastically reduces viscous drag (Fv ∝ μ·v) on the rod string, restoring fluid displacement and preventing rod parting."
+                "impact": "Lowering stroke velocity drastically reduces viscous drag (Fv proportional to mu * v) on the rod string, restoring fluid displacement and preventing rod parting."
             })
             
         if is_high_visc and vfd > 35.0:
