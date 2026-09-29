@@ -39,7 +39,7 @@ export const DigitalTwinCanvas: React.FC<DigitalTwinCanvasProps> = ({
   const { canvasWidth, canvasHeight, viewBox } = DEFAULT_TWIN_CONFIG;
 
   return (
-    <div className="w-full h-full min-h-[520px] bg-slate-950 flex items-center justify-center overflow-hidden relative select-none">
+    <div className="digital-twin-canvas-surface w-full h-full min-h-[520px] bg-slate-950 flex items-center justify-center overflow-hidden relative select-none">
       <svg
         viewBox={viewBox}
         preserveAspectRatio="xMidYMid meet"

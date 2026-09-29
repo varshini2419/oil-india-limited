@@ -279,7 +279,7 @@ const TelemetryValue: React.FC<{ label: string; value: string; tone: string }> =
   </div>
 );
 
-export const DigitalTwinViewport: React.FC = () => {
+export const DigitalTwinViewport: React.FC<{ className?: string }> = ({ className }) => {
   const [gridVisible, setGridVisible] = useState(DEFAULT_TWIN_CONFIG.gridVisible);
   const [zoom, setZoom] = useState(DEFAULT_TWIN_CONFIG.defaultZoom);
 
@@ -298,7 +298,7 @@ export const DigitalTwinViewport: React.FC = () => {
   return (
     <AnimationProvider>
       <AutoPlayOnSimulationRun />
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden flex flex-col shadow-xl w-full">
+      <div className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden flex flex-col shadow-xl w-full ${className ?? ''}`}>
         {/* Viewport Control Bar Header */}
         <ViewportToolbar
           gridVisible={gridVisible}

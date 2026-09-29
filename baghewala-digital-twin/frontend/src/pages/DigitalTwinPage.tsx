@@ -5,6 +5,7 @@ import { DigitalTwinViewport } from '../components/digital-twin';
 import { Play, Sliders } from 'lucide-react';
 import { getActiveModelMode } from '../simulation/historicalCalibration/parameterRegistry';
 import { useScenarioStore } from '../simulation/scenario';
+import './DigitalTwinPage.css';
 
 export const DigitalTwinPage: React.FC = () => {
   const activeMode = getActiveModelMode();
@@ -57,7 +58,7 @@ export const DigitalTwinPage: React.FC = () => {
       </div>
 
       {/* Main Viewport Workspace */}
-      <DigitalTwinViewport />
+      <DigitalTwinViewport className="digital-twin-color-scope" />
 
       {/* Live Simulation Telemetry Readout Bar */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 font-mono text-xs space-y-3">

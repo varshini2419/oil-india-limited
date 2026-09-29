@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { AiEngineeringExplanationPanel } from '../components/simulation/AiEngineeringExplanationPanel';
 import { SimulationHistoricalIncidents } from '../components/simulation/SimulationHistoricalIncidents';
 import { DigitalTwinViewport } from '../components/digital-twin/DigitalTwinViewport';
+import './DigitalTwinPage.css';
 import { NormalOperatingConditionPanel } from '../components/simulation/NormalOperatingConditionPanel';
 import { MLViscosityControlPanel } from '../components/simulation/MLViscosityControlPanel';
 import { SimulationControlsAndComparison } from '../components/simulation/SimulationControlsAndComparison';
@@ -180,7 +181,7 @@ export const SimulationPage: React.FC = () => {
           <div className="flex flex-col xl:flex-row gap-5 items-start">
             {/* Left: 2D Cinematic Digital Twin Viewport & Live AI Operating Summary */}
             <div className="w-full xl:w-[70%] 2xl:w-[73%] flex flex-col min-w-0 space-y-5">
-              <DigitalTwinViewport />
+              <DigitalTwinViewport className="digital-twin-color-scope" />
               {/* Simulation AI Operating Summary & Alerts */}
               <SimulationAiSummaryAndAlerts />
             </div>
