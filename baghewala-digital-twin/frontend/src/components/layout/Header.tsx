@@ -1,7 +1,8 @@
 import React from 'react';
 import { StatusIndicator } from '../ui/StatusIndicator';
-import { Menu, Cpu, Activity } from 'lucide-react';
+import { Menu, Cpu, Activity, LogOut } from 'lucide-react';
 import { useScenarioStore } from '../../simulation/scenario';
+import { useAuth } from '../../context/AuthContext';
 
 interface HeaderProps {
   onToggleMobileSidebar?: () => void;
@@ -11,6 +12,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
   const scenarioStore = useScenarioStore();
   const activeScenario = scenarioStore?.activeScenario;
   const inputs = activeScenario?.inputs;
+  const { user, logout } = useAuth();
 
   return (
     <header className="h-16 bg-slate-900 border-b border-slate-800 px-4 md:px-6 flex items-center justify-between shrink-0">
@@ -65,6 +67,23 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
           <span className="text-xs font-mono text-slate-400 hidden md:inline">System Status:</span>
           <StatusIndicator status="ready" label="System Ready" />
         </div>
+
+        {user && (
+          <div className="flex items-center gap-2 pl-2 border-l border-slate-700/60">
+            <div className="hidden md:flex flex-col items-end text-[11px] font-sans">
+              <span className="font-bold text-slate-200">{user.name}</span>
+              <span className="text-slate-400 text-[10px]">{user.email}</span>
+            </div>
+            <button
+              onClick={logout}
+              title="Logout from portal"
+              className="p-1.5 rounded-md text-red-400 hover:text-red-300 hover:bg-red-950/60 border border-transparent hover:border-red-800/60 transition-colors flex items-center gap-1.5 text-xs font-semibold"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );

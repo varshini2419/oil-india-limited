@@ -1,0 +1,258 @@
+.oil-login-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-x: hidden;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #0d1015;
+}
+
+.oil-login-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: url('/login-bg.png');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.oil-login-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.15) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Header Branding */
+.oil-branding-header {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.oil-branding-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.oil-branding-text-hindi {
+  color: #111827 !important;
+  font-weight: 700;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+.oil-branding-text-english {
+  color: #000000 !important;
+  font-weight: 800;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.oil-branding-subtext {
+  color: #4b5563 !important;
+  font-weight: 600;
+  font-size: 0.7rem;
+  line-height: 1;
+}
+
+/* Main Content Area */
+.oil-login-main-container {
+  position: relative;
+  z-index: 10;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.5rem 2rem;
+}
+
+/* Card Styling */
+.oil-login-card {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.9) !important;
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 10;
+  padding: 1.75rem 1.75rem;
+}
+
+.oil-login-card-title {
+  color: #111827 !important;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.oil-login-card-accent {
+  color: #a71d2a !important;
+}
+
+.oil-login-card-subtitle {
+  color: #64748b !important;
+  font-size: 0.775rem;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 0.25rem;
+}
+
+.oil-login-divider-line {
+  width: 4rem;
+  height: 3px;
+  background-color: #a71d2a;
+  border-radius: 9999px;
+  margin: 0.85rem auto 1.15rem auto;
+}
+
+.oil-login-input {
+  width: 100%;
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 0.5rem !important;
+  padding: 0.65rem 0.65rem 0.65rem 2.5rem;
+  font-size: 0.85rem;
+  transition: all 0.2s ease;
+}
+
+.oil-login-input:focus {
+  outline: none;
+  border-color: #a71d2a !important;
+  box-shadow: 0 0 0 3px rgba(167, 29, 42, 0.15) !important;
+}
+
+.oil-login-input-has-toggle {
+  padding-right: 2.5rem;
+}
+
+.oil-login-input::placeholder {
+  color: #94a3b8 !important;
+}
+
+.oil-login-btn-primary {
+  width: 100%;
+  background-color: #a71d2a !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+  font-size: 0.825rem !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase;
+  padding: 0.75rem 1rem !important;
+  border-radius: 0.5rem !important;
+  border: none !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 12px rgba(167, 29, 42, 0.3) !important;
+  transition: all 0.2s ease;
+}
+
+.oil-login-btn-primary:hover {
+  background-color: #8b1823 !important;
+  box-shadow: 0 6px 16px rgba(167, 29, 42, 0.4) !important;
+}
+
+.oil-login-btn-sso {
+  width: 100%;
+  background-color: #ffffff !important;
+  color: #a71d2a !important;
+  font-weight: 700 !important;
+  font-size: 0.8rem !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase;
+  padding: 0.65rem 1rem !important;
+  border-radius: 0.5rem !important;
+  border: 1px solid #a71d2a !important;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.oil-login-btn-sso:hover {
+  background-color: #fef2f2 !important;
+}
+
+.oil-login-card-footer-notes {
+  color: #64748b !important;
+  font-size: 0.725rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-align: center;
+  margin-top: 1.25rem;
+}
+
+/* Footer Bottom Bar */
+.oil-footer-wrapper {
+  position: relative;
+  z-index: 20;
+  width: 100%;
+  margin-top: auto;
+}
+
+.oil-login-footer-bar {
+  background-color: rgba(18, 23, 31, 0.94) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(255, 255, 255, 0.12) !important;
+  padding: 0.75rem 2rem;
+}
+
+.oil-footer-item-title {
+  color: #ffffff !important;
+  font-weight: 700;
+  font-size: 0.8rem;
+  line-height: 1.2;
+}
+
+.oil-footer-item-subtitle {
+  color: #94a3b8 !important;
+  font-size: 0.725rem;
+  line-height: 1.2;
+}
+
+.oil-footer-item-status {
+  color: #4ade80 !important;
+  font-weight: 600;
+  font-size: 0.725rem;
+  line-height: 1.2;
+}
+
+.oil-login-footer-copyright {
+  background-color: #0a0d12 !important;
+  color: #94a3b8 !important;
+  font-size: 0.725rem;
+  text-align: center;
+  padding: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
