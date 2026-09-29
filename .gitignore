@@ -32,6 +32,7 @@ build/
 # IDE and Editor files
 .vscode/
 .idea/
+.freebuff/
 *.swp
 *.swo
 .DS_Store

@@ -63,7 +63,7 @@ export const CommandCenterPage: React.FC = () => {
     setDashboardState(freshState);
   }, [sourceType, modelMode, activeScenario]);
 
-  // Demo mode auto-cycle interval
+  // Demo mode auto-cycle interval ok now serious ga untanu. 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval> | null = null;
     if (isDemonstrationActive) {

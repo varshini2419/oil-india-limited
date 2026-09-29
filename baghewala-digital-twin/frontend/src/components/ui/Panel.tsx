@@ -17,18 +17,18 @@ export const Panel: React.FC<PanelProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 ${className}`}
+      className={`bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm ${className}`}
     >
       {(title || action) && (
-        <div className="px-5 py-4 bg-slate-50/80 dark:bg-slate-950/50 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+        <div className="px-5 py-3.5 bg-gray-50/80 border-b border-gray-200 flex items-center justify-between">
           <div>
             {title && (
-              <h3 className="text-sm font-bold font-sans text-slate-800 dark:text-slate-200 tracking-tight flex items-center gap-2">
+              <h3 className="text-[13px] font-bold font-sans text-gray-900 tracking-tight flex items-center gap-2">
                 {title}
               </h3>
             )}
             {subtitle && (
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-sans mt-0.5">{subtitle}</p>
+              <p className="text-xs text-gray-500 font-sans mt-0.5">{subtitle}</p>
             )}
           </div>
           {action && <div>{action}</div>}

@@ -1,0 +1,384 @@
+/* ==========================================================================
+   Baghewala Heavy-Oil Digital Twin — "Black Chrome & Amber" theme
+   Matches the approved reference: black sidebar/header/statusbar,
+   amber accent system, light content canvas.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. SIDEBAR — pure black chrome
+   -------------------------------------------------------------------------- */
+.oil-sidebar-wrapper {
+  background: #050608 !important;
+  border-right: 1px solid #16181d !important;
+  color: #e5e7eb !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.oil-sidebar-wrapper * {
+  box-sizing: border-box;
+}
+
+.oil-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+.oil-sidebar-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.oil-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.oil-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+}
+.oil-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Category header — "NAVIGATION MODULES" */
+.oil-nav-category-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a8f98 !important;
+}
+
+.oil-nav-category-dot {
+  display: none;
+}
+
+/* Navigation items */
+.oil-nav-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 9px 12px;
+  margin: 2px 0;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #b9bec7 !important;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.oil-nav-link:hover {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #ffffff !important;
+}
+
+.oil-nav-link:hover .oil-nav-icon-container {
+  color: #f5f5f5 !important;
+}
+
+/* Active navigation item — amber pill */
+.oil-nav-link.active,
+.oil-nav-link[aria-current="page"] {
+  background: #d99a00 !important;
+  border: 1px solid #e7ab1c !important;
+  color: #1a1204 !important;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(217, 154, 0, 0.35);
+}
+
+.oil-nav-link.active::before,
+.oil-nav-link[aria-current="page"]::before {
+  display: none;
+}
+
+.oil-nav-link.active .oil-nav-icon-container,
+.oil-nav-link[aria-current="page"] .oil-nav-icon-container {
+  color: #1a1204 !important;
+}
+
+/* Icon container — bare glyphs on black */
+.oil-nav-icon-container {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent !important;
+  border: none !important;
+  color: #b9bec7 !important;
+  transition: all 150ms ease;
+}
+
+/* Nav item micro badge */
+.oil-micro-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.2;
+  margin-left: auto;
+}
+
+.oil-micro-badge-emerald {
+  background: rgba(16, 185, 129, 0.15) !important;
+  border: 1px solid rgba(16, 185, 129, 0.35) !important;
+  color: #34d399 !important;
+}
+
+.oil-micro-badge-sky {
+  background: rgba(56, 189, 248, 0.13) !important;
+  border: 1px solid rgba(56, 189, 248, 0.3) !important;
+  color: #7dd3fc !important;
+}
+
+.oil-micro-badge-amber {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.4) !important;
+  color: #fbbf24 !important;
+}
+
+.oil-micro-badge-purple {
+  background: rgba(168, 85, 247, 0.15) !important;
+  border: 1px solid rgba(168, 85, 247, 0.4) !important;
+  color: #d8b4fe !important;
+}
+
+/* Telemetry card at sidebar bottom */
+.oil-telemetry-card {
+  background: #0b0d12 !important;
+  border: 1px solid #1d2129 !important;
+  border-radius: 10px;
+  padding: 11px 13px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sidebar footer */
+.oil-sidebar-footer {
+  background: #050608 !important;
+  border-top: 1px solid #16181d !important;
+}
+
+/* --------------------------------------------------------------------------
+   Chrome text overrides — Sidebar.css loads after index.css, so these win
+   over the light-content text rules for chrome-only utility classes.
+   -------------------------------------------------------------------------- */
+/* Fine-tuned chrome text palette */
+.oil-sidebar-wrapper .text-slate-400,
+.oil-header-wrapper .text-slate-400 { color: #9ca3af !important; }
+.oil-sidebar-wrapper .text-slate-200,
+.oil-header-wrapper .text-slate-200 { color: #e5e7eb !important; }
+.oil-sidebar-wrapper .text-slate-300,
+.oil-header-wrapper .text-slate-300 { color: #d1d5db !important; }
+.oil-sidebar-wrapper .text-slate-500,
+.oil-header-wrapper .text-slate-500 { color: #6b7280 !important; }
+.oil-sidebar-wrapper .text-slate-600,
+.oil-header-wrapper .text-slate-600 { color: #9ca3af !important; }
+.oil-sidebar-wrapper .text-slate-700,
+.oil-header-wrapper .text-slate-700 { color: #9ca3af !important; }
+
+/* Amber stays amber inside chrome (headers, footer label) */
+.oil-sidebar-wrapper [class*="text-amber-"],
+.oil-header-wrapper [class*="text-amber-"] { color: #fbbf24 !important; }
+
+/* Emerald status stays emerald inside chrome */
+.oil-sidebar-wrapper [class*="text-emerald-"],
+.oil-header-wrapper [class*="text-emerald-"] { color: #34d399 !important; }
+.oil-sidebar-wrapper .bg-emerald-400,
+.oil-header-wrapper .bg-emerald-400 { background-color: #34d399 !important; }
+.oil-sidebar-wrapper .bg-sky-500,
+.oil-header-wrapper .bg-sky-500 { background-color: #38bdf8 !important; }
+
+/* StatusIndicator pill reads correctly on black chrome */
+.oil-header-wrapper .bg-emerald-950\/40 { background-color: rgba(6, 78, 59, 0.5) !important; }
+.oil-header-wrapper .border-emerald-800\/50 { border-color: rgba(6, 95, 70, 0.7) !important; }
+
+/* Pulse animation */
+@keyframes oilGlowPulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.05);
+    box-shadow: 0 0 8px 3px rgba(16, 185, 129, 0.4);
+  }
+}
+
+.oil-live-pulse {
+  animation: oilGlowPulse 2.2s infinite ease-in-out;
+}
+
+/* --------------------------------------------------------------------------
+   2. HEADER — black bar with amber accents
+   -------------------------------------------------------------------------- */
+.oil-header-wrapper {
+  background: #050608 !important;
+  border-bottom: 1px solid #16181d !important;
+  color: #e5e7eb !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* Brand block on the left */
+.oil-emblem-box {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #0b0d12 !important;
+  border: 1px solid #26282f !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.oil-brand-title {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  font-size: 13px;
+  color: #ffffff !important;
+}
+
+.oil-brand-gradient {
+  background: none;
+  -webkit-text-fill-color: currentColor;
+  color: #ffffff !important;
+}
+
+/* "AN OIL HIGH-VISCED ENTERPRISE" ribbon under the emblem */
+.oil-enterprise-ribbon {
+  font-size: 6.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: #9ca3af;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border: 1px solid #26282f;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
+
+/* Active scenario capsule — amber pill */
+.oil-header-scenario-capsule {
+  background: #d99a00 !important;
+  border: 1px solid #e7ab1c !important;
+  border-radius: 6px;
+  color: #1a1204 !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  box-shadow: 0 1px 6px rgba(217, 154, 0, 0.3);
+}
+
+.oil-header-scenario-capsule .oil-scenario-label {
+  color: rgba(26, 18, 4, 0.75) !important;
+}
+
+/* Telemetry mini-pills (48°C | 5.8 t/d | 0 SPM) */
+.oil-telemetry-pill {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #26282f;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #d1d5db;
+  background: #0b0d12;
+  font-variant-numeric: tabular-nums;
+}
+
+/* DEMO NODE pill */
+.oil-demo-node-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 999px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #34d399;
+  background: rgba(16, 185, 129, 0.08);
+}
+
+/* Right-side session block */
+.oil-session-block {
+  text-align: right;
+  line-height: 1.25;
+}
+
+.oil-session-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #f3f4f6 !important;
+}
+
+.oil-session-mail {
+  font-size: 10px;
+  color: #9ca3af !important;
+}
+
+.oil-logout-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #d99a00 !important;
+  border: 1px solid #e7ab1c !important;
+  color: #1a1204 !important;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.oil-logout-btn:hover {
+  background: #e7ab1c !important;
+}
+
+/* System status cluster */
+.oil-systemstatus-label {
+  font-size: 11px;
+  color: #9ca3af !important;
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   3. STATUS BAR — white with amber LIVE chip
+   -------------------------------------------------------------------------- */
+.oil-statusbar-wrapper {
+  background: #ffffff !important;
+  border-top: 1px solid #e5e7eb !important;
+  color: #4b5563 !important;
+  font-family: 'JetBrains Mono', ui-monospace, monospace !important;
+}
+
+.oil-statusbar-live-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #d99a00;
+  border: 1px solid #e7ab1c;
+  color: #1a1204;
+  border-radius: 4px;
+  padding: 1px 7px;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}

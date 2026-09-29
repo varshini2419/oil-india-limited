@@ -1,19 +1,27 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import * as Icons from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import '../layout/Sidebar.css';
 
 interface NavigationItemProps {
   label: string;
   path: string;
   iconName: string;
+  badge?: string;
+  badgeColor?: 'emerald' | 'sky' | 'amber' | 'purple';
   onClick?: () => void;
+  trailingChevron?: boolean;
 }
 
 export const NavigationItem: React.FC<NavigationItemProps> = ({
   label,
   path,
   iconName,
+  badge,
+  badgeColor = 'sky',
   onClick,
+  trailingChevron = false,
 }) => {
   // Dynamically resolve icon from lucide-react
   const IconComponent = (Icons as unknown as Record<string, React.ComponentType<{ className?: string }>>)[iconName] || Icons.Circle;
@@ -23,15 +31,24 @@ export const NavigationItem: React.FC<NavigationItemProps> = ({
       to={path}
       onClick={onClick}
       className={({ isActive }) =>
-        `flex items-center gap-3 px-3 py-2.5 rounded-md text-xs font-mono tracking-wide transition-all ${
-          isActive
-            ? 'bg-sky-600/20 text-sky-400 font-semibold border-l-2 border-sky-400 pl-2.5 shadow-sm'
-            : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-        }`
+        `oil-nav-link group ${isActive ? 'active' : ''}`
       }
     >
-      <IconComponent className="w-4 h-4 shrink-0" />
-      <span>{label}</span>
+      <div className="flex items-center gap-2.5 min-w-0">
+        <div className="oil-nav-icon-container">
+          <IconComponent className="w-[15px] h-[15px] shrink-0" />
+        </div>
+        <span className="truncate tracking-normal">{label}</span>
+      </div>
+
+      {badge && (
+        <span className={`oil-micro-badge oil-micro-badge-${badgeColor} shrink-0 ml-auto`}>
+          {badge}
+        </span>
+      )}
+      {!badge && trailingChevron && (
+        <ChevronRight className="w-3.5 h-3.5 shrink-0 ml-auto opacity-60" />
+      )}
     </NavLink>
   );
 };

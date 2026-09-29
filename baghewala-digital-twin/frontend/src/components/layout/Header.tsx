@@ -1,8 +1,9 @@
 import React from 'react';
 import { StatusIndicator } from '../ui/StatusIndicator';
-import { Menu, Cpu, Activity, LogOut } from 'lucide-react';
+import { Menu, Activity, Radio, LogOut } from 'lucide-react';
 import { useScenarioStore } from '../../simulation/scenario';
 import { useAuth } from '../../context/AuthContext';
+import './Sidebar.css';
 
 interface HeaderProps {
   onToggleMobileSidebar?: () => void;
@@ -15,75 +16,108 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar }) => {
   const { user, logout } = useAuth();
 
   return (
-    <header className="h-16 bg-slate-900 border-b border-slate-800 px-4 md:px-6 flex items-center justify-between shrink-0">
-      <div className="flex items-center gap-3">
+    <header className="oil-header-wrapper h-14 px-3 md:px-4 flex items-center justify-between gap-3 shrink-0 select-none z-30">
+      {/* Brand & Mobile Hamburger */}
+      <div className="flex items-center gap-3 min-w-0">
         {onToggleMobileSidebar && (
           <button
             onClick={onToggleMobileSidebar}
-            className="p-1.5 rounded-md text-slate-400 hover:text-slate-200 hover:bg-slate-800 lg:hidden"
+            className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors lg:hidden"
             aria-label="Toggle navigation"
           >
             <Menu className="w-5 h-5" />
           </button>
         )}
-        <div className="flex items-center gap-2.5">
-          <div className="p-1.5 bg-sky-950 border border-sky-800/80 rounded-md text-sky-400">
-            <Cpu className="w-5 h-5" />
+
+        <div className="flex items-center gap-2.5 min-w-0">
+          {/* Drilling emblem */}
+          <div className="oil-emblem-box">
+            <svg
+              className="w-[18px] h-[18px]"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Derrick tower */}
+              <path
+                d="M7 21L12 4L17 21"
+                stroke="#ffffff"
+                strokeWidth="1.6"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M9.2 13H14.8M8.1 17H15.9"
+                stroke="#ffffff"
+                strokeWidth="1.3"
+                strokeLinecap="round"
+                opacity="0.75"
+              />
+              <circle cx="12" cy="3" r="1.6" fill="#d99a00" />
+            </svg>
           </div>
-          <div>
-            <h1 className="text-sm font-bold font-mono tracking-wider text-slate-100 uppercase">
-              BAGHEWALA DIGITAL TWIN
-            </h1>
-            <p className="text-[11px] text-slate-400 hidden sm:block font-sans">
-              Heavy-Oil Field Simulation & Decision Support
+
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h1 className="oil-brand-title whitespace-nowrap">
+                BAGHEWALA DIGITAL TWIN
+              </h1>
+              <span className="oil-enterprise-ribbon hidden md:inline-block">
+                An Oil High-Viscosity Enterprise
+              </span>
+            </div>
+            <p className="text-[10.5px] text-slate-400 whitespace-nowrap leading-none mt-0.5 hidden sm:block">
+              Heavy-Oil Field Simulation &amp; Decision Support
             </p>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center gap-3">
-        {activeScenario && (
-          <div className="hidden xl:flex items-center gap-2 px-3 py-1 bg-indigo-950/80 border border-indigo-700/70 rounded text-[11px] font-mono text-indigo-200">
-            <Activity className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
-            <span className="font-bold text-indigo-300">ACTIVE SCENARIO:</span>
-            <span className="text-white font-medium">{activeScenario.name}</span>
-            <span className="text-slate-500">|</span>
-            <span className="text-slate-300">{inputs?.reservoirTemperatureC}°C</span>
-            <span className="text-slate-500">|</span>
-            <span className="text-slate-300">{inputs?.steamInjectionRateTpd} t/d</span>
-            <span className="text-slate-500">|</span>
-            <span className="text-slate-300">{inputs?.spm} SPM</span>
+      {/* Center: scenario + telemetry + demo node + system status */}
+      <div className="hidden lg:flex items-center gap-2.5">
+        {activeScenario ? (
+          <div className="oil-header-scenario-capsule hidden xl:flex items-center gap-1.5 px-2.5 py-1 text-[11px]">
+            <Activity className="w-3 h-3 oil-scenario-label" />
+            <span className="oil-scenario-label font-bold tracking-wide">ACTIVE SCENARIO:</span>
+            <span className="font-bold">{activeScenario.name}</span>
+          </div>
+        ) : null}
+
+        {inputs && (
+          <div className="hidden xl:flex items-center gap-1.5 font-mono">
+            <span className="oil-telemetry-pill">{inputs.reservoirTemperatureC}°C</span>
+            <span className="oil-telemetry-pill">{inputs.steamInjectionRateTpd} t/d</span>
+            <span className="oil-telemetry-pill">{inputs.spm} SPM</span>
           </div>
         )}
 
-        <div className="hidden lg:flex items-center gap-2 px-2.5 py-1 bg-sky-950/80 border border-sky-800 rounded text-[11px] font-mono font-bold text-sky-300">
-          <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-          <span>DEMO MODE</span>
-        </div>
+        <span className="oil-demo-node-pill hidden 2xl:inline-flex">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 oil-live-pulse" />
+          DEMO NODE
+        </span>
 
-
-
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-mono text-slate-400 hidden md:inline">System Status:</span>
+        <div className="hidden md:flex items-center gap-1.5">
+          <span className="oil-systemstatus-label">System Status:</span>
           <StatusIndicator status="ready" label="System Ready" />
         </div>
+      </div>
 
-        {user && (
-          <div className="flex items-center gap-2 pl-2 border-l border-slate-700/60">
-            <div className="hidden md:flex flex-col items-end text-[11px] font-sans">
-              <span className="font-bold text-slate-200">{user.name}</span>
-              <span className="text-slate-400 text-[10px]">{user.email}</span>
-            </div>
-            <button
-              onClick={logout}
-              title="Logout from portal"
-              className="p-1.5 rounded-md text-red-400 hover:text-red-300 hover:bg-red-950/60 border border-transparent hover:border-red-800/60 transition-colors flex items-center gap-1.5 text-xs font-semibold"
-            >
-              <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
-          </div>
-        )}
+      {/* Right: session & logout */}
+      <div className="flex items-center gap-3 shrink-0">
+        <div className="oil-session-block hidden md:block">
+          <div className="oil-session-name">{user?.name || 'Administrator'}</div>
+          <div className="oil-session-mail">{user?.email || 'admin@gmail.com'}</div>
+        </div>
+        <button
+          className="oil-logout-btn"
+          type="button"
+          onClick={logout}
+          title="Sign out from session"
+        >
+          <LogOut className="w-3.5 h-3.5" />
+          Logout
+        </button>
+        <Radio className="w-4 h-4 text-emerald-400 animate-pulse lg:hidden" />
       </div>
     </header>
   );
