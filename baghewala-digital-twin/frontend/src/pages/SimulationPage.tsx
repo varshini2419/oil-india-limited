@@ -3,32 +3,24 @@ import { AiEngineeringExplanationPanel } from '../components/simulation/AiEngine
 import { SimulationHistoricalIncidents } from '../components/simulation/SimulationHistoricalIncidents';
 import { DigitalTwinViewport } from '../components/digital-twin/DigitalTwinViewport';
 import './DigitalTwinPage.css';
-import { NormalOperatingConditionPanel } from '../components/simulation/NormalOperatingConditionPanel';
-import { MLViscosityControlPanel } from '../components/simulation/MLViscosityControlPanel';
 import { SimulationControlsAndComparison } from '../components/simulation/SimulationControlsAndComparison';
 import { SimulationResultComparison } from '../components/simulation/SimulationResultComparison';
-import { SimulationReportModal } from '../components/simulation/SimulationReportModal';
 import { SimulationAiSummaryAndAlerts } from '../components/simulation/SimulationAiSummaryAndAlerts';
 import { useScenarioStore } from '../simulation/scenario';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { EngineeringMetricsPanel } from '../components/simulation/EngineeringMetricsPanel';
+import { NormalOperatingConditionPanel } from '../components/simulation/NormalOperatingConditionPanel';
 import {
   Activity,
   Brain,
-  Compass,
   GitCompare,
-  Sliders,
-  Database,
   CheckCircle2,
-  Zap,
-  FileText,
-  Sparkles,
-  Download,
+  Cpu,
+  Flame,
+  ShieldAlert,
+  LayoutDashboard,
+  Compass,
 } from 'lucide-react';
-
-const ScenarioOptimizationPanel = lazy(() =>
-  import('../components/simulation/ScenarioOptimizationPanel').then((m) => ({
-    default: m.ScenarioOptimizationPanel,
-  }))
-);
 
 const HistoricalValidationPanel = lazy(() =>
   import('../components/simulation/HistoricalValidationPanel').then((m) => ({
@@ -48,11 +40,30 @@ const EngineeringConfidencePanel = lazy(() =>
   }))
 );
 
-const ProductionPilotPanel = lazy(() =>
-  import('../components/simulation/ProductionPilotPanel').then((m) => ({
-    default: m.ProductionPilotPanel,
+const DashboardPanel = lazy(() =>
+  import('../components/dashboard/DashboardPanel').then((m) => ({
+    default: m.DashboardPanel,
   }))
 );
+
+const SPMOptimizerPanel = lazy(() =>
+  import('../components/simulation/SPMOptimizerPanel').then((m) => ({
+    default: m.SPMOptimizerPanel,
+  }))
+);
+
+const CSSOptimizerPanel = lazy(() =>
+  import('../components/simulation/CSSOptimizerPanel').then((m) => ({
+    default: m.CSSOptimizerPanel,
+  }))
+);
+
+const PredictiveMaintenancePanel = lazy(() =>
+  import('../components/simulation/PredictiveMaintenancePanel').then((m) => ({
+    default: m.PredictiveMaintenancePanel,
+  }))
+);
+
 
 const AnalysisPanelFallback: React.FC<{ label: string }> = ({ label }) => (
   <div className="p-6 bg-slate-900 border border-slate-800 rounded-2xl font-mono text-xs text-slate-400 flex items-center justify-between shadow-md">
@@ -61,17 +72,16 @@ const AnalysisPanelFallback: React.FC<{ label: string }> = ({ label }) => (
   </div>
 );
 
-type WorkstationTab =
+export type WorkstationTab =  | 'DASHBOARD'
   | 'TWIN'
-  | 'ML_ADVISORY'
+  | 'SPM_OPTIMIZER'
+  | 'CSS_OPTIMIZER'
+  | 'PREDICTIVE_MAINTENANCE'
   | 'NOC'
   | 'RESULTS'
-  | 'OPTIMIZATION'
-  | 'HISTORICAL'
-  | 'CONFIDENCE'
-  | 'PILOT'
+  | 'VALIDATION'
   | 'AI_COPILOT'
-  | 'REPORT';
+  ;
 
 interface NavTabItem {
   id: WorkstationTab;
@@ -81,19 +91,23 @@ interface NavTabItem {
 }
 
 const NAV_TABS: NavTabItem[] = [
+  { id: 'DASHBOARD', label: 'Dashboard', icon: LayoutDashboard, badge: 'Live Overview' },
   { id: 'TWIN', label: 'Digital Twin & Simulation', icon: Activity, badge: 'Live' },
-  { id: 'ML_ADVISORY', label: 'ML Advisory', icon: Brain, badge: '30 Wells' },
+  { id: 'SPM_OPTIMIZER', label: 'SPM Optimizer', icon: Cpu, badge: '2D Twin' },
+  { id: 'CSS_OPTIMIZER', label: 'CSS Optimizer', icon: Flame, badge: 'Thermal' },
+  { id: 'PREDICTIVE_MAINTENANCE', label: 'Predictive Maintenance', icon: ShieldAlert, badge: 'Health' },
   { id: 'NOC', label: 'Baseline NOC', icon: Compass, badge: 'Reference' },
-  { id: 'RESULTS', label: 'Results & Comparison', icon: GitCompare, badge: '14 Metrics' },
-  { id: 'OPTIMIZATION', label: 'Phase 4: Optimization', icon: Sliders, badge: 'Pareto' },
-  { id: 'HISTORICAL', label: 'Phase 5: Validation', icon: Database, badge: 'Field Match' },
-  { id: 'CONFIDENCE', label: 'Phase 5: Confidence', icon: CheckCircle2, badge: 'SPE 100642' },
-  { id: 'PILOT', label: 'Phase 6: Pilot', icon: Zap, badge: 'SCADA Replay' },
-  { id: 'AI_COPILOT', label: 'AI Explanation & RAG', icon: FileText, badge: '5 Steps' },
-  { id: 'REPORT', label: 'Decision Report', icon: Sparkles, badge: '20 Sections' },
+  { id: 'RESULTS', label: 'Results & Comparison', icon: GitCompare, badge: 'Live metrics' },
+  { id: 'VALIDATION', label: 'Validation & Confidence', icon: CheckCircle2, badge: 'Evidence' },
+  { id: 'AI_COPILOT', label: 'AI Copilot & Evidence', icon: Brain, badge: 'RAG' },
 ];
 
 export const SimulationPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Simulation Workstation",
+    description:
+      "Physics-grounded simulation workstation: twin controls, ML advisory, results, validation and confidence.",
+  });
   useEffect(() => {
     const startTime = performance.now();
     requestAnimationFrame(() => {
@@ -112,8 +126,7 @@ export const SimulationPage: React.FC = () => {
     aiRiskResult,
   } = useScenarioStore();
 
-  const [reportModalOpen, setReportModalOpen] = useState(false);
-  const [activeWorkstationTab, setActiveWorkstationTab] = useState<WorkstationTab>('TWIN');
+  const [activeWorkstationTab, setActiveWorkstationTab] = useState<WorkstationTab>('DASHBOARD');
 
   const inputs = activeScenario.inputs;
 
@@ -135,7 +148,7 @@ export const SimulationPage: React.FC = () => {
             BAGHEWALA DIGITAL TWIN WORKSTATION
           </h1>
           <p className="text-xs font-mono text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
-            Physics-grounded reactive simulator & ML operating advisory across 6 engineering phases.
+            Physics-grounded reactive simulator & ML operating advisory across the full engineering workflow.
           </p>
         </div>
       </div>
@@ -175,6 +188,13 @@ export const SimulationPage: React.FC = () => {
 
       {/* 3. SEPARATED SECTION CONTENT BASED ON ACTIVE HEADER TAB */}
       
+      {/* TAB 0: LIVE OPERATIONS DASHBOARD */}
+      {activeWorkstationTab === 'DASHBOARD' && (
+        <Suspense fallback={<AnalysisPanelFallback label="Live Operations Dashboard" />}>
+          <DashboardPanel onNavigateTab={setActiveWorkstationTab} />
+        </Suspense>
+      )}
+      
       {/* TAB 1: DIGITAL TWIN & SIMULATION */}
       {activeWorkstationTab === 'TWIN' && (
         <div className="space-y-6">
@@ -184,6 +204,7 @@ export const SimulationPage: React.FC = () => {
               <DigitalTwinViewport className="digital-twin-color-scope" />
               {/* Simulation AI Operating Summary & Alerts */}
               <SimulationAiSummaryAndAlerts />
+              <EngineeringMetricsPanel showTimeline={false} />
             </div>
 
             {/* Right: Simulation Controls Sidebar */}
@@ -301,61 +322,58 @@ export const SimulationPage: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 2: ML VISCOSITY ADVISORY */}
-      {activeWorkstationTab === 'ML_ADVISORY' && (
-        <div className="space-y-6">
-          <MLViscosityControlPanel />
-        </div>
+      {/* TAB: SPM OPTIMIZER WORKSTATION */}
+      {activeWorkstationTab === 'SPM_OPTIMIZER' && (
+        <Suspense fallback={<AnalysisPanelFallback label="SPM Optimizer Workstation" />}>
+          <SPMOptimizerPanel />
+        </Suspense>
       )}
 
-      {/* TAB 3: BASELINE NORMAL OPERATING CONDITION */}
+      {/* TAB: CSS OPTIMIZER WORKSTATION */}
+      {activeWorkstationTab === 'CSS_OPTIMIZER' && (
+        <Suspense fallback={<AnalysisPanelFallback label="CSS Optimizer Workstation" />}>
+          <CSSOptimizerPanel />
+        </Suspense>
+      )}
+
+      {/* TAB: PREDICTIVE MAINTENANCE WORKSTATION */}
+      {activeWorkstationTab === 'PREDICTIVE_MAINTENANCE' && (
+        <Suspense fallback={<AnalysisPanelFallback label="Predictive Maintenance Workstation" />}>
+          <PredictiveMaintenancePanel />
+        </Suspense>
+      )}
+
+
+      {/* BASELINE NORMAL OPERATING CONDITION */}
       {activeWorkstationTab === 'NOC' && (
         <div className="space-y-6">
           <NormalOperatingConditionPanel />
         </div>
       )}
 
-      {/* TAB 4: RESULTS & COMPARISON */}
+      {/* RESULTS & COMPARISON */}
       {activeWorkstationTab === 'RESULTS' && (
         <div className="space-y-6">
           <SimulationResultComparison />
         </div>
       )}
 
-      {/* TAB 5: PHASE 4 OPTIMIZATION */}
-      {activeWorkstationTab === 'OPTIMIZATION' && (
-        <Suspense fallback={<AnalysisPanelFallback label="Phase 4 Optimization Panel" />}>
-          <ScenarioOptimizationPanel />
-        </Suspense>
-      )}
-
-      {/* TAB 6: PHASE 5 HISTORICAL VALIDATION */}
-      {activeWorkstationTab === 'HISTORICAL' && (
+      {/* VALIDATION & CONFIDENCE */}
+      {activeWorkstationTab === 'VALIDATION' && (
         <div className="space-y-6">
-          <Suspense fallback={<AnalysisPanelFallback label="Phase 5 Historical Validation" />}>
+          <Suspense fallback={<AnalysisPanelFallback label="Historical Validation" />}>
             <HistoricalValidationPanel />
           </Suspense>
-          <Suspense fallback={<AnalysisPanelFallback label="Phase 5 Uncertainty Analysis" />}>
+          <Suspense fallback={<AnalysisPanelFallback label="Uncertainty Analysis" />}>
             <UncertaintyAnalysisPanel />
+          </Suspense>
+          <Suspense fallback={<AnalysisPanelFallback label="Engineering Confidence" />}>
+            <EngineeringConfidencePanel />
           </Suspense>
         </div>
       )}
 
-      {/* TAB 7: PHASE 5 CONFIDENCE */}
-      {activeWorkstationTab === 'CONFIDENCE' && (
-        <Suspense fallback={<AnalysisPanelFallback label="Phase 5 Engineering Confidence" />}>
-          <EngineeringConfidencePanel />
-        </Suspense>
-      )}
-
-      {/* TAB 8: PHASE 6 PILOT */}
-      {activeWorkstationTab === 'PILOT' && (
-        <Suspense fallback={<AnalysisPanelFallback label="Phase 6 Production Pilot" />}>
-          <ProductionPilotPanel />
-        </Suspense>
-      )}
-
-      {/* TAB 9: AI EXPLANATION & RAG */}
+      {/* AI COPILOT & EVIDENCE */}
       {activeWorkstationTab === 'AI_COPILOT' && (
         <div className="space-y-6">
           <AiEngineeringExplanationPanel />
@@ -363,69 +381,6 @@ export const SimulationPage: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 10: DECISION REPORT GENERATOR */}
-      {activeWorkstationTab === 'REPORT' && (
-        <div className="space-y-6">
-          <div className="p-8 bg-gradient-to-r from-sky-50 via-blue-50 to-indigo-50 dark:from-sky-950/40 dark:via-blue-900/30 dark:to-indigo-950/40 border border-sky-200 dark:border-sky-800/80 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xl relative overflow-hidden">
-            <div className="flex items-start gap-5">
-              <div className="p-4 bg-white dark:bg-sky-900/60 rounded-2xl border border-sky-200 dark:border-sky-700 shadow-md">
-                <FileText className="w-10 h-10 text-sky-600 dark:text-sky-300" />
-              </div>
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-sky-600 dark:text-sky-400 bg-white dark:bg-sky-950 px-2.5 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
-                    CANONICAL DECISION AUDIT
-                  </span>
-                  <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-                    20 SECTIONS
-                  </span>
-                </div>
-                <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">
-                  Comprehensive Baghewala Engineering Decision Report
-                </h2>
-                <p className="text-xs text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed font-medium">
-                  Exports a multi-phase audit trace comprising thermodynamic heating plume calculations, Vogel heavy-oil inflow performance curves, SRP rod load index ratings, RAG-grounded field incident evidence, and markdown/JSON report bundles.
-                </p>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setReportModalOpen(true)}
-              className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-bold rounded-xl text-sm shadow-xl shadow-sky-500/25 hover:shadow-sky-500/40 hover:-translate-y-0.5 transition-all cursor-pointer shrink-0"
-            >
-              <Download className="w-4 h-4" />
-              <span>GENERATE FULL REPORT</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs font-sans">
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-              <strong className="text-slate-800 dark:text-slate-100 font-bold block text-sm">Full Causal Decision Trace</strong>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                Step-by-step causal chain recording exactly how ambient weather and thermal injection inputs propagated downstream into viscosity and production yield.
-              </p>
-            </div>
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-              <strong className="text-slate-800 dark:text-slate-100 font-bold block text-sm">Multimodal RAG Evidence</strong>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                Synthesized citations from Oil India Limited operational records and SPE technical papers with provenance tags and similarity scores.
-              </p>
-            </div>
-            <div className="p-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-2">
-              <strong className="text-slate-800 dark:text-slate-100 font-bold block text-sm">Multi-Format Export</strong>
-              <p className="text-slate-500 dark:text-slate-400 leading-relaxed">
-                Download formatted GitHub Flavored Markdown files or raw machine-readable JSON for integration into SCADA archives and regulatory submissions.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* PROMPT 8 MODAL */}
-      <SimulationReportModal
-        isOpen={reportModalOpen}
-        onClose={() => setReportModalOpen(false)}
-      />
     </div>
   );
 };
