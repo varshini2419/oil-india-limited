@@ -19,8 +19,14 @@ import {
   type ReadinessLevel,
 } from '../simulation/operationalReadiness';
 import { type FieldDataSource } from '../simulation/fieldDataIntegration';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const OperationalReadinessPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Operational Readiness",
+    description:
+      "Pipeline health and operational readiness evaluation across all twin engines.",
+  });
   const [sourceType, setSourceType] = useState<FieldDataSource>('HISTORICAL');
   const [isExecutingDemo, setIsExecutingDemo] = useState(false);
   const [demoOutput, setDemoOutput] = useState<DemonstrationResult | null>(null);
@@ -237,11 +243,11 @@ export const OperationalReadinessPage: React.FC = () => {
             { step: 'FIELD DATA', detail: 'Ingestion & Normalization' },
             { step: 'QUALITY', detail: 'Schema & Outlier Check' },
             { step: 'PHYSICS', detail: 'Steps 4.3–4.8 Pipeline' },
-            { step: 'CALIBRATION', detail: 'Step 5.2 Parameters' },
-            { step: 'UNCERTAINTY', detail: 'Step 5.3 Monte Carlo' },
-            { step: 'OPTIMIZATION', detail: 'Step 5.4 Pareto Engine' },
-            { step: 'RISK', detail: 'Step 4.9 AI Risk Advisory' },
-            { step: 'DECISION', detail: 'Step 5.7 Audit Trace' },
+            { step: 'CALIBRATION', detail: 'Parameter Calibration' },
+            { step: 'UNCERTAINTY', detail: 'Monte Carlo Uncertainty' },
+            { step: 'OPTIMIZATION', detail: 'Pareto Optimization' },
+            { step: 'RISK', detail: 'AI Risk Advisory' },
+            { step: 'DECISION', detail: 'Decision Audit Trace' },
           ].map((s, idx) => (
             <div key={idx} className="bg-slate-950 border border-slate-800 rounded p-2.5 flex flex-col items-center justify-between h-20">
               <span className="text-[10px] font-bold text-cyan-400">0{idx + 1}. {s.step}</span>

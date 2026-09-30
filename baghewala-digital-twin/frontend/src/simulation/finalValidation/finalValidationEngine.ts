@@ -45,15 +45,15 @@ export function executeFinalValidation(input?: FinalValidationInput): FinalValid
     statusReason = 'System verification failed or build errors detected.';
   } else if (!isRealConn) {
     finalStatus = 'FIELD_VALIDATION_REQUIRED';
-    statusReason = 'System software architecture, physics pipeline, and 19 unit test suites (396 tests) verified 100% passed in demonstration mode; physical field SCADA telemetry integration and gauge calibration are required prior to real field deployment.';
+    statusReason = 'System software architecture and physics pipeline verified in demonstration mode; physical field SCADA telemetry integration and gauge calibration are required prior to real field deployment.';
   } else {
     finalStatus = 'CONTROLLED_PILOT_REQUIRED';
     statusReason = 'Real field telemetry stream connected; controlled advisory pilot execution recommended under multi-disciplinary engineering oversight.';
   }
 
   const executiveSummary =
-    `The Baghewala Heavy-Oil Field Digital Twin has successfully completed end-to-end system verification across 19 simulation test suites (${verification.totalPassedCount}/${verification.totalTestCount} tests passing). ` +
-    `Physics model calibration achieved a 42.5% reduction in Mean Absolute Error (MAE), with Monte Carlo uncertainty bounding production between P10: 3.95 BOPD and P90: 12.03 BOPD. ` +
+    `The Baghewala Heavy-Oil Field Digital Twin has completed end-to-end system verification across its physics, calibration, validation, optimization and readiness modules. ` +
+    `Physics model calibration reduced model error against documented field observations, with Monte Carlo uncertainty bounding production between P10: 3.95 BOPD and P90: 12.03 BOPD. ` +
     `Final Status: ${finalStatus}. ${statusReason}`;
 
   return {

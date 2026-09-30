@@ -1,4 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
+import { runHistoricalCalibration } from '../simulation/historicalCalibration/calibrationEngine';
+import { runUncertaintyAnalysis } from '../simulation/uncertaintyAnalysis/uncertaintyEngine';
+import { runScenarioOptimization } from '../simulation/scenarioOptimization';
+import { DEFAULT_DECISION_CONSTRAINTS } from '../simulation/scenarioOptimization/defaults';
+import { runHistoricalValidation } from '../simulation/historicalValidation';
 import { PageHeader } from '../components/ui/PageHeader';
 import { Panel } from '../components/ui/Panel';
 import { useScenarioStore } from '../simulation/scenario';
@@ -9,6 +14,7 @@ import { compareProductionResults } from '../simulation/production';
 import { compareOptimizationResults } from '../simulation/srpOptimization';
 import { compareCSSResults } from '../simulation/cssOptimization';
 import { compareRiskResults } from '../simulation/riskEngine';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import {
   ChevronDown,
   ChevronUp,
@@ -26,6 +32,11 @@ import {
 } from 'lucide-react';
 
 export const ResultsPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Results & Comparison",
+    description:
+      "Live thermal, viscosity, mobility, production, optimization and risk results compared against baseline.",
+  });
   const {
     thermalResult,
     baselineThermalResult,
@@ -41,6 +52,30 @@ export const ResultsPage: React.FC = () => {
     activeScenario,
   } = useScenarioStore();
   const [howCalculatedOpen, setHowCalculatedOpen] = useState(false);
+
+  // Live engine computations for the validation & decision summary panels.
+  const calibrationReport = useMemo(() => runHistoricalCalibration(), []);
+  const uncertaintyResult = useMemo(() => runUncertaintyAnalysis({ sampleCount: 500, seed: 42 }), []);
+  const scenarioOptimizationResult = useMemo(
+    () =>
+      runScenarioOptimization({
+        modelMode: 'CALIBRATED',
+        objective: 'BALANCED_OPERATION',
+        constraints: { ...DEFAULT_DECISION_CONSTRAINTS },
+      }),
+    []
+  );
+  const historicalValidationResult = useMemo(
+    () => runHistoricalValidation(activeScenario.inputs),
+    [activeScenario.inputs]
+  );
+
+  const validObservationCount = calibrationReport.observations.filter((o) => o.observedValue !== null).length;
+  const totalObservationCount = calibrationReport.observations.length;
+  const topSensitivity = uncertaintyResult.sensitivityResults[0];
+  const topScenarioEvaluation = scenarioOptimizationResult.evaluations.find(
+    (e) => e.candidate.id === scenarioOptimizationResult.recommendation.selectedScenarioId
+  );
 
   const comparisonRows = compareThermalScenarios(baselineThermalResult, thermalResult);
   const viscosityComparisonRows = compareViscosityResults(baselineViscosityResult, viscosityResult);
@@ -68,7 +103,7 @@ export const ResultsPage: React.FC = () => {
       <PageHeader
         title="Simulation Results — Thermal, Viscosity, Mobility & Production Analytics"
         subtitle="Modeled temperature distribution, heavy-oil viscosity reduction, mobility transmissibility, production, CSS cycle optimization, and AI risk advisory"
-        badgeText="Step 4.9 AI Risk Advisory Active"
+        badgeText="AI Risk Advisory Active"
       />
 
       {/* Warnings & Notices */}
@@ -97,7 +132,7 @@ export const ResultsPage: React.FC = () => {
 
       {/* 1. THERMAL RESPONSE PRIMARY SUMMARY CARD */}
       <Panel
-        title="Thermal Model Results Overview (Step 4.3)"
+        title="Thermal Model Results Overview"
         subtitle={`Scenario: ${activeScenario.name} | Reduced-Order Thermal Engine Output`}
         action={
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-rose-950/80 border border-rose-800 text-rose-300 font-mono text-xs font-bold">
@@ -153,8 +188,8 @@ export const ResultsPage: React.FC = () => {
       {/* 2. HEAVY-OIL VISCOSITY & MOBILITY SUMMARY CARDS */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <Panel
-          title="Heavy-Oil Viscosity Profile (Step 4.4)"
-          subtitle="Viscosity reduction curve from Step 4.3 thermal output"
+          title="Heavy-Oil Viscosity Profile"
+          subtitle="Viscosity reduction curve from the thermal model output"
           action={
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-purple-950/80 border border-purple-800 text-purple-300 font-mono text-[11px] font-bold">
               <Droplet className="w-3.5 h-3.5 text-purple-400" />
@@ -183,7 +218,7 @@ export const ResultsPage: React.FC = () => {
         </Panel>
 
         <Panel
-          title="Heavy-Oil Transmissibility Mobility (Step 4.5)"
+          title="Heavy-Oil Transmissibility Mobility"
           subtitle="Single-phase Darcy transmissibility (λ_o = k_eff / μ_o)"
           action={
             <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-emerald-950/80 border border-emerald-800 text-emerald-300 font-mono text-[11px] font-bold">
@@ -215,7 +250,7 @@ export const ResultsPage: React.FC = () => {
 
       {/* 3. HEAVY-OIL PRODUCTION ANALYSIS (STEP 4.6) */}
       <Panel
-        title="Heavy-Oil Production Analysis (Step 4.6)"
+        title="Heavy-Oil Production Analysis"
         subtitle="Deterministic heavy-oil production screening estimate (q_bopd = J_o * ΔP * F_pump)"
         action={
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-sky-950/80 border border-sky-800 text-sky-300 font-mono text-xs font-bold uppercase">
@@ -277,7 +312,7 @@ export const ResultsPage: React.FC = () => {
               <span className="text-base font-bold text-rose-400 mt-1 block">
                 {predictedReservoirTemperatureC} °C
               </span>
-              <span className="text-[9px] text-slate-500 mt-0.5 block">Step 4.3 Output</span>
+              <span className="text-[9px] text-slate-500 mt-0.5 block">Thermal output</span>
             </div>
 
             <div className="bg-slate-950 p-3 rounded border border-purple-900/60 text-center relative">
@@ -288,7 +323,7 @@ export const ResultsPage: React.FC = () => {
               <span className="text-base font-bold text-purple-400 mt-1 block">
                 {viscosityResult.estimatedViscosityCp} cP
               </span>
-              <span className="text-[9px] text-slate-500 mt-0.5 block">Step 4.4 Output</span>
+              <span className="text-[9px] text-slate-500 mt-0.5 block">Viscosity output</span>
             </div>
 
             <div className="bg-slate-950 p-3 rounded border border-emerald-900/60 text-center relative">
@@ -299,7 +334,7 @@ export const ResultsPage: React.FC = () => {
               <span className="text-base font-bold text-emerald-400 mt-1 block">
                 {mobilityResult.mobilityDcP} D/cP
               </span>
-              <span className="text-[9px] text-slate-500 mt-0.5 block">Step 4.5 Output</span>
+              <span className="text-[9px] text-slate-500 mt-0.5 block">Mobility output</span>
             </div>
 
             <div className="bg-slate-950 p-3 rounded border border-amber-900/60 text-center relative">
@@ -321,7 +356,7 @@ export const ResultsPage: React.FC = () => {
               <span className="text-base font-bold text-sky-300 mt-1 block">
                 {productionResult.estimatedProductionBopd} BOPD
               </span>
-              <span className="text-[9px] text-sky-400 mt-0.5 block font-bold">Step 4.6 Output</span>
+              <span className="text-[9px] text-sky-400 mt-0.5 block font-bold">Production output</span>
             </div>
 
             <div className="bg-slate-950 p-3 rounded border border-emerald-500/60 text-center relative">
@@ -332,7 +367,7 @@ export const ResultsPage: React.FC = () => {
               <span className="text-base font-bold text-emerald-400 mt-1 block">
                 {srpOptimizationResult.optimalCandidate.estimatedProductionBopd} BOPD
               </span>
-              <span className="text-[9px] text-emerald-400 mt-0.5 block font-bold">Step 4.7 Output</span>
+              <span className="text-[9px] text-emerald-400 mt-0.5 block font-bold">SRP optimization output</span>
             </div>
           </div>
         </div>
@@ -340,7 +375,7 @@ export const ResultsPage: React.FC = () => {
 
       {/* 4. SRP + VFD PRODUCTION OPTIMIZATION ANALYSIS (STEP 4.7) */}
       <Panel
-        title="SRP + VFD Production Optimization Analysis (Step 4.7)"
+        title="SRP + VFD Production Optimization Analysis"
         subtitle="Modeled operating window and candidate grid search result"
         action={
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-emerald-950/80 border border-emerald-800 text-emerald-300 font-mono text-xs font-bold uppercase">
@@ -454,7 +489,7 @@ export const ResultsPage: React.FC = () => {
 
       {/* 5. BAGHEWALA CSS OPTIMIZATION ANALYSIS (STEP 4.8) */}
       <Panel
-        title="Baghewala CSS Optimization Analysis (Step 4.8)"
+        title="Baghewala CSS Optimization Analysis"
         subtitle="Cyclic Steam Stimulation thermal soak cycle and historical pilot comparison"
         action={
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-rose-950/80 border border-rose-800 text-rose-300 font-mono text-xs font-bold uppercase">
@@ -563,7 +598,7 @@ export const ResultsPage: React.FC = () => {
 
       {/* 6. BAGHEWALA AI RISK ADVISORY ANALYSIS (STEP 4.9) */}
       <Panel
-        title="Baghewala AI Risk & Operations Advisory (Step 4.9)"
+        title="Baghewala AI Risk & Operations Advisory"
         subtitle="Automated risk synthesis, detected issues, and recommended engineering action plan"
         action={
           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded font-mono text-xs font-bold uppercase border ${
@@ -724,16 +759,16 @@ export const ResultsPage: React.FC = () => {
           <div className="mt-3 p-4 bg-slate-950 border border-slate-800/80 rounded-lg font-mono text-xs text-slate-300 space-y-3">
             <ol className="list-decimal list-inside space-y-2 text-slate-300">
               <li>
-                <strong className="text-slate-100">Step 4.3 Thermal Output:</strong> Predicted reservoir temperature generated from thermal model ({predictedReservoirTemperatureC}°C).
+                <strong className="text-slate-100">Thermal model output:</strong> Predicted reservoir temperature generated from thermal model ({predictedReservoirTemperatureC}°C).
               </li>
               <li>
-                <strong className="text-slate-100">Step 4.4 Viscosity Interpolation:</strong> Temperature applied to log-linear interpolation over Baghewala reference data points ({viscosityResult.estimatedViscosityCp} cP).
+                <strong className="text-slate-100">Viscosity interpolation:</strong> Temperature applied to log-linear interpolation over Baghewala reference data points ({viscosityResult.estimatedViscosityCp} cP).
               </li>
               <li>
-                <strong className="text-slate-100">Step 4.5 Mobility Equation:</strong> Oil mobility calculated via Darcy single-phase equation: λ_o = k_eff / μ_o = ({mobilityResult.effectivePermeabilityD} D) / ({mobilityResult.viscosityCp} cP) = {mobilityResult.mobilityDcP} D/cP.
+                <strong className="text-slate-100">Mobility equation:</strong> Oil mobility calculated via Darcy single-phase equation: λ_o = k_eff / μ_o = ({mobilityResult.effectivePermeabilityD} D) / ({mobilityResult.viscosityCp} cP) = {mobilityResult.mobilityDcP} D/cP.
               </li>
               <li>
-                <strong className="text-slate-100">Step 4.6 Production Model:</strong> Productivity index J_o = {productionResult.productivityIndexBopdBar} BOPD/bar. Estimated production q_bopd = J_o * ΔP * F_pump = ({productionResult.productivityIndexBopdBar}) * ({productionResult.effectiveDrawdownBar} bar) * ({productionResult.pumpOperationFactor}) = <strong className="text-sky-300 font-bold">{productionResult.estimatedProductionBopd} BOPD</strong>.
+                <strong className="text-slate-100">Production model:</strong> Productivity index J_o = {productionResult.productivityIndexBopdBar} BOPD/bar. Estimated production q_bopd = J_o * ΔP * F_pump = ({productionResult.productivityIndexBopdBar}) * ({productionResult.effectiveDrawdownBar} bar) * ({productionResult.pumpOperationFactor}) = <strong className="text-sky-300 font-bold">{productionResult.estimatedProductionBopd} BOPD</strong>.
               </li>
               <li>
                 <strong className="text-slate-100">Baseline vs Scenario Delta:</strong> Baseline production ({productionResult.baselineProductionBopd} BOPD) → Scenario production ({productionResult.estimatedProductionBopd} BOPD) = <strong className="text-emerald-400 font-bold">+{productionResult.productionChangeBopd} BOPD (+{productionResult.productionChangePercent}%)</strong>.
@@ -743,9 +778,9 @@ export const ResultsPage: React.FC = () => {
         )}
       </Panel>
 
-      {/* 6. HISTORICAL CALIBRATION SUMMARY PANEL (STEP 5.2) */}
+      {/* 6. HISTORICAL CALIBRATION SUMMARY PANEL (computed live) */}
       <Panel
-        title="Historical Calibration & Parameter Tuning Summary (Step 5.2)"
+        title="Historical Calibration & Parameter Tuning Summary"
         subtitle="Empirical parameter fitting pipeline: Baseline Model → Historical Backtest → Sensitivity Analysis → Calibrated Model"
         action={
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-indigo-950/80 border border-indigo-800 text-indigo-300 font-mono text-xs font-bold uppercase">
@@ -758,7 +793,7 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Baseline Model MAE</div>
             <div className="text-xl font-bold text-amber-400 mt-1">
-              2022.9
+              {calibrationReport.summary.baselineMetrics.mae}
             </div>
             <div className="text-[10px] text-slate-500 mt-1">
               Uncalibrated Screening Error
@@ -768,7 +803,7 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Calibrated Model MAE</div>
             <div className="text-xl font-bold text-emerald-400 mt-1">
-              2015.2
+              {calibrationReport.summary.calibratedMetrics.mae}
             </div>
             <div className="text-[10px] text-emerald-400 mt-1 font-bold">
               Fitted against SPE 100642 Data
@@ -778,7 +813,7 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Production Error Reduction</div>
             <div className="text-xl font-bold text-indigo-300 mt-1">
-              -34.6%
+              -{calibrationReport.summary.overallImprovementPercent.toFixed(1)}%
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
               C_prod tuned 50 → 250
@@ -788,10 +823,10 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Validation Dataset</div>
             <div className="text-xl font-bold text-sky-400 mt-1">
-              4 Cases
+              {validObservationCount} / {totalObservationCount}
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
-              Sparse Holdout Evaluated
+              Documented observations with measured values
             </div>
           </div>
         </div>
@@ -810,9 +845,9 @@ export const ResultsPage: React.FC = () => {
         </div>
       </Panel>
 
-      {/* 7. UNCERTAINTY & SENSITIVITY ANALYSIS PANEL (STEP 5.3) */}
+      {/* 7. UNCERTAINTY & SENSITIVITY ANALYSIS PANEL (computed live) */}
       <Panel
-        title="Uncertainty & Sensitivity Analysis Summary (Step 5.3)"
+        title="Uncertainty & Sensitivity Analysis Summary"
         subtitle="Monte Carlo (500 samples) parameter uncertainty propagation & One-at-a-Time sensitivity ranking"
         action={
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded bg-cyan-950/80 border border-cyan-800 text-cyan-300 font-mono text-xs font-bold uppercase">
@@ -825,27 +860,27 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Production P50 (Median)</div>
             <div className="text-xl font-bold text-cyan-300 mt-1">
-              6.90 BOPD
+              {uncertaintyResult.productionStats.p50} BOPD
             </div>
             <div className="text-[10px] text-slate-500 mt-1">
-              P90: 3.95 | P10: 12.03 BOPD
+              P90: {uncertaintyResult.productionStats.p90} | P10: {uncertaintyResult.productionStats.p10} BOPD
             </div>
           </div>
 
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Highest Modeled Sensitivity</div>
             <div className="text-sm font-bold text-amber-300 mt-1 truncate">
-              Reservoir Permeability (k)
+              {topSensitivity?.parameterName ?? 'Not available'}
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
-              Norm Index: 100% (±25% range)
+              Norm Index: {topSensitivity ? (topSensitivity.normalizedSensitivity * 100).toFixed(0) : '—'}%
             </div>
           </div>
 
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Prob &gt; Baseline (0.75 BOPD)</div>
             <div className="text-xl font-bold text-emerald-400 mt-1">
-              98.2%
+              {uncertaintyResult.productionStats.probGreaterThanBaseline}%
             </div>
             <div className="text-[10px] text-emerald-400 mt-1 font-bold">
               High Positive Expectation
@@ -855,7 +890,7 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Mean Risk Score</div>
             <div className="text-xl font-bold text-purple-300 mt-1">
-              28.5 / 100
+              {uncertaintyResult.riskScoreStats.mean} / 100
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
               Low Risk Range
@@ -869,24 +904,24 @@ export const ResultsPage: React.FC = () => {
             <span>To view Tornado charts, full parameter bounds, and Pearson correlation matrices:</span>
           </div>
           <a
-            href="/results"
+            href="/integrated-validation"
             className="px-3 py-1 bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 rounded font-bold hover:bg-cyan-500/30 transition-colors"
           >
-            View Output Results →
+            Open Full Uncertainty Workspace →
           </a>
         </div>
       </Panel>
 
-      {/* 8. SCENARIO OPTIMIZATION & DECISION ENGINE SUMMARY CARD */}
+      {/* 8. SCENARIO OPTIMIZATION & DECISION ENGINE SUMMARY CARD (computed live) */}
       <Panel
-        title="Scenario Optimization & Decision Support (Step 5.4)"
+        title="Scenario Optimization & Decision Support"
         subtitle="Multi-objective scenario ranking, hard/soft constraint screening & Pareto trade-offs"
       >
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 font-mono text-xs">
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Recommended Scenario</div>
             <div className="text-sm font-bold text-emerald-400 mt-1">
-              Combined Optimization
+              {scenarioOptimizationResult.recommendation.selectedScenarioName}
             </div>
             <div className="text-[10px] text-emerald-300/80 mt-1">
               Objective: Balanced Operation
@@ -896,17 +931,17 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Modeled Rate (P50)</div>
             <div className="text-xl font-bold text-slate-100 mt-1">
-              34.8 <span className="text-xs text-slate-400">BOPD</span>
+              {topScenarioEvaluation ? topScenarioEvaluation.estimatedProductionBopd.toFixed(1) : '—'} <span className="text-xs text-slate-400">BOPD</span>
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
-              Feasible Candidates: 7 / 7
+              Feasible Candidates: {scenarioOptimizationResult.feasibleScenariosCount} / {scenarioOptimizationResult.evaluatedCandidatesCount}
             </div>
           </div>
 
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Pareto Classification</div>
             <div className="text-sm font-bold text-emerald-400 mt-1">
-              NON_DOMINATED
+              {topScenarioEvaluation?.paretoClassification ?? '—'}
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
               Trade-Off Optimal
@@ -916,10 +951,10 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Operational Risk</div>
             <div className="text-sm font-bold text-slate-200 mt-1">
-              LOW (28/100)
+              {topScenarioEvaluation ? `${topScenarioEvaluation.riskLevel} (${topScenarioEvaluation.riskScore}/100)` : '—'}
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
-              SRP Load: 78.5 / 100
+              SRP Load: {topScenarioEvaluation ? topScenarioEvaluation.srpLoadIndex.toFixed(1) : '—'} / 100
             </div>
           </div>
         </div>
@@ -938,9 +973,9 @@ export const ResultsPage: React.FC = () => {
         </div>
       </Panel>
 
-      {/* 9. HISTORICAL VALIDATION & MODEL RESIDUALS SUMMARY (PROMPT 6) */}
+      {/* 9. HISTORICAL VALIDATION & MODEL RESIDUALS SUMMARY (computed live) */}
       <Panel
-        title="Historical Validation & Model Residuals (Step 6.1)"
+        title="Historical Validation & Model Residuals"
         subtitle="Empirical field reference comparison, data quality audit, and uncertainty range propagation"
         action={
           <a
@@ -956,48 +991,48 @@ export const ResultsPage: React.FC = () => {
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Validation Status</div>
             <div className="text-sm font-bold text-emerald-400 mt-1">
-              VALIDATED (PASS)
+              {historicalValidationResult.validationStatus}
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
-              Data Quality: 100 / 100
+              Confidence: {historicalValidationResult.confidenceBand}
             </div>
           </div>
 
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Production Residual MAE</div>
             <div className="text-xl font-bold text-amber-300 mt-1">
-              1.42 <span className="text-xs text-slate-400">BOPD</span>
+              {historicalValidationResult.mae} <span className="text-xs text-slate-400">BOPD</span>
             </div>
             <div className="text-[10px] text-emerald-400 mt-1 font-bold">
-              Lower error after calibration
+              Predicted {historicalValidationResult.predictedProductionBopd} vs observed {historicalValidationResult.observedProductionBopd} BOPD
             </div>
           </div>
 
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Uncertainty Production Range</div>
             <div className="text-sm font-bold text-cyan-300 mt-1">
-              5.8 – 8.1 BOPD
+              {uncertaintyResult.productionStats.p90} – {uncertaintyResult.productionStats.p10} BOPD
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
-              Central: 6.9 BOPD
+              Central (P50): {uncertaintyResult.productionStats.p50} BOPD
             </div>
           </div>
 
           <div className="bg-slate-950/80 border border-slate-800 p-3.5 rounded-lg">
             <div className="text-[10px] text-slate-400 uppercase tracking-wider">Highest Sensitivity</div>
             <div className="text-sm font-bold text-slate-200 mt-1 truncate">
-              Reservoir Temp
+              {topSensitivity?.parameterName ?? 'Not available'}
             </div>
             <div className="text-[10px] text-slate-400 mt-1">
-              Perturbation: +5.0°C
+              Max production delta: ±{topSensitivity?.maxOutputDelta ?? '—'} BOPD
             </div>
           </div>
         </div>
       </Panel>
 
-      {/* 10. AI ENGINEERING DECISION TRACE PANEL (PROMPT 7) */}
+      {/* 10. AI ENGINEERING DECISION TRACE PANEL */}
       <Panel
-        title="AI Engineering Decision Trace & Copilot (Step 7.1)"
+        title="AI Engineering Decision Trace & Copilot"
         subtitle="Explainable decision support over physics models, historical RAG evidence, constraints, and non-actuating advisories"
         action={
           <a
@@ -1028,7 +1063,7 @@ export const ResultsPage: React.FC = () => {
           Digital Twin Pipeline Status
         </div>
         <p className="text-[11px] text-slate-400">
-          Step 5.4 completes at Scenario Optimization & Decision Support Engine. All physics models remain strictly driven by empirical Baghewala records, calibrated parameters, Monte Carlo uncertainty analysis, and deterministic decision constraints.
+          The pipeline completes at the Scenario Optimization & Decision Support engine. All physics models remain strictly driven by documented Baghewala records, calibrated parameters, Monte Carlo uncertainty analysis, and deterministic decision constraints.
         </p>
       </div>
     </div>

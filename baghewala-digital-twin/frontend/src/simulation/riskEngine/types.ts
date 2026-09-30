@@ -8,7 +8,7 @@ export interface DetectedIssue {
   id: string;
   title: string;
   severity: RiskLevel;
-  category: 'SRP_LOAD' | 'VISCOSITY' | 'THERMAL' | 'PRODUCTION' | 'MOBILITY';
+  category: 'SRP_LOAD' | 'ROD_FLOATING' | 'VISCOSITY' | 'THERMAL' | 'PRODUCTION' | 'MOBILITY';
   description: string;
   threshold: string;
   actualValue: string;
@@ -25,6 +25,7 @@ export interface RiskEvidence {
   steamInjectionRateTpd: number;
   srpLoadIndex: number;
   cssThermalGainC: number;
+  rodFloatingIndex?: number;
 }
 
 export interface RecommendedAction {

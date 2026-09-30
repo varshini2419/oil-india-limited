@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 
 import { executeFinalDeploymentValidation } from '../simulation/deploymentReadiness';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import type {
   FinalValidationResult,
   DeploymentReadinessLevel,
@@ -27,6 +28,11 @@ import type { FieldDataSource } from '../simulation/fieldDataIntegration/types';
 import type { ModelMode } from '../simulation/historicalCalibration/types';
 
 export const DeploymentReadinessPage: React.FC = () => {
+  useDocumentTitle({
+    title: 'Deployment Readiness & Pilot Validation',
+    description:
+      'Deployment readiness gates, field pilot checklist and safety decoupling verification for the Baghewala digital twin.',
+  });
   const [sourceType, setSourceType] = useState<FieldDataSource>('HISTORICAL');
   const [modelMode, setModelMode] = useState<ModelMode>('CALIBRATED');
   const [telemetryOverride, setTelemetryOverride] = useState<TelemetryConnectionStatus | 'DEFAULT'>('DEFAULT');
@@ -121,7 +127,7 @@ export const DeploymentReadinessPage: React.FC = () => {
                 DEPLOYMENT READINESS & PILOT VALIDATION
               </h1>
               <span className="bg-sky-950 text-sky-400 border border-sky-800 text-xs px-2.5 py-0.5 rounded font-mono font-semibold">
-                STEP 5.10
+                PILOT GATE
               </span>
             </div>
             <p className="text-slate-400 text-xs font-mono">
@@ -191,8 +197,8 @@ export const DeploymentReadinessPage: React.FC = () => {
             <span>PROVENANCE: <strong className="text-emerald-400">{validationResult.provenance}</strong></span>
           </div>
           <div>
-            VERIFIED SIMULATION TESTS: <strong className="text-sky-400">304 / 304 PASSING</strong>
-          </div>
+            SIMULATION ENGINES: <strong className="text-sky-400">ALL ACTIVE</strong>
+           </div>
         </div>
       </div>
 

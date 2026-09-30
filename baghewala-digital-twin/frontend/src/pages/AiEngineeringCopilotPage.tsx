@@ -11,8 +11,14 @@ import { buildFullEngineeringDecisionContext, analyzeWhyStateChanged } from '../
 import { processCopilotEngineeringQuery, type CopilotQueryAnswer } from '../simulation/copilot/copilotQueryEngine';
 import { buildScenarioComparisonMatrix } from '../simulation/scenarios/scenarioComparisonEngine';
 import { evaluateDataGapPriorities } from '../simulation/copilot/dataGapPriorityEngine';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const AiEngineeringCopilotPage: React.FC = () => {
+  useDocumentTitle({
+    title: "AI Engineering Copilot",
+    description:
+      "Explainable AI decision trace grounded in RAG historical evidence.",
+  });
   const { activeScenario, presets, savedScenarios, updateInput } = useScenarioStore();
 
   const allScenarios = useMemo(() => [...presets, ...savedScenarios], [presets, savedScenarios]);
@@ -88,7 +94,7 @@ export const AiEngineeringCopilotPage: React.FC = () => {
       <PageHeader
         title="BAGHEWALA AI ENGINEERING COPILOT"
         subtitle="Explainable decision support over the Digital Twin, historical evidence, constraints and uncertainty"
-        badgeText="Step 7.1 AI Engineering Command Center"
+        badgeText="AI Engineering Command Center"
       />
 
       {/* TOP WELL STATE & LIVE PHYSICS SUMMARY */}

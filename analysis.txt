@@ -1,0 +1,14 @@
+
+Dashboard: Field, reservoir and well identity; live modeled production, SOR, energy, pump efficiency, rod-floating risk and data coverage.
+Digital Twin: Animated well schematic with thermal, viscosity, mobility, production and SRP state.
+
+Simulation: Five tabs:
+Twin & Controls
+ML Advisory
+Results & Comparison
+Validation & Confidence
+AI Copilot & Evidence
+Optimization: Scenarios A-E, CSS cycle trade-offs, Pareto results and advisory SRP/VFD setpoints over the cooling timeline.
+Live Monitoring: Telemetry, actual-versus-predicted values, deviation alerts, data import and documented failure history.
+Reports: Live Simulation, Scenario Comparison, Validation & Readiness, and Production Pilot Audit with Markdown and JSON export.
+404: Shown for unknown routes.

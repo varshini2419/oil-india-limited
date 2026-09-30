@@ -32,23 +32,23 @@ console.log('====================================================');
 try {
   // Test 1: Complete default system verification
   const verification = evaluateSystemVerification();
-  assert(verification.suites.length === 19 && verification.totalTestCount === 394, `Test 1: System verification aggregates 19 suites (${verification.totalTestCount} tests)`);
+  assert(verification.suites.length === 19, `Test 1: System verification aggregates 19 module suites`);
 
   // Test 2: Missing suite handling
   const missingVerification = evaluateSystemVerification([
-    { suiteId: 'S1', stepReference: 'Step 4.3', moduleName: 'Thermal', testCount: 5, passed: 5, failed: 0, status: 'NOT_AVAILABLE', buildStatus: 'PASS', limitations: [] },
+    { suiteId: 'S1', stepReference: 'Step 4.3', moduleName: 'Thermal', status: 'NOT_AVAILABLE', buildStatus: 'PASS', limitations: [] },
   ]);
   assert(missingVerification.overallVerificationStatus === 'PARTIAL', 'Test 2: Missing suite marks overall status PARTIAL');
 
   // Test 3: Failed suite handling
   const failedVerification = evaluateSystemVerification([
-    { suiteId: 'S1', stepReference: 'Step 4.3', moduleName: 'Thermal', testCount: 5, passed: 4, failed: 1, status: 'FAIL', buildStatus: 'PASS', limitations: [] },
+    { suiteId: 'S1', stepReference: 'Step 4.3', moduleName: 'Thermal', status: 'FAIL', buildStatus: 'PASS', limitations: [] },
   ]);
   assert(failedVerification.overallVerificationStatus === 'FAIL', 'Test 3: Failed suite marks overall status FAIL');
 
   // Test 4: Build failure handling
   const buildFailVerification = evaluateSystemVerification([
-    { suiteId: 'S1', stepReference: 'Step 4.3', moduleName: 'Thermal', testCount: 5, passed: 5, failed: 0, status: 'PASS', buildStatus: 'FAIL', limitations: [] },
+    { suiteId: 'S1', stepReference: 'Step 4.3', moduleName: 'Thermal', status: 'PASS', buildStatus: 'FAIL', limitations: [] },
   ]);
   assert(buildFailVerification.overallBuildStatus === 'FAIL', 'Test 4: Build failure correctly detected');
 
@@ -133,7 +133,7 @@ try {
 
   // Test 27: Missing data safety in state execution
   const emptyState = executeFinalValidation({});
-  assert(emptyState.verification.totalPassedCount === 394, 'Test 27: Empty input executes safely and preserves verification count');
+  assert(emptyState.verification.suites.length === 19, 'Test 27: Empty input executes safely and preserves the suite registry');
 
   // Test 28: NaN/Infinity safety in demo scenario pipeline
   assert(demoScenarios.every((s) => Number.isFinite(s.productionBopd) && Number.isFinite(s.viscosityCp)), 'Test 28: All demo scenario metrics are finite numeric');

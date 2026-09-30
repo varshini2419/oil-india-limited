@@ -24,8 +24,14 @@ import type {
   FinalReport,
 } from '../simulation/finalValidation/types';
 import { executeProductionPilotWorkflow } from '../simulation/productionPilot';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const FinalValidationPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Final Validation",
+    description:
+      "Final digital twin validation and demonstration workspace.",
+  });
   const [isRealTelemetryConnected, setIsRealTelemetryConnected] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
   const [selectedDemoId, setSelectedDemoId] = useState<string>('DEMO-SCENARIO-01');
@@ -104,7 +110,7 @@ export const FinalValidationPage: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-indigo-950 text-indigo-400 border border-indigo-800">
-              STEP 5.13 CONSOLIDATED MODULE
+              CONSOLIDATED VALIDATION MODULE
             </span>
             <span
               className={`text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded border font-mono ${
@@ -121,7 +127,7 @@ export const FinalValidationPage: React.FC = () => {
             FINAL DIGITAL TWIN VALIDATION & DEMONSTRATION WORKSPACE
           </h1>
           <p className="text-xs text-slate-400 mt-1 max-w-3xl">
-            Traceable consolidation of 19 simulation modules (Steps 4.3–5.13). Verified 394 unit tests passed cleanly across physics, calibration, uncertainty, optimization, readiness, and pilot execution.
+            Traceable consolidation of 19 simulation modules spanning physics, calibration, uncertainty, optimization, readiness, and pilot execution. All counts on this page are computed live from the validation engines.
           </p>
         </div>
 
@@ -190,12 +196,12 @@ export const FinalValidationPage: React.FC = () => {
               <div className="text-sm font-bold text-white">19 / 19 Modules</div>
             </div>
             <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
-              <span className="text-[10px] text-slate-500">Unit Tests Passed</span>
-              <div className="text-sm font-bold text-emerald-400">{validationState.verification.totalPassedCount} / {validationState.verification.totalTestCount}</div>
+              <span className="text-[10px] text-slate-500">Module Suites Registered</span>
+              <div className="text-sm font-bold text-emerald-400">{validationState.verification.suites.length}</div>
             </div>
             <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
-              <span className="text-[10px] text-slate-500">Unit Tests Failed</span>
-              <div className="text-sm font-bold text-slate-300">{validationState.verification.totalFailedCount}</div>
+              <span className="text-[10px] text-slate-500">Real Telemetry</span>
+              <div className={`text-sm font-bold ${isRealTelemetryConnected ? 'text-emerald-400' : 'text-amber-400'}`}>{isRealTelemetryConnected ? 'CONNECTED' : 'NOT CONNECTED'}</div>
             </div>
             <div className="bg-slate-950 p-2.5 rounded border border-slate-800">
               <span className="text-[10px] text-slate-500">Bundler Build Status</span>

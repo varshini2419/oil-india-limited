@@ -1,7 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Activity, Database } from 'lucide-react';
 import { useScenarioStore } from '../../simulation/scenario';
+import { checkHealth, type HealthCheckResponse } from '../../services/api';
+import { StatusBadge } from '../ui/StatusBadge';
 import './Sidebar.css';
+
+const HEALTH_POLL_INTERVAL_MS = 30_000;
 
 export const StatusBar: React.FC = () => {
   const scenarioStore = useScenarioStore();
@@ -10,16 +14,45 @@ export const StatusBar: React.FC = () => {
   const oilRate = scenarioStore?.productionResult?.estimatedProductionBopd;
   const risk = scenarioStore?.aiRiskResult?.riskLevel ?? (scenarioStore?.aiRiskResult as any)?.overallRiskLevel;
 
+  const [health, setHealth] = useState<HealthCheckResponse | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const poll = async () => {
+      const result = await checkHealth();
+      if (!cancelled) {
+        setHealth(result);
+      }
+    };
+
+    void poll();
+    const interval = setInterval(poll, HEALTH_POLL_INTERVAL_MS);
+
+    return () => {
+      cancelled = true;
+      clearInterval(interval);
+    };
+  }, []);
+
+  const backendOnline = health !== null;
+
   return (
-    <footer className="oil-statusbar-wrapper h-9 px-4 flex items-center justify-between text-[11px] shrink-0 overflow-x-auto select-none">
+    <footer className="oil-statusbar-wrapper h-9 px-4 flex items-center justify-between text-xs shrink-0 overflow-x-auto select-none">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-1.5">
           <span className="oil-statusbar-live-chip">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 oil-live-pulse" />
+            <span
+              className={`w-1.5 h-1.5 rounded-full ${
+                backendOnline ? 'bg-emerald-500 oil-live-pulse' : 'bg-red-500'
+              }`}
+            />
             Live
           </span>
           <span>Backend:</span>
-          <span className="text-emerald-600 font-medium">Ready</span>
+          <span className={`font-medium ${backendOnline ? 'text-emerald-600' : 'text-red-600'}`}>
+            {backendOnline ? 'Ready' : 'Offline'}
+          </span>
         </div>
 
         <div className="flex items-center gap-1.5">
@@ -36,14 +69,7 @@ export const StatusBar: React.FC = () => {
             <span>Oil Rate: <strong className="text-emerald-700">{oilRate.toFixed(0)} bpd</strong></span>
             <span className="flex items-center gap-1">
               Risk:
-              <strong className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                risk === 'CRITICAL' ? 'bg-red-100 text-red-700 border border-red-300' :
-                risk === 'HIGH' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
-                risk === 'MODERATE' ? 'bg-yellow-100 text-yellow-800 border border-yellow-300' :
-                'bg-emerald-100 text-emerald-700 border border-emerald-300'
-              }`}>
-                {risk ?? 'LOW'}
-              </strong>
+              <StatusBadge statusLevel={risk ?? 'LOW'} label={risk ?? 'LOW'} />
             </span>
           </div>
         )}
@@ -51,11 +77,13 @@ export const StatusBar: React.FC = () => {
         <div className="flex items-center gap-1.5">
           <Database className="w-3.5 h-3.5 text-sky-600" />
           <span>Data Source:</span>
-          <span className="text-gray-600">Prototype / Reference Data</span>
+          <span className="text-gray-600">
+            Documented field data (built-in) · API {backendOnline ? 'connected' : 'unreachable'}
+          </span>
         </div>
       </div>
 
-      <div className="hidden md:flex items-center gap-4 text-gray-500 text-[10px]">
+      <div className="hidden md:flex items-center gap-4 text-gray-500 text-xs">
         <span>Baghewala Heavy-Oil Digital Twin</span>
         <span className="w-1.5 h-1.5 rounded-full bg-gray-300" />
         <span>Advisory Support Only</span>

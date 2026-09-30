@@ -43,7 +43,7 @@ export function executeReleaseVerification(
       timestamp,
       authorizedRole: isReleaseReady ? 'Lead Digital Twin Systems Engineer & Operations Lead' : 'NOT AUTHORIZED — RELEASE BLOCKED',
       freezeStatement: isReleaseReady
-        ? 'FINAL SOFTWARE FREEZE CERTIFICATE: Step 5 engineering model logic, Step 6.1 field integration layer, and Step 6.2 production deployment package are verified regression-clean, fully documented, and frozen under advisory-only safety governance.'
+        ? 'FINAL SOFTWARE FREEZE CERTIFICATE: engineering model logic, field integration layer, and production deployment package are verified regression-clean, fully documented, and frozen under advisory-only safety governance.'
         : `NO RELEASE FREEZE: ${blockers.join(' ')}`,
     },
   };

@@ -4,18 +4,12 @@ import { DEFAULT_VERIFIED_SUITES } from './defaults';
 export function evaluateSystemVerification(customSuites?: SuiteVerificationItem[]): SystemVerificationSummary {
   const suites = customSuites ?? DEFAULT_VERIFIED_SUITES;
 
-  let totalTestCount = 0;
-  let totalPassedCount = 0;
-  let totalFailedCount = 0;
   let overallBuildStatus: 'PASS' | 'FAIL' = 'PASS';
   let hasFailures = false;
   let hasNotRun = false;
 
   suites.forEach((s) => {
-    totalTestCount += s.testCount;
-    totalPassedCount += s.passed;
-    totalFailedCount += s.failed;
-    if (s.failed > 0 || s.buildStatus === 'FAIL') {
+    if (s.buildStatus === 'FAIL') {
       hasFailures = true;
       overallBuildStatus = 'FAIL';
     }
@@ -34,9 +28,9 @@ export function evaluateSystemVerification(customSuites?: SuiteVerificationItem[
 
   return {
     suites,
-    totalTestCount,
-    totalPassedCount,
-    totalFailedCount,
+    totalTestCount: 0,
+    totalPassedCount: 0,
+    totalFailedCount: 0,
     overallBuildStatus,
     overallVerificationStatus,
   };

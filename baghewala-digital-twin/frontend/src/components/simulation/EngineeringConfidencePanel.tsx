@@ -33,7 +33,7 @@ export const EngineeringConfidencePanel: React.FC = () => {
 
   if (!hasExecuted || !valResult || !confidence) {
     return (
-      <Panel className="bg-sky-50/40 dark:bg-sky-950/20 border-sky-100 dark:border-sky-900/40" title="Phase 5 — Engineering Confidence & Advisory Classification">
+      <Panel className="bg-sky-50/40 dark:bg-sky-950/20 border-sky-100 dark:border-sky-900/40" title="Engineering Confidence & Advisory Classification">
         <div className="p-6 bg-white dark:bg-slate-900 border border-sky-100 dark:border-sky-800/60 rounded-2xl shadow-sm space-y-6 font-sans">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-sky-100 dark:border-sky-800/60 pb-6">
             <div className="space-y-2">

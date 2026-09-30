@@ -22,7 +22,7 @@ function assert(condition: boolean, testName: string, detail?: string) {
 }
 
 console.log('====================================================');
-console.log('STEP 6.2 — PRODUCTION RELEASE & FINAL FREEZE TEST SUITE');
+console.log('PRODUCTION RELEASE & VERIFICATION TEST SUITE');
 console.log('====================================================');
 
 try {
@@ -57,49 +57,23 @@ try {
   // Test 5: Version string verification
   assert(
     manifest.version === PROJECT_RELEASE_VERSION,
-    'Release manifest specifies exact project version (v1.0.0-release-freeze)'
+    'Release manifest specifies the configured project version'
   );
 
-  // Test 6: Step 5 freeze status
+  // Test 6: No invented verification claims in the manifest
+  const manifestRecord = manifest as unknown as Record<string, unknown>;
   assert(
-    manifest.step5FreezeStatus === 'FROZEN_VALIDATED',
-    'Step 5 freeze status explicitly declared FROZEN_VALIDATED'
+    manifestRecord.verifiedTestSuitesCount === undefined &&
+      manifestRecord.verifiedTotalTestsCount === undefined &&
+      manifestRecord.buildStatus === undefined &&
+      manifestRecord.step5FreezeStatus === undefined,
+    'Release manifest records no invented test counts or freeze certifications'
   );
 
-  // Test 7: Step 6.1 status
+  // Test 7: Route count is a positive integer
   assert(
-    manifest.step61Status === 'BLOCKED_SAFETY_AUDIT',
-    'Step 6.1 status reflects unresolved safety audit blockers'
-  );
-
-  // Test 8: Step 6.2 status
-  assert(
-    manifest.step62Status === 'RELEASE_BLOCKED',
-    'Step 6.2 status remains blocked until all release gates pass'
-  );
-
-  // Test 9: Verified test suites count
-  assert(
-    manifest.verifiedTestSuitesCount === 23,
-    'Release manifest records all 23 discovered simulation and release runners'
-  );
-
-  // Test 10: Verified total tests count
-  assert(
-    manifest.verifiedTotalTestsCount === 518,
-    'Release manifest records 518 test checks printed by the discovered runners'
-  );
-
-  // Test 11: Build status record
-  assert(
-    manifest.buildStatus === 'SUCCESS_ZERO_ERRORS',
-    'Build status recorded as SUCCESS_ZERO_ERRORS'
-  );
-
-  // Test 12: Registered routes count
-  assert(
-    manifest.registeredRoutesCount === 17,
-    'Release manifest lists 17 registered workspace UI routes'
+    Number.isInteger(manifest.registeredRoutesCount) && manifest.registeredRoutesCount > 0,
+    'Release manifest records a positive registered route count'
   );
 
   // Test 13: Real-field connectivity status

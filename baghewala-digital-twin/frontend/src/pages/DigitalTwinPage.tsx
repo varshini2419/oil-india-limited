@@ -6,8 +6,15 @@ import { Play, Sliders } from 'lucide-react';
 import { getActiveModelMode } from '../simulation/historicalCalibration/parameterRegistry';
 import { useScenarioStore } from '../simulation/scenario';
 import './DigitalTwinPage.css';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
+import { EngineeringMetricsPanel } from '../components/simulation/EngineeringMetricsPanel';
 
 export const DigitalTwinPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Digital Twin",
+    description:
+      "2.5D animated well visualization with live physics: thermal, viscosity, mobility, production, SRP and CSS states.",
+  });
   const activeMode = getActiveModelMode();
   const {
     activeScenario,
@@ -21,19 +28,11 @@ export const DigitalTwinPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Demo Mode Banner */}
-      <div className="bg-sky-950/60 border border-sky-800/80 rounded-lg p-3 font-mono text-xs flex flex-wrap items-center justify-between gap-3 text-sky-200">
-        <div className="flex items-center gap-2 font-bold">
-          <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse" />
-          <span>DEMO MODE — SIMULATED DEMONSTRATION DATA</span>
-        </div>
-      </div>
-
       <div className="flex items-center justify-between">
         <PageHeader
           title="2D Digital Twin Workspace"
           subtitle="Interactive 2D schematic with synchronized stroke motion, flow paths & thermal animation"
-          badgeText="Step 3.4 Animated Twin"
+          badgeText="Animated Twin"
         />
 
         <div className="hidden md:flex items-center gap-3">
@@ -60,6 +59,8 @@ export const DigitalTwinPage: React.FC = () => {
       {/* Main Viewport Workspace */}
       <DigitalTwinViewport className="digital-twin-color-scope" />
 
+      <EngineeringMetricsPanel />
+
       {/* Live Simulation Telemetry Readout Bar */}
       <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 font-mono text-xs space-y-3">
         <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
@@ -68,7 +69,7 @@ export const DigitalTwinPage: React.FC = () => {
             <span>REAL-TIME DIGITAL TWIN MONITORING (SHARED SIMULATION STATE: {activeScenario.name})</span>
           </div>
           <Link
-            to="/realtime-monitoring"
+            to="/monitoring"
             className="text-emerald-400 hover:text-emerald-300 transition-colors font-bold underline text-[11px]"
           >
             Open Real-Time Monitor & What-If Engine →
@@ -137,7 +138,7 @@ export const DigitalTwinPage: React.FC = () => {
       <div className="flex items-center gap-3 p-3 bg-slate-900 border border-slate-800 rounded-lg text-xs font-mono text-slate-400">
         <Play className="w-4 h-4 text-emerald-400 shrink-0" />
         <span>
-          Step 3.4 dynamic animation active (Synchronized sucker rod reciprocating motion, downhole pump plunger stroke, surface walking beam rocking, oil inflow vectors, production upflow, steam injection, thermal pulse). Model mode: {activeMode}. Shared Scenario: {activeScenario.name}.
+          Synchronized dynamic animation active (sucker rod reciprocating motion, downhole pump plunger stroke, surface walking beam rocking, oil inflow vectors, production upflow, steam injection, thermal pulse). Model mode: {activeMode}. Shared Scenario: {activeScenario.name}.
         </span>
       </div>
     </div>

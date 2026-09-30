@@ -22,8 +22,14 @@ import type { ModelMode } from '../simulation/historicalCalibration';
 import { REALTIME_DISCLAIMER } from '../simulation/realtimeMonitoring/defaults';
 
 import { useScenarioStore } from '../simulation/scenario/scenarioStore';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const RealtimeMonitoringPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Real-Time Monitoring",
+    description:
+      "Live well telemetry, deviation alerts and what-if analysis on simulated demonstration data.",
+  });
   const { activeScenario } = useScenarioStore();
   const [modelMode, setModelMode] = useState<ModelMode>('CALIBRATED');
   const simulatorRef = useRef<TelemetrySimulator | null>(null);
@@ -103,7 +109,7 @@ export const RealtimeMonitoringPage: React.FC = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-slate-100 font-mono tracking-tight">
-                STEP 5.5 — REAL-TIME DIGITAL TWIN MONITORING & WHAT-IF SIMULATION
+                REAL-TIME DIGITAL TWIN MONITORING & WHAT-IF SIMULATION
               </h1>
               <p className="text-xs text-slate-400 mt-0.5">
                 Simulated Telemetry Streams, State Estimation & Interactive What-If Scenario Physics Engine

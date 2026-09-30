@@ -105,7 +105,7 @@ export const ScenarioOptimizationPanel: React.FC = () => {
 
   if (!hasExecuted || !optimizationResult || !predictionResult) {
     return (
-      <Panel className="bg-sky-50/40 dark:bg-sky-950/20 border-sky-100 dark:border-sky-900/40" title="Phase 4 — Scenario Optimization, Prediction & Decision Support">
+      <Panel className="bg-sky-50/40 dark:bg-sky-950/20 border-sky-100 dark:border-sky-900/40" title="Scenario Optimization, Prediction & Decision Support">
         <div className="p-6 bg-white dark:bg-slate-900 border border-sky-100 dark:border-sky-800/60 rounded-2xl shadow-sm space-y-6 font-sans">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-sky-100 dark:border-sky-800/60 pb-6">
             <div className="space-y-2">
@@ -147,7 +147,7 @@ export const ScenarioOptimizationPanel: React.FC = () => {
   }
 
   return (
-    <Panel className="space-y-6 font-sans" title="Phase 4 — Scenario Optimization, Prediction & Decision Support">
+    <Panel className="space-y-6 font-sans" title="Scenario Optimization, Prediction & Decision Support">
       <div className="space-y-6">
         {/* Navigation Tabs */}
         <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 dark:border-slate-800 pb-4">

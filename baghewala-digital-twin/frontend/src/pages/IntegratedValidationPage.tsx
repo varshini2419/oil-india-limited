@@ -24,8 +24,14 @@ import {
   type FieldDataSource,
 } from '../simulation/fieldDataIntegration';
 import { getActiveModelMode } from '../simulation/historicalCalibration/parameterRegistry';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const IntegratedValidationPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Integrated Validation",
+    description:
+      "End-to-end integrated validation with decision trace and audit report.",
+  });
   const [sourceType, setSourceType] = useState<FieldDataSource>('HISTORICAL');
   const [modelMode, setModelMode] = useState(getActiveModelMode());
   const [expandedTraceStage, setExpandedTraceStage] = useState<number | null>(1);
@@ -44,7 +50,7 @@ export const IntegratedValidationPage: React.FC = () => {
         <PageHeader
           title="Integrated Digital Twin Validation & Decision Support"
           subtitle="Traceable end-to-end operational workflow connecting Steps 4.3–5.6 into auditable validation and advisory guidance"
-          badgeText="Step 5.7 Workflow"
+          badgeText="Integrated Validation Workflow"
         />
 
         <div className="hidden lg:flex items-center gap-3">
@@ -322,7 +328,7 @@ export const IntegratedValidationPage: React.FC = () => {
           <div className="flex items-center justify-between border-b border-slate-800 pb-3">
             <h3 className="text-sm font-semibold text-white flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-cyan-400" />
-              Model Uncertainty Range (Step 5.3 Monte Carlo)
+              Model Uncertainty Range (Monte Carlo)
             </h3>
             <span className="text-xs font-mono text-cyan-300 font-bold">
               INTERVAL: {state.integratedDecision.uncertaintySummary.uncertaintyRating}

@@ -23,16 +23,16 @@ export const READINESS_LEVEL_DESCRIPTIONS: Record<ReadinessLevel, string> = {
 };
 
 export const PIPELINE_COMPONENT_DEFS = [
-  { id: 'physics_models', name: 'Physics Models Engine', step: 'Steps 4.3–4.9' },
-  { id: 'historical_validation', name: 'Historical Backtesting', step: 'Step 5.1' },
-  { id: 'calibration', name: 'Parameter Calibration', step: 'Step 5.2' },
-  { id: 'uncertainty', name: 'Monte Carlo Uncertainty', step: 'Step 5.3' },
-  { id: 'optimization', name: 'Scenario Optimization', step: 'Step 5.4' },
-  { id: 'monitoring', name: 'Real-Time Monitoring & What-If', step: 'Step 5.5' },
-  { id: 'field_ingestion', name: 'Field Data Ingestion', step: 'Step 5.6' },
-  { id: 'integrated_validation', name: 'Integrated Validation & Decision Trace', step: 'Step 5.7' },
+  { id: 'physics_models', name: 'Physics Models Engine', step: 'Core physics models' },
+  { id: 'historical_validation', name: 'Historical Backtesting', step: 'Historical validation' },
+  { id: 'calibration', name: 'Parameter Calibration', step: 'Parameter calibration' },
+  { id: 'uncertainty', name: 'Monte Carlo Uncertainty', step: 'Monte Carlo uncertainty' },
+  { id: 'optimization', name: 'Scenario Optimization', step: 'Scenario optimization' },
+  { id: 'monitoring', name: 'Real-Time Monitoring & What-If', step: 'Real-time monitoring' },
+  { id: 'field_ingestion', name: 'Field Data Ingestion', step: 'Field data ingestion' },
+  { id: 'integrated_validation', name: 'Integrated Validation & Decision Trace', step: 'Integrated validation' },
   { id: 'provenance_tracking', name: 'Data Provenance Engine', step: 'Cross-module' },
-  { id: 'unit_consistency', name: 'Unit Normalization Engine', step: 'Step 5.6' },
+  { id: 'unit_consistency', name: 'Unit Normalization Engine', step: 'Field data integration' },
   { id: 'test_coverage', name: 'Automated Test Suite', step: 'Verification' },
   { id: 'build_status', name: 'TypeScript Build System', step: 'Compilation' },
 ];

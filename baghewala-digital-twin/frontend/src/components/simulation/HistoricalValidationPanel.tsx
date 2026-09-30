@@ -22,7 +22,7 @@ export const HistoricalValidationPanel: React.FC = () => {
     return (
       <div className="bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-6">
         <div className="flex flex-col border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
-          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">Phase 5 — Historical Validation Engine</h3>
+          <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">Historical Validation Engine</h3>
         </div>
         <div className="p-6 bg-white dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/60 rounded-2xl shadow-sm space-y-6 font-sans">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border-b border-sky-100 dark:border-sky-800/60 pb-6">

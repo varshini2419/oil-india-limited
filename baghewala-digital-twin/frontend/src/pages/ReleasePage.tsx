@@ -10,6 +10,7 @@ import {
   Award,
 } from 'lucide-react';
 import type { ProductionAppMode } from '../release/types';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 import {
   executeReleaseVerification,
   generateDemonstrationScenarios,
@@ -18,6 +19,11 @@ import {
 } from '../release';
 
 export const ReleasePage: React.FC = () => {
+  useDocumentTitle({
+    title: 'Release Verification',
+    description:
+      'Release manifest, deterministic demonstration scenarios and advisory-only governance verification for the Baghewala digital twin.',
+  });
   const [appMode, setAppMode] = useState<ProductionAppMode>('DEMONSTRATION');
   const [selectedDemoId, setSelectedDemoId] = useState<string>('SCENARIO_A_NORMAL');
   const [showFreezeModal, setShowFreezeModal] = useState<boolean>(false);
@@ -41,10 +47,10 @@ export const ReleasePage: React.FC = () => {
               </div>
               <div>
                 <h1 className="text-xl font-bold text-slate-100 font-mono tracking-tight">
-                  STEP 6.2 — PRODUCTION DEPLOYMENT & FINAL RELEASE FREEZE
+                  PRODUCTION DEPLOYMENT & RELEASE VERIFICATION
                 </h1>
                 <p className="text-xs text-slate-400 font-mono mt-0.5">
-                  Baghewala Heavy-Oil Digital Twin • Productionization, Demonstration & Final Freeze Package
+                  Baghewala Heavy-Oil Digital Twin • Productionization, Demonstration & Release Verification
                 </p>
               </div>
             </div>
@@ -68,13 +74,6 @@ export const ReleasePage: React.FC = () => {
           </div>
         </div>
 
-        {/* Mandatory Advisory-Only Safety Governance Banner */}
-        <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center gap-3 text-xs text-amber-300 font-mono">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0 text-amber-400" />
-          <span>
-            <strong>SAFETY GOVERNANCE MANDATE:</strong> {verification.manifest.disclaimer}
-          </span>
-        </div>
       </div>
 
       {/* SECTION 1: RELEASE MANIFEST SUMMARY */}
@@ -90,15 +89,15 @@ export const ReleasePage: React.FC = () => {
             </span>
           </div>
           <p className="text-[10px] font-mono text-slate-400 mt-2">
-            Build: {verification.manifest.buildStatus}
+            Generated from the live release verification run
           </p>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
-          <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Verified Test Suites</span>
+          <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Release Checklist</span>
           <div className="mt-2 flex items-center justify-between">
             <span className="text-2xl font-bold font-mono text-slate-100">
-              {verification.manifest.verifiedTestSuitesCount} Suites
+              {verification.checklistPassedCount} / {verification.checklistTotalCount}
             </span>
             <span className={`px-2 py-0.5 rounded text-[10px] font-mono border ${
               verification.isReleaseReady
@@ -109,24 +108,24 @@ export const ReleasePage: React.FC = () => {
             </span>
           </div>
           <p className="text-[10px] font-mono text-slate-400 mt-2">
-            Tests recorded in verification run: {verification.manifest.verifiedTotalTestsCount}
+            Deterministic checks evaluated live on this page
           </p>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
-          <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Freeze Statuses</span>
+          <span className="text-xs font-mono text-slate-400 uppercase tracking-wider">Governance</span>
           <div className="mt-2 space-y-1 font-mono text-xs">
             <div className="flex justify-between">
-              <span className="text-slate-400">Step 5:</span>
-                <span className="text-emerald-400 font-bold">{verification.manifest.step5FreezeStatus}</span>
+              <span className="text-slate-400">Advisory Mode:</span>
+                <span className="text-emerald-400 font-bold">{verification.manifest.safetyGovernanceStatus}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Step 6.1:</span>
-                <span className="text-rose-300 font-bold">{verification.manifest.step61Status}</span>
+              <span className="text-slate-400">Real Field:</span>
+                <span className="text-rose-300 font-bold">{verification.manifest.realFieldConnectivityStatus}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-400">Step 6.2:</span>
-                <span className="text-rose-300 font-bold">{verification.manifest.step62Status}</span>
+              <span className="text-slate-400">Routes:</span>
+                <span className="text-slate-200 font-bold">{verification.manifest.registeredRoutesCount}</span>
             </div>
           </div>
         </div>
@@ -341,10 +340,7 @@ export const ReleasePage: React.FC = () => {
               </div>
 
               <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg space-y-1 text-slate-400">
-                <p>• Verified Test Suites: <strong className="text-slate-200">{verification.manifest.verifiedTestSuitesCount}</strong></p>
-                <p>• Verified Individual Tests: <strong className="text-slate-200">{verification.manifest.verifiedTotalTestsCount}</strong></p>
                 <p>• Release Checklist: <strong className={verification.isReleaseReady ? 'text-emerald-400' : 'text-rose-300'}>{verification.checklistPassedCount} / {verification.checklistTotalCount} passed</strong></p>
-                <p>• Frontend Production Build: <strong className="text-emerald-400">{verification.manifest.buildStatus}</strong></p>
                 <p>• Real-Field Connectivity: <strong className="text-rose-300">{verification.manifest.realFieldConnectivityStatus}</strong></p>
               </div>
 

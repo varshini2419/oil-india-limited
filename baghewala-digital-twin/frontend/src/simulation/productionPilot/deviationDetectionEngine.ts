@@ -22,6 +22,9 @@ export const DEVIATION_THRESHOLDS = {
     WARNING_PCT_POINTS: 5.0,
     CRITICAL_PCT_POINTS: 15.0,
   },
+  ROD_LOAD: { WARNING_INDEX: 10, CRITICAL_INDEX: 20 },
+  PUMP_FILL: { WARNING_PCT_POINTS: 8, CRITICAL_PCT_POINTS: 15 },
+  SPM: { WARNING_PCT: 10, CRITICAL_PCT: 20 },
 };
 
 export function detectDeviations(
@@ -165,6 +168,27 @@ export function detectDeviations(
       threshold: DEVIATION_THRESHOLDS.WATER_CUT.WARNING_PCT_POINTS,
       engineeringMessage: `WARNING WATER-CUT DEVIATION: Observed water cut (${comparison.actualWaterCutPct} %) exceeds predicted (${comparison.predictedWaterCutPct} %) by ${wcDev} percentage points. Threshold: ${DEVIATION_THRESHOLDS.WATER_CUT.WARNING_PCT_POINTS} points.`,
     });
+  }
+
+  const rodLoadDeviation = comparison.actualRodLoadIndex !== undefined && comparison.predictedRodLoadIndex !== undefined
+    ? Math.abs(comparison.actualRodLoadIndex - comparison.predictedRodLoadIndex) : undefined;
+  if (rodLoadDeviation !== undefined && rodLoadDeviation >= DEVIATION_THRESHOLDS.ROD_LOAD.WARNING_INDEX) {
+    const critical = rodLoadDeviation >= DEVIATION_THRESHOLDS.ROD_LOAD.CRITICAL_INDEX;
+    alerts.push({ id: `DEV-ROD-${Date.now()}`, timestamp, wellId, severity: critical ? 'CRITICAL' : 'WARNING', type: 'ROD_LOAD_DEVIATION', measuredValue: comparison.actualRodLoadIndex!, expectedValue: comparison.predictedRodLoadIndex!, deviation: rodLoadDeviation, threshold: critical ? DEVIATION_THRESHOLDS.ROD_LOAD.CRITICAL_INDEX : DEVIATION_THRESHOLDS.ROD_LOAD.WARNING_INDEX, engineeringMessage: `${critical ? 'CRITICAL' : 'WARNING'} ROD LOAD DEVIATION: measured rod load differs from predicted by ${rodLoadDeviation.toFixed(1)} index points.` });
+  }
+
+  const pumpFillDeviation = comparison.actualPumpFillPct !== undefined && comparison.predictedPumpFillPct !== undefined
+    ? Math.abs(comparison.actualPumpFillPct - comparison.predictedPumpFillPct) : undefined;
+  if (pumpFillDeviation !== undefined && pumpFillDeviation >= DEVIATION_THRESHOLDS.PUMP_FILL.WARNING_PCT_POINTS) {
+    const critical = pumpFillDeviation >= DEVIATION_THRESHOLDS.PUMP_FILL.CRITICAL_PCT_POINTS;
+    alerts.push({ id: `DEV-FILL-${Date.now()}`, timestamp, wellId, severity: critical ? 'CRITICAL' : 'WARNING', type: 'PUMP_FILL_DEVIATION', measuredValue: comparison.actualPumpFillPct!, expectedValue: comparison.predictedPumpFillPct!, deviation: pumpFillDeviation, threshold: critical ? DEVIATION_THRESHOLDS.PUMP_FILL.CRITICAL_PCT_POINTS : DEVIATION_THRESHOLDS.PUMP_FILL.WARNING_PCT_POINTS, engineeringMessage: `${critical ? 'CRITICAL' : 'WARNING'} PUMP FILL DEVIATION: measured pump fill differs from predicted by ${pumpFillDeviation.toFixed(1)} points.` });
+  }
+
+  const spmDeviationPct = comparison.actualSpm !== undefined && comparison.predictedSpm
+    ? Math.abs((comparison.actualSpm - comparison.predictedSpm) / comparison.predictedSpm) * 100 : undefined;
+  if (spmDeviationPct !== undefined && spmDeviationPct >= DEVIATION_THRESHOLDS.SPM.WARNING_PCT) {
+    const critical = spmDeviationPct >= DEVIATION_THRESHOLDS.SPM.CRITICAL_PCT;
+    alerts.push({ id: `DEV-SPM-${Date.now()}`, timestamp, wellId, severity: critical ? 'CRITICAL' : 'WARNING', type: 'SPM_DEVIATION', measuredValue: comparison.actualSpm!, expectedValue: comparison.predictedSpm!, deviation: spmDeviationPct, threshold: critical ? DEVIATION_THRESHOLDS.SPM.CRITICAL_PCT : DEVIATION_THRESHOLDS.SPM.WARNING_PCT, engineeringMessage: `${critical ? 'CRITICAL' : 'WARNING'} SPM DEVIATION: measured SPM differs from the advisory setpoint by ${spmDeviationPct.toFixed(1)}%.` });
   }
 
   return alerts;

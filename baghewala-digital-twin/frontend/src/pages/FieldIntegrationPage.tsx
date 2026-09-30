@@ -16,8 +16,14 @@ import {
 import type { TelemetryMode } from '../simulation/fieldIntegration/types';
 import { executeFieldIntegration } from '../simulation/fieldIntegration/fieldIntegrationEngine';
 import { generateIntegrationReport } from '../simulation/fieldIntegration/integrationReportEngine';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const FieldIntegrationPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Field Integration",
+    description:
+      "Telemetry connection layer, data quality and controlled pilot gate.",
+  });
   const [selectedMode, setSelectedMode] = useState<TelemetryMode>('SIMULATED');
   const [realFieldConnected, setRealFieldConnected] = useState<boolean>(false);
   const [operatorApproved, setOperatorApproved] = useState<boolean>(false);
@@ -104,13 +110,7 @@ export const FieldIntegrationPage: React.FC = () => {
           </div>
         </div>
 
-        {/* Mandatory Advisory-Only Safety Banner */}
-        <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center gap-3 text-xs text-amber-300 font-mono">
-          <AlertTriangle className="w-5 h-5 flex-shrink-0 text-amber-400" />
-          <span>
-            <strong>SAFETY GOVERNANCE MANDATE:</strong> {integrationState.mandatedDisclaimer}
-          </span>
-        </div>
+        {/* Pilot gate state is surfaced in Section 4 below; the global advisory banner lives in the app shell */}
       </div>
 
       {/* SECTION 1: CONNECTION STATUS */}
@@ -376,7 +376,7 @@ export const FieldIntegrationPage: React.FC = () => {
                   <p className="text-sm font-bold text-cyan-400">
                     {integrationState.twinState.reservoir.oilMobilityDcP.toFixed(5)} D/cP
                   </p>
-                  <span className="text-[10px] text-slate-400">Step 4.5 Mobility Engine</span>
+                  <span className="text-[10px] text-slate-400">Mobility Engine</span>
                 </div>
 
                 <div className="p-3 bg-slate-950/40 border border-slate-800 rounded-lg">
@@ -384,7 +384,7 @@ export const FieldIntegrationPage: React.FC = () => {
                   <p className="text-sm font-bold text-amber-400">
                     {integrationState.twinState.production.estimatedProductionBopd.toFixed(2)} BOPD
                   </p>
-                  <span className="text-[10px] text-slate-400">Step 4.6 Production Engine</span>
+                  <span className="text-[10px] text-slate-400">Production Engine</span>
                 </div>
               </div>
             </div>
@@ -414,17 +414,17 @@ export const FieldIntegrationPage: React.FC = () => {
             </div>
 
             <div className="flex items-center justify-between p-3 bg-slate-950/40 border border-slate-800 rounded-lg">
-              <span className="text-slate-300">Calibrated Parameter Model (Step 5.2)</span>
+              <span className="text-slate-300">Calibrated Parameter Model</span>
               <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">ACTIVE</span>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-slate-950/40 border border-slate-800 rounded-lg">
-              <span className="text-slate-300">Monte Carlo Uncertainty Engine (Step 5.3)</span>
+              <span className="text-slate-300">Monte Carlo Uncertainty Engine</span>
               <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">AVAILABLE</span>
             </div>
 
             <div className="flex items-center justify-between p-3 bg-slate-950/40 border border-slate-800 rounded-lg">
-              <span className="text-slate-300">AI Risk & Advisory Engine (Step 4.9)</span>
+              <span className="text-slate-300">AI Risk & Advisory Engine</span>
               <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded border border-emerald-500/30">AVAILABLE</span>
             </div>
           </div>

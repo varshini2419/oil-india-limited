@@ -173,10 +173,10 @@ export const SystemHealthAlertsSection: React.FC<SystemHealthAlertsSectionProps>
 
           {/* View Alerts Button */}
           <button
-            onClick={() => onNavigateTab && onNavigateTab('ALERTS_EVENTS')}
+            onClick={() => onNavigateTab && onNavigateTab('TWIN')}
             className="w-full py-2 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
           >
-            <span>View Alerts & Events Workstation</span>
+            <span>Open Digital Twin & Simulation</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>

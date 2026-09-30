@@ -6,7 +6,6 @@ import {
   GitBranch,
   Play,
   CheckCircle2,
-  AlertTriangle,
   Copy,
   RotateCcw,
   BarChart2,
@@ -15,8 +14,14 @@ import {
 import { useScenarioStore, type Scenario } from '../simulation/scenario';
 import { buildScenarioComparisonMatrix, createScenarioSnapshot } from '../simulation/scenarios/scenarioComparisonEngine';
 import { DEFAULT_ENGINEERING_CONSTRAINTS, type EngineeringConstraintConfig } from '../simulation/scenarios/engineeringConstraintEngine';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const ScenariosPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Scenarios & Optimization",
+    description:
+      "Scenario A-E management with multi-objective decision support and Pareto trade-offs.",
+  });
   const {
     presets,
     savedScenarios,
@@ -78,22 +83,10 @@ export const ScenariosPage: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Demo Mode Banner */}
-      <div className="bg-sky-950/60 border border-sky-800/80 rounded-lg p-3 font-mono text-xs flex flex-wrap items-center justify-between gap-3 text-sky-200">
-        <div className="flex items-center gap-2 font-bold">
-          <span className="w-2.5 h-2.5 rounded-full bg-sky-400 animate-pulse" />
-          <span>PROMPT 5 SCENARIO OPTIMIZATION & TRADE-OFF WORKSTATION</span>
-        </div>
-        <div className="text-[11px] text-amber-300 font-semibold flex items-center gap-1.5">
-          <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-          <span>DECISION SUPPORT ONLY — NO SCADA / AUTOMATIC ACTUATION</span>
-        </div>
-      </div>
-
       <PageHeader
         title="Interactive What-If Scenario Optimization & Trade-Off Engine"
         subtitle="Independent scenario creation, side-by-side comparative matrices, user-defined constraint evaluation, and trade-off visualization"
-        badgeText="Prompt 5 Decision Support"
+        badgeText="Decision Support"
       />
 
       {/* Navigation Sub-Tabs */}

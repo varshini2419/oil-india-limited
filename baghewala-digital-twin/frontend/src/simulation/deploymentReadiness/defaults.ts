@@ -3,8 +3,6 @@ import type { DeploymentGate } from './types';
 export const MANDATORY_DEPLOYMENT_DISCLAIMER =
   'Antigravity Engineering Digital Twin — Decision support only — no automatic field actuation.';
 
-export const TOTAL_VERIFIED_SIMULATION_TESTS_DEPLOYMENT = 304;
-
 export const DEFAULT_DEPLOYMENT_GATES: DeploymentGate[] = [
   {
     gateId: 'GATE-01',
@@ -21,8 +19,7 @@ export const DEFAULT_DEPLOYMENT_GATES: DeploymentGate[] = [
     category: 'TEST_INTEGRITY',
     name: 'Simulation Regression Suite',
     status: 'PASS',
-    severity: 'CRITICAL',
-    evidence: 'All 304 physics & engine unit tests passing deterministically.',
+    severity: 'CRITICAL',      evidence: 'Physics & engine console test suites passing deterministically.',
     limitation: 'Unit tests use mathematical physics formulations.',
     requiredAction: 'Re-run full suite on model updates.',
   },

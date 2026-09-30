@@ -67,6 +67,12 @@ export interface ActualVsPredictedComparison {
   actualWaterCutPct: number;
   waterCutDeviationPct: number;
   steamResponseDeviation: number;
+  predictedRodLoadIndex?: number;
+  actualRodLoadIndex?: number;
+  predictedPumpFillPct?: number;
+  actualPumpFillPct?: number;
+  predictedSpm?: number;
+  actualSpm?: number;
 }
 
 export type DeviationSeverity = 'NORMAL' | 'WARNING' | 'CRITICAL';
@@ -76,6 +82,9 @@ export type DeviationType =
   | 'PRESSURE_DEVIATION'
   | 'THERMAL_DEVIATION'
   | 'WATER_CUT_DEVIATION'
+  | 'ROD_LOAD_DEVIATION'
+  | 'PUMP_FILL_DEVIATION'
+  | 'SPM_DEVIATION'
   | 'STEAM_RESPONSE_DEVIATION'
   | 'DATA_QUALITY_DEVIATION';
 

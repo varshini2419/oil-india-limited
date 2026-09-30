@@ -29,8 +29,14 @@ import type {
 } from '../simulation/productionPilot/types';
 import { useScenarioStore } from '../simulation/scenario/scenarioStore';
 import { DigitalTwinViewport } from '../components/digital-twin/DigitalTwinViewport';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const ProductionPilotPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Production Pilot",
+    description:
+      "Production pilot workflow audit: KPIs, validation and readiness gates.",
+  });
   const { activeScenario } = useScenarioStore();
   const [selectedScenarioId, setSelectedScenarioId] = useState<PilotScenarioId>('SCENARIO_A_NORMAL');
   const [isRealTelemetryConnected, setIsRealTelemetryConnected] = useState(false);

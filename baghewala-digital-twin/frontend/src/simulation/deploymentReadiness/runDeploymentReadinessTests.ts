@@ -8,7 +8,6 @@ import {
   evaluateFieldPilotChecklist,
   generateDeploymentAuditTrail,
   MANDATORY_DEPLOYMENT_DISCLAIMER,
-  TOTAL_VERIFIED_SIMULATION_TESTS_DEPLOYMENT,
 } from './index';
 
 let passed = 0;
@@ -132,8 +131,8 @@ try {
   // Test 26: Required actions populated for warning/blocked gates
   assert(defaultRes.requiredActions.length >= 0, 'Test 26: Required actions array present');
 
-  // Test 27: Total verified simulation unit tests count check
-  assert(TOTAL_VERIFIED_SIMULATION_TESTS_DEPLOYMENT === 304, 'Test 27: Verified prior 16 simulation test suites (304 tests)');
+  // Test 27: Deployment validation is deterministic and gate-driven
+  assert(defaultRes.deploymentGates.length > 0, 'Test 27: Deployment gate set present');
 
   // Test 28: Deterministic repeated execution
   const run1 = executeFinalDeploymentValidation({ sourceType: 'HISTORICAL' });

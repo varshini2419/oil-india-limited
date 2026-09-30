@@ -241,9 +241,86 @@ const DigitalTwinFooterContent: React.FC<{ gridVisible: boolean }> = ({ gridVisi
   );
 };
 
+const DELTA_SEQUENCE = [2, -2, 2, -2, 1, 2, 1, -1, 2, -2, -1, -2, 1, 2, -1, 2, -2, 1, -1];
+
 const LiveViewportTelemetry: React.FC = () => {
   const { committedSimulationResult, isStale } = useScenarioStore();
   const { inputs, thermal, viscosity, production, srp, risk } = committedSimulationResult;
+
+  const [step, setStep] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setStep((prev) => prev + 1);
+    }, 1400);
+    return () => clearInterval(timer);
+  }, []);
+
+  const getCumulativeDelta = (sequenceOffset: number, scale: number, maxAbs: number) => {
+    let sum = 0;
+    for (let i = 0; i <= step; i++) {
+      const deltaVal = DELTA_SEQUENCE[(i + sequenceOffset) % DELTA_SEQUENCE.length];
+      sum += deltaVal * scale;
+    }
+    return Math.max(-maxAbs, Math.min(maxAbs, sum));
+  };
+
+  // 1. T_RES
+  const tempDelta = getCumulativeDelta(0, 1.0, 10.0);
+  const currentTemp = thermal.predictedReservoirTemperatureC + tempDelta;
+  const tempPct = (tempDelta / (thermal.predictedReservoirTemperatureC || 1)) * 100;
+  const tempChangeStr = `${tempPct >= 0 ? '+' : ''}${tempPct.toFixed(1)}%`;
+
+  // 2. VISCOSITY
+  const baseVisc = viscosity.estimatedViscosityCp;
+  const viscDelta = getCumulativeDelta(3, 25.0, baseVisc * 0.12);
+  const currentVisc = Math.max(10, baseVisc + viscDelta);
+  const viscPct = (viscDelta / (baseVisc || 1)) * 100;
+  const viscChangeStr = `${viscPct >= 0 ? '+' : ''}${viscPct.toFixed(1)}%`;
+
+  // 3. MOBILITY
+  const baseMobility = committedSimulationResult.mobility.mobilityDcP;
+  const mobDelta = getCumulativeDelta(6, 0.00004, baseMobility * 0.15);
+  const currentMobility = Math.max(0.00001, baseMobility + mobDelta);
+  const mobPct = (mobDelta / (baseMobility || 1)) * 100;
+  const mobChangeStr = `${mobPct >= 0 ? '+' : ''}${mobPct.toFixed(1)}%`;
+
+  // 4. OIL RATE
+  const baseProd = production.estimatedProductionBopd;
+  const prodDelta = getCumulativeDelta(9, 0.35, baseProd * 0.12);
+  const currentProd = Math.max(0, baseProd + prodDelta);
+  const prodPct = (prodDelta / (baseProd || 1)) * 100;
+  const prodChangeStr = `${prodPct >= 0 ? '+' : ''}${prodPct.toFixed(1)}%`;
+
+  // 5. SRP LOAD
+  const baseSrp = srp.currentCandidate.loadIndex;
+  const srpDelta = getCumulativeDelta(12, 0.8, 12.0);
+  const currentSrp = Math.min(100, Math.max(0, baseSrp + srpDelta));
+  const srpPct = (srpDelta / (baseSrp || 1)) * 100;
+  const srpChangeStr = `${srpPct >= 0 ? '+' : ''}${srpPct.toFixed(1)}%`;
+
+  // 6. STEAM
+  const baseSteam = inputs.steamInjectionRateTpd;
+  const steamDelta = getCumulativeDelta(15, 1.0, 15.0);
+  const currentSteam = Math.max(0, baseSteam + steamDelta);
+  const steamPct = (steamDelta / (baseSteam || 1)) * 100;
+  const steamChangeStr = `${steamPct >= 0 ? '+' : ''}${steamPct.toFixed(1)}%`;
+
+  // 7. RISK
+  const baseRiskScore = risk.riskScore;
+  const riskDelta = getCumulativeDelta(2, 0.5, 10.0);
+  const currentRiskScore = Math.min(100, Math.max(0, baseRiskScore + riskDelta));
+  const currentRiskLevel = currentRiskScore > 60 ? 'HIGH' : currentRiskScore > 30 ? 'MODERATE' : 'LOW';
+  const riskPct = (riskDelta / Math.max(1, baseRiskScore)) * 100;
+  const riskChangeStr = `${riskPct >= 0 ? '+' : ''}${riskPct.toFixed(1)}%`;
+
+  // 8. FLOW
+  const baseWc = inputs.waterCutPercent;
+  const wcDelta = getCumulativeDelta(7, 0.4, 6.0);
+  const currentWc = baseWc + wcDelta;
+  const flowStr = currentWc > 50 ? 'WATER-RICH' : 'OIL-RICH';
+  const wcPct = (wcDelta / Math.max(1, baseWc)) * 100;
+  const flowChangeStr = `${wcPct >= 0 ? '+' : ''}${wcPct.toFixed(1)}%`;
 
   return (
     <div className="font-mono p-4 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 shadow-sm shrink-0 z-10">
@@ -256,25 +333,30 @@ const LiveViewportTelemetry: React.FC = () => {
           <span className="text-slate-500 dark:text-slate-400 font-medium">Cycle {inputs.soakDurationDays > 0 ? 'SOAK / PRODUCTION' : 'BASELINE'} · {inputs.spm.toFixed(1)} SPM · {inputs.vfdFrequencyHz.toFixed(0)} Hz</span>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-4 gap-y-2 pt-2.5">
-          <TelemetryValue label="T_RES" value={`${thermal.predictedReservoirTemperatureC.toFixed(1)} °C`} tone="text-rose-600 dark:text-rose-400" />
-          <TelemetryValue label="VISCOSITY" value={`${viscosity.estimatedViscosityCp.toLocaleString()} cP`} tone="text-purple-600 dark:text-purple-400" />
-          <TelemetryValue label="MOBILITY" value={`${mobilityValue(committedSimulationResult.mobility.mobilityDcP)} D/cP`} tone="text-amber-600 dark:text-amber-400" />
-          <TelemetryValue label="OIL RATE" value={`${production.estimatedProductionBopd.toFixed(2)} BOPD`} tone="text-emerald-600 dark:text-emerald-400" />
-          <TelemetryValue label="SRP LOAD" value={`${srp.currentCandidate.loadIndex.toFixed(0)} %`} tone="text-amber-600 dark:text-amber-400" />
-          <TelemetryValue label="STEAM" value={`${inputs.steamInjectionRateTpd.toFixed(0)} TPD`} tone="text-rose-600 dark:text-rose-400" />
-          <TelemetryValue label="RISK" value={`${risk.riskLevel} ${risk.riskScore}/100`} tone={risk.riskLevel === 'LOW' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} />
-          <TelemetryValue label="FLOW" value={inputs.waterCutPercent > 50 ? 'WATER-RICH' : 'OIL-RICH'} tone="text-sky-600 dark:text-sky-400" />
+          <TelemetryValue label="T_RES" value={`${currentTemp.toFixed(1)} °C`} change={tempChangeStr} tone="text-rose-600 dark:text-rose-400" />
+          <TelemetryValue label="VISCOSITY" value={`${Math.round(currentVisc).toLocaleString()} cP`} change={viscChangeStr} tone="text-purple-600 dark:text-purple-400" />
+          <TelemetryValue label="MOBILITY" value={`${currentMobility.toFixed(5)} D/cP`} change={mobChangeStr} tone="text-amber-600 dark:text-amber-400" />
+          <TelemetryValue label="OIL RATE" value={`${currentProd.toFixed(2)} BOPD`} change={prodChangeStr} tone="text-emerald-600 dark:text-emerald-400" />
+          <TelemetryValue label="SRP LOAD" value={`${currentSrp.toFixed(0)} %`} change={srpChangeStr} tone="text-amber-600 dark:text-amber-400" />
+          <TelemetryValue label="STEAM" value={`${currentSteam.toFixed(0)} TPD`} change={steamChangeStr} tone="text-rose-600 dark:text-rose-400" />
+          <TelemetryValue label="RISK" value={`${currentRiskLevel} ${Math.round(currentRiskScore)}/100`} change={riskChangeStr} tone={currentRiskLevel === 'LOW' ? 'text-emerald-600 dark:text-emerald-400' : 'text-amber-600 dark:text-amber-400'} />
+          <TelemetryValue label="FLOW" value={flowStr} change={flowChangeStr} tone="text-sky-600 dark:text-sky-400" />
         </div>
       </div>
     </div>
   );
 };
 
-const mobilityValue = (value: number) => value.toFixed(5);
-
-const TelemetryValue: React.FC<{ label: string; value: string; tone: string }> = ({ label, value, tone }) => (
+const TelemetryValue: React.FC<{ label: string; value: string; tone: string; change?: string }> = ({ label, value, tone, change }) => (
   <div className="min-w-0">
-    <span className="block text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider mb-0.5">{label}</span>
+    <div className="flex items-center justify-between gap-1 mb-0.5">
+      <span className="block text-[9px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider truncate">{label}</span>
+      {change && (
+        <span className={`text-[8.5px] font-bold ${change.startsWith('+') ? 'text-emerald-500 dark:text-emerald-400' : change.startsWith('-') ? 'text-rose-500 dark:text-rose-400' : 'text-slate-400'}`}>
+          {change}
+        </span>
+      )}
+    </div>
     <strong className={`block truncate text-xs ${tone}`}>{value}</strong>
   </div>
 );

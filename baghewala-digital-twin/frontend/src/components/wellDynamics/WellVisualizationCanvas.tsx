@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { WellPhenomenon, WellComponentId } from '../../types/wellDynamics';
 import { useScenarioStore } from '../../simulation/scenario';
 import { Layers, ZoomIn, ZoomOut, RotateCcw, Eye } from 'lucide-react';
+import './WellVisualizationCanvas.css';
 
 interface WellVisualizationCanvasProps {
   phenomenon: WellPhenomenon;
@@ -19,9 +20,7 @@ export const WellVisualizationCanvas: React.FC<WellVisualizationCanvasProps> = (
   const {
     activeScenario,
     thermalResult,
-    viscosityResult,
-    productionResult,
-    srpOptimizationResult
+    viscosityResult
   } = useScenarioStore();
 
   const [viewMode, setViewMode] = useState<DepthViewMode>('full');
@@ -42,7 +41,6 @@ export const WellVisualizationCanvas: React.FC<WellVisualizationCanvasProps> = (
   const steamTpd = activeScenario.inputs.steamInjectionRateTpd || 0;
   const effectiveTemp = thermalResult?.predictedReservoirTemperatureC || activeScenario.inputs.reservoirTemperatureC || 30.0;
   const effectiveViscosity = viscosityResult?.estimatedViscosityCp || 5000;
-  const estimatedBopd = productionResult?.estimatedProductionBopd || 140;
 
   // Single Clean Animation Loop
   useEffect(() => {
@@ -116,9 +114,9 @@ export const WellVisualizationCanvas: React.FC<WellVisualizationCanvasProps> = (
   };
 
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 shadow-xl flex flex-col h-full relative overflow-hidden font-mono">
+    <div className="well-visualization-panel bg-white border border-gray-200 rounded-xl p-4 shadow-xl flex flex-col h-full relative overflow-hidden font-mono">
       {/* Visualizer Toolbar */}
-      <div className="flex flex-wrap items-center justify-between pb-3 border-b border-slate-800 gap-2 z-20 bg-slate-900/90 backdrop-blur-sm">
+      <div className="well-visualization-toolbar flex flex-wrap items-center justify-between pb-3 border-b border-gray-200 gap-2 z-20 bg-white/95 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <Layers className="w-4 h-4 text-sky-400" />
           <h2 className="text-sm font-bold text-white">2.5D INTERACTIVE WELL DYNAMICS ENGINE</h2>
@@ -176,7 +174,7 @@ export const WellVisualizationCanvas: React.FC<WellVisualizationCanvasProps> = (
       </div>
 
       {/* Main SVG Graphic Viewport */}
-      <div className="flex-1 relative w-full h-[520px] bg-slate-955 rounded-lg border border-slate-800/80 overflow-hidden flex items-center justify-center">
+      <div className="well-visualization-stage flex-1 relative w-full h-[520px] bg-gray-50 rounded-lg border border-gray-200 overflow-hidden flex items-center justify-center">
         {/* Background Grid */}
         <svg className="absolute inset-0 w-full h-full opacity-10 pointer-events-none">
           <pattern id="gridPattern" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -583,32 +581,6 @@ export const WellVisualizationCanvas: React.FC<WellVisualizationCanvasProps> = (
           </svg>
         </div>
 
-        {/* Live Simulation Output Readouts Badge */}
-        <div className="absolute top-3 left-16 bg-slate-900/90 border border-slate-800 p-2.5 rounded-lg text-xs font-mono space-y-1 backdrop-blur-md z-20 shadow-lg min-w-[240px]">
-          <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider border-b border-slate-800 pb-1 flex items-center justify-between gap-4">
-            <span>SCENARIOSTORE REACTIVE STATE</span>
-            <span className="text-emerald-400 font-bold">● LIVE</span>
-          </div>
-          <div className="text-[10px] text-sky-300 font-bold border-b border-slate-800/80 pb-1 flex items-center justify-between gap-2">
-            <span className="text-slate-400">STATE:</span>
-            <span className="text-sky-300 uppercase truncate font-bold">{phenomenon.title}</span>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[11px] pt-0.5">
-            <div><span className="text-slate-400">SPM:</span> <span className="text-sky-300 font-bold">{spm.toFixed(1)}</span></div>
-            <div><span className="text-slate-400">Stroke:</span> <span className="text-sky-300 font-bold">{strokeMeters.toFixed(1)}m</span></div>
-            <div><span className="text-slate-400">VFD:</span> <span className="text-amber-400 font-bold">{vfdHz.toFixed(1)} Hz</span></div>
-            <div><span className="text-slate-400">Temp:</span> <span className="text-orange-400 font-bold">{effectiveTemp.toFixed(1)}°C</span></div>
-            <div><span className="text-slate-400">Viscosity:</span> <span className="text-purple-300 font-bold">{effectiveViscosity.toFixed(0)} cP</span></div>
-            <div><span className="text-slate-400">Rate:</span> <span className="text-emerald-400 font-bold">{estimatedBopd.toFixed(1)} BOPD</span></div>
-            <div><span className="text-slate-400">Load Index:</span> <span className="text-sky-300 font-bold">{(srpOptimizationResult?.currentCandidate?.loadIndex || 65).toFixed(0)}%</span></div>
-          </div>
-        </div>
-
-        {/* Safety Non-Actuation Disclaimer Banner */}
-        <div className="absolute bottom-3 left-16 bg-slate-950/90 border border-slate-800 px-3 py-1.5 rounded-lg text-[10px] font-mono text-slate-400 backdrop-blur-md z-20 flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span>DEMO MODE | 0 Physical Actuation Permitted</span>
-        </div>
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ import type { CSSOptimizationResult } from '../cssOptimization';
 import { optimizeCSS } from '../cssOptimization';
 import type { AIRiskResult } from '../riskEngine';
 import { analyzeAIRisk } from '../riskEngine';
+import { rodFloatingModel, type RodFloatingResult } from '../engineeringMetrics';
 
 import { validateScenarioInputs } from './validation';
 
@@ -50,6 +51,8 @@ export interface ScenarioContextType {
   baselineCSSOptimizationResult: CSSOptimizationResult;
   aiRiskResult: AIRiskResult;
   baselineAIRiskResult: AIRiskResult;
+  rodFloatingResult: RodFloatingResult;
+  baselineRodFloatingResult: RodFloatingResult;
   updateInput: (key: keyof ScenarioInputValues, value: number) => void;
   updateDetails: (name: string, description?: string) => void;
   saveCurrentScenario: () => void;
@@ -152,6 +155,10 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const [activeScenario, setActiveScenario] = useState<Scenario>(baseline);
   const [committedScenario, setCommittedScenario] = useState<Scenario>(baseline);
   const [committedRunTimestamp, setCommittedRunTimestamp] = useState<string>(new Date().toISOString());
+  // Gate auto-persistence until the localStorage restore effect has finished,
+  // otherwise the first render would overwrite the persisted scenario with the
+  // baseline before the restore lands (visible under StrictMode double-mount).
+  const [hydrated, setHydrated] = useState(false);
 
   // Load from localStorage safely on mount
   useEffect(() => {
@@ -190,26 +197,29 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
           setActiveScenario(foundSaved);
           setCommittedScenario(foundSaved);
         }
+      }      } catch (e) {
+        console.warn('Corrupted localStorage data encountered. Falling back to default baseline.', e);
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        localStorage.removeItem(ACTIVE_SCENARIO_KEY);
+        localStorage.removeItem(ACTIVE_SCENARIO_ID_KEY);
+        setActiveScenario(baseline);
+        setCommittedScenario(baseline);
+      } finally {
+        setHydrated(true);
       }
-    } catch (e) {
-      console.warn('Corrupted localStorage data encountered. Falling back to default baseline.', e);
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
-      localStorage.removeItem(ACTIVE_SCENARIO_KEY);
-      localStorage.removeItem(ACTIVE_SCENARIO_ID_KEY);
-      setActiveScenario(baseline);
-      setCommittedScenario(baseline);
-    }
-  }, [baseline, presets]);
+    }, [baseline, presets]);
 
-  // Auto-persist activeScenario whenever it changes
+  // Auto-persist activeScenario whenever it changes (only after hydration so
+  // the first render does not overwrite the restored scenario with baseline)
   useEffect(() => {
+    if (!hydrated) return;
     try {
       localStorage.setItem(ACTIVE_SCENARIO_KEY, JSON.stringify(activeScenario));
       localStorage.setItem(ACTIVE_SCENARIO_ID_KEY, activeScenario.id);
     } catch (e) {
       console.warn('Failed to auto-persist active scenario to localStorage', e);
     }
-  }, [activeScenario]);
+  }, [activeScenario, hydrated]);
 
   // Save scenarios to localStorage
   const saveToLocalStorage = (scenariosList: Scenario[], activeId: string) => {
@@ -425,6 +435,24 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
     [activeScenario, mobilityResult, thermalResult, viscosityResult, drawdownBar]
   );
 
+  const baselineRodFloatingResult = useMemo(
+    () => rodFloatingModel({
+      viscosityCp: baselineViscosityResult.estimatedViscosityCp,
+      spm: baseline.inputs.spm,
+      strokeLengthM: baseline.inputs.strokeLengthMeters,
+    }),
+    [baselineViscosityResult, baseline]
+  );
+
+  const rodFloatingResult = useMemo(
+    () => rodFloatingModel({
+      viscosityCp: viscosityResult.estimatedViscosityCp,
+      spm: activeScenario.inputs.spm,
+      strokeLengthM: activeScenario.inputs.strokeLengthMeters,
+    }),
+    [viscosityResult, activeScenario]
+  );
+
   const baselineCSSOptimizationResult = useMemo(
     () =>
       optimizeCSS({
@@ -480,6 +508,7 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         steamInjectionRateTpd: baseline.inputs.steamInjectionRateTpd,
         srpLoadIndex: baselineSRPOptimizationResult.currentCandidate.loadIndex,
         cssThermalGainC: baselineCSSOptimizationResult.thermalBreakdown.deltaTemperatureC,
+        rodFloatingIndex: baselineRodFloatingResult.rodFloatingIndex,
       }),
     [baselineThermalResult, baselineViscosityResult, baselineMobilityResult, baselineProductionResult, baseline, baselineSRPOptimizationResult, baselineCSSOptimizationResult]
   );
@@ -497,6 +526,7 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
         steamInjectionRateTpd: activeScenario.inputs.steamInjectionRateTpd,
         srpLoadIndex: srpOptimizationResult.currentCandidate.loadIndex,
         cssThermalGainC: cssOptimizationResult.thermalBreakdown.deltaTemperatureC,
+        rodFloatingIndex: rodFloatingResult.rodFloatingIndex,
       }),
     [thermalResult, viscosityResult, mobilityResult, productionResult, activeScenario, srpOptimizationResult, cssOptimizationResult]
   );
@@ -681,6 +711,8 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       baselineCSSOptimizationResult,
       aiRiskResult,
       baselineAIRiskResult,
+      rodFloatingResult,
+      baselineRodFloatingResult,
       updateInput,
       updateDetails,
       saveCurrentScenario,
@@ -712,6 +744,8 @@ export const ScenarioProvider: React.FC<{ children: React.ReactNode }> = ({ chil
       baselineCSSOptimizationResult,
       aiRiskResult,
       baselineAIRiskResult,
+      rodFloatingResult,
+      baselineRodFloatingResult,
       updateInput,
       updateDetails,
       saveCurrentScenario,

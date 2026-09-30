@@ -24,6 +24,7 @@ import type {
   IngestionResult,
 } from '../simulation/fieldDataIntegration';
 import type { DigitalTwinState } from '../simulation/realtimeMonitoring/types';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 const SAMPLE_BAGHEWALA_PAYLOAD = JSON.stringify(
   [
@@ -95,6 +96,11 @@ const SAMPLE_BAGHEWALA_PAYLOAD = JSON.stringify(
 );
 
 export const FieldDataIntegrationPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Data Explorer",
+    description:
+      "Field data ingestion, unit normalization, data quality gates and pilot readiness.",
+  });
   const [sourceType, setSourceType] = useState<FieldDataSource>('HISTORICAL');
   const [missingPolicy, setMissingPolicy] = useState<MissingValuePolicy>('LINEAR_INTERPOLATION');
   const [rejectOutliers, setRejectOutliers] = useState(false);
@@ -150,9 +156,9 @@ export const FieldDataIntegrationPage: React.FC = () => {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <PageHeader
-          title="Field Data Integration & Telemetry Ingestion"
-          subtitle="Normalize units, validate schemas, detect outliers, and map real/historical telemetry to Digital Twin state"
-          badgeText="Step 5.6 Data Layer"
+          title="Data Explorer"
+          subtitle="Inspect, normalize and validate imported, historical and simulated telemetry before it reaches the live monitoring view."
+          badgeText="Data quality"
         />
 
         <div className="hidden md:flex items-center gap-3">

@@ -3,7 +3,7 @@ import type { EnvironmentConfig, ProductionAppMode } from './types';
 export const MANDATORY_RELEASE_DISCLAIMER =
   'Decision support only — no automatic field actuation. This production deployment and release freeze package operates strictly in advisory mode. No automatic control commands are issued to pumps, SRP drives, steam injection boilers, or wellhead valves.';
 
-export const PROJECT_RELEASE_VERSION = 'v1.0.0-release-freeze';
+export const PROJECT_RELEASE_VERSION = 'v1.0.0';
 
 export function getEnvironmentConfig(mode: ProductionAppMode = 'DEMONSTRATION'): EnvironmentConfig {
   const isProd = mode === 'PRODUCTION';

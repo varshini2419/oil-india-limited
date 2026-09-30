@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationItem } from '../navigation/NavigationItem';
-import { X, ChevronRight } from 'lucide-react';
+import { X, ChevronRight, Droplet } from 'lucide-react';
 import './Sidebar.css';
 
 interface SidebarProps {
@@ -17,17 +17,18 @@ interface NavEntry {
 
 // Flat "Navigation Modules" list, ordered exactly like the reference design.
 const navModules: NavEntry[] = [
-  { id: 'well-dynamics', label: 'Well Dynamics', path: '/well-dynamics', icon: 'Activity' },
   { id: 'dashboard', label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
   { id: 'digital-twin', label: 'Digital Twin', path: '/digital-twin', icon: 'Layers' },
+  { id: 'well-dynamics', label: 'Well Dynamics', path: '/well-dynamics', icon: 'Activity' },
   { id: 'simulation', label: 'Simulation', path: '/simulation', icon: 'Sliders' },
-  { id: 'scenarios', label: 'Scenarios', path: '/scenarios', icon: 'GitBranch' },
-  { id: 'results', label: 'Results', path: '/results', icon: 'BarChart3' },
-  { id: 'final-engineering-assessment', label: 'Final Assessment', path: '/final-engineering-assessment', icon: 'FileText' },
-  { id: 'final-validation', label: 'Final Validation', path: '/final-validation', icon: 'ShieldCheck' },
-  { id: 'field-integration', label: 'Field Integration', path: '/field-integration', icon: 'Radio' },
-  { id: 'release', label: 'Release & Freeze', path: '/release', icon: 'Award' },
+  { id: 'optimization', label: 'Optimization', path: '/optimization', icon: 'GitBranch' },
+  { id: 'monitoring', label: 'Live Monitoring', path: '/monitoring', icon: 'Activity' },
   { id: 'reports', label: 'Reports', path: '/reports', icon: 'FileText' },
+];
+
+const toolModules: NavEntry[] = [
+  { id: 'data-explorer', label: 'Data Explorer', path: '/data-explorer', icon: 'Database' },
+  { id: 'saved-scenarios', label: 'Scenarios', path: '/optimization', icon: 'GitBranch' },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onCloseMobile }) => {
@@ -48,6 +49,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onCloseMobile 
         }`}
       >
         <div className="flex-1 overflow-y-auto oil-sidebar-scroll flex flex-col p-3 space-y-3">
+          <div className="oil-sidebar-brand">
+            <div className="oil-sidebar-brand-mark"><Droplet className="h-5 w-5" /></div>
+            <div><strong>BAGHEWALA</strong><span>HEAVY-OIL ASSET</span></div>
+            <button type="button" aria-label="Collapse navigation" className="oil-sidebar-collapse"><ChevronRight className="h-3.5 w-3.5 rotate-180" /></button>
+          </div>
           <div>
             {/* Mobile Header in Sidebar */}
             <div className="h-12 px-2 mb-2 flex items-center justify-between lg:hidden">
@@ -78,11 +84,16 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen = false, onCloseMobile 
                 />
               ))}
             </nav>
+            <div className="oil-nav-section-label">Tools</div>
+            <nav className="space-y-0.5">
+              {toolModules.map((item) => <NavigationItem key={item.id} label={item.label} path={item.path} iconName={item.icon} onClick={onCloseMobile} />)}
+            </nav>
           </div>
         </div>
 
         {/* Sidebar Footer Info */}
         <div className="oil-sidebar-footer p-3.5 px-4">
+          <div className="oil-sidebar-twin-card"><div className="oil-sidebar-twin-art" /><strong>Field Digital Twin</strong><span>Integrated simulation &amp; real-time data for better decisions.</span></div>
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
               <div className="text-[11px] font-semibold text-slate-200 truncate">

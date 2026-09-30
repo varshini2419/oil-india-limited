@@ -19,8 +19,14 @@ import {
 } from '../simulation/validation/fieldCalibrationEngine';
 import { propagateUncertainty, DEFAULT_UNCERTAINTY_RANGES } from '../simulation/validation/uncertaintyEngine';
 import { performSensitivityAnalysis } from '../simulation/validation/sensitivityEngine';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const HistoricalValidationPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Historical Validation",
+    description:
+      "Historical validation workspace: comparison matrix, calibration configurator and residual analysis.",
+  });
   const { activeScenario } = useScenarioStore();
   const inputs = activeScenario.inputs;
 
@@ -158,7 +164,7 @@ export const HistoricalValidationPage: React.FC = () => {
       </div>
 
       {/* 2. HISTORICAL VALIDATION WORKFLOW STEPPER */}
-      <Panel title="Historical Validation Workflow Trace (Step 6.1)">
+      <Panel title="Historical Validation Workflow Trace">
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 font-mono text-[10px]">
           {workflowStages.map((st) => (
             <div
@@ -183,7 +189,7 @@ export const HistoricalValidationPage: React.FC = () => {
 
       {/* 3. HISTORICAL VALIDATION TABLE & OBSERVATION SELECTOR */}
       <Panel
-        title="Historical Validation Comparison Matrix (Step 6.2)"
+        title="Historical Validation Comparison Matrix"
         subtitle="Compare reference observation parameters against live Digital Twin physics outputs"
         action={
           <div className="flex items-center gap-2">
@@ -273,7 +279,7 @@ export const HistoricalValidationPage: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 font-mono text-xs">
         {/* Calibration Multipliers Controls */}
         <Panel
-          title="Calibration Multiplier Configurator (Step 6.3)"
+          title="Calibration Multiplier Configurator"
           subtitle="Prototype calibration multipliers tune model output scale without altering physics equations"
           action={
             <button
@@ -360,7 +366,7 @@ export const HistoricalValidationPage: React.FC = () => {
 
         {/* Before vs After Calibration Metrics */}
         <Panel
-          title="Before vs After Calibration Metrics (Step 6.4)"
+          title="Before vs After Calibration Metrics"
           subtitle="MAE, RMSE, MAPE, Bias, and Error Reduction % across full dataset"
         >
           <div className="space-y-3 font-mono text-xs">
@@ -400,7 +406,7 @@ export const HistoricalValidationPage: React.FC = () => {
 
       {/* 5. INTERACTIVE RESIDUAL ANALYSIS CHART */}
       <Panel
-        title="Model Residual Analysis (Step 6.5)"
+        title="Model Residual Analysis"
         subtitle="Residual = Observed - Model (Positive: Model underpredicts | Negative: Model overpredicts)"
         action={
           <div className="flex items-center gap-2">
@@ -500,7 +506,7 @@ export const HistoricalValidationPage: React.FC = () => {
 
         {/* Sensitivity Rankings */}
         <Panel
-          title="Input Sensitivity Ranking (Step 6.7)"
+          title="Input Sensitivity Ranking"
           subtitle="Perturbation impact evaluation (+5°C, +20 TPD, +2 SPM)"
         >
           <div className="space-y-3 font-mono text-xs">

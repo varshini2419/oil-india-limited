@@ -11,7 +11,7 @@
   background: #050608 !important;
   border-right: 1px solid #16181d !important;
   color: #e5e7eb !important;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-family: var(--font-ui) !important;
 }
 
 .oil-sidebar-wrapper * {
@@ -42,7 +42,7 @@
   align-items: center;
   gap: 8px;
   padding: 6px 10px;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-ui);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -228,7 +228,7 @@
   background: #050608 !important;
   border-bottom: 1px solid #16181d !important;
   color: #e5e7eb !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: var(--font-ui) !important;
 }
 
 /* Brand block on the left */
@@ -357,6 +357,40 @@
   color: #9ca3af !important;
   font-weight: 500;
 }
+
+/* Reference shell: navy rail + white utility bar */
+.app-shell { background: #eef3f8; }
+.oil-sidebar-wrapper { width: 214px !important; background: #101d2c !important; border-right: 1px solid #203248 !important; color: #dce7f2 !important; }
+.oil-sidebar-scroll { padding: 1rem .6rem !important; }
+.oil-sidebar-brand { display: flex; align-items: center; gap: .6rem; min-height: 3rem; padding: .2rem .35rem 1rem; border-bottom: 1px solid rgba(211, 226, 240, .13); color: #f7fafc; }
+.oil-sidebar-brand-mark { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 9px; background: #ffc72c; color: #182538; box-shadow: 0 5px 12px rgba(255, 199, 44, .2); }
+.oil-sidebar-brand strong, .oil-sidebar-brand span { display: block; line-height: 1.05; }
+.oil-sidebar-brand strong { font-size: .79rem; letter-spacing: .08em; }
+.oil-sidebar-brand span { margin-top: .22rem; color: #9fb0c2; font-size: .56rem; letter-spacing: .08em; }
+.oil-sidebar-collapse { display: grid; width: 1.3rem; height: 1.3rem; margin-left: auto; place-items: center; border: 1px solid #31445a; border-radius: 5px; background: #25364b; color: #aabdce; }
+.oil-nav-category-header { display: none !important; }
+.oil-nav-link { margin: .18rem 0; padding: .63rem .7rem; border-radius: 7px; color: #b9c7d5 !important; font-size: .76rem; }
+.oil-nav-link:hover { background: #1b2b3f !important; color: #fff !important; }
+.oil-nav-link.active, .oil-nav-link[aria-current="page"] { background: #ffc72c !important; border-color: #ffd96a !important; color: #192536 !important; box-shadow: 0 4px 11px rgba(255, 199, 44, .2); }
+.oil-nav-link.active .oil-nav-icon-container, .oil-nav-link[aria-current="page"] .oil-nav-icon-container { color: #192536 !important; }
+.oil-nav-section-label { padding: 1rem .7rem .35rem; color: #72869b; font-size: .58rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.oil-sidebar-footer { padding: .7rem !important; background: #101d2c !important; border-top-color: #203248 !important; }
+.oil-sidebar-footer > .flex { display: none; }
+.oil-sidebar-twin-card { padding: .65rem; border: 1px solid #2a4057; border-radius: 9px; background: #16283b; color: #dce7f2; }
+.oil-sidebar-twin-art { height: 3.2rem; margin: -.65rem -.65rem .55rem; border-radius: 8px 8px 0 0; background: radial-gradient(ellipse at 35% 80%, rgba(255, 199, 44, .52), transparent 38%), linear-gradient(145deg, #18384b, #152234); }
+.oil-sidebar-twin-card strong, .oil-sidebar-twin-card span { display: block; }
+.oil-sidebar-twin-card strong { font-size: .72rem; }.oil-sidebar-twin-card span { margin-top: .25rem; color: #9db0c3; font-size: .62rem; line-height: 1.35; }
+.oil-header-wrapper { display: flex; align-items: center; justify-content: space-between; padding: 0 .9rem 0 1.1rem; background: #fff !important; border-bottom: 1px solid #dfe7ef !important; color: #1d2a3a !important; box-shadow: 0 1px 4px rgba(31, 52, 73, .04); }
+.oil-header-search-wrap, .oil-header-actions { display: flex; align-items: center; gap: .75rem; }
+.oil-header-search { display: flex; align-items: center; gap: .55rem; width: min(28rem, 42vw); height: 2.1rem; padding: 0 .7rem; border: 1px solid #dce5ee; border-radius: 7px; background: #f8fafc; color: #8a9bae; }
+.oil-header-search input { width: 100%; border: 0; outline: 0; background: transparent; color: #26384b; font-size: .72rem; }.oil-header-search input::placeholder { color: #96a6b8; }
+.oil-header-search kbd { padding: .18rem .4rem; border: 1px solid #d4dee9; border-radius: 4px; background: #fff; color: #7b8ca0; font-size: .62rem; white-space: nowrap; }
+.oil-header-icon, .oil-logout-icon, .oil-mobile-menu { position: relative; display: grid; width: 2rem; height: 2rem; place-items: center; border: 0; background: transparent; color: #50657a; }.oil-header-icon:hover, .oil-logout-icon:hover { color: #172b42; background: #eef3f8; border-radius: 6px; }.oil-header-icon i { position: absolute; top: .32rem; right: .32rem; width: .38rem; height: .38rem; border: 2px solid #fff; border-radius: 50%; background: #ef3340; }
+.oil-profile-divider { width: 1px; height: 2rem; background: #e0e7ee; }.oil-profile { display: flex; align-items: center; gap: .55rem; min-height: 2.4rem; border: 0; background: transparent; color: #3b4e63; text-align: left; }.oil-profile-avatar { display: grid; width: 2rem; height: 2rem; place-items: center; border-radius: 50%; background: #26384b; color: #fff; font-size: .63rem; font-weight: 800; }.oil-profile strong, .oil-profile small { display: block; }.oil-profile strong { font-size: .7rem; }.oil-profile small { margin-top: .12rem; color: #7a8c9f; font-size: .6rem; }
+.oil-brand-title { font-family: var(--font-ui) !important; }
+.oil-statusbar-wrapper { background: #fff !important; border-top: 1px solid #dfe7ef; color: #617287; }
+@media (max-width: 1023px) { .oil-header-search { width: min(24rem, 55vw); } }
+@media (max-width: 640px) { .oil-header-search { width: 11rem; }.oil-header-search kbd, .oil-profile, .oil-profile-divider { display: none; } }
 
 /* --------------------------------------------------------------------------
    3. STATUS BAR — white with amber LIVE chip

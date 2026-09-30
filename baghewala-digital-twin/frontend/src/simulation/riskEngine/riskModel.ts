@@ -48,6 +48,30 @@ export function evaluateRiskModel(evidence: RiskEvidence): EvaluatedRiskState {
     cumulativeScore += 15;
   }
 
+  if ((evidence.rodFloatingIndex ?? 0) >= 80) {
+    detectedIssues.push({
+      id: 'ISSUE_ROD_FLOATING_CRITICAL',
+      title: 'Rod Floating and Impact Loading Risk',
+      severity: 'CRITICAL',
+      category: 'ROD_FLOATING',
+      description: 'Modeled rod floating index indicates incomplete pump fill and elevated impact loading risk.',
+      threshold: '>= 80 Rod Floating Index',
+      actualValue: `${evidence.rodFloatingIndex} / 100`,
+    });
+    cumulativeScore += 30;
+  } else if ((evidence.rodFloatingIndex ?? 0) >= 60) {
+    detectedIssues.push({
+      id: 'ISSUE_ROD_FLOATING_HIGH',
+      title: 'Rod Floating Risk Elevated',
+      severity: 'HIGH',
+      category: 'ROD_FLOATING',
+      description: 'Modeled rod floating index indicates pump fill loss as viscosity rises.',
+      threshold: '>= 60 Rod Floating Index',
+      actualValue: `${evidence.rodFloatingIndex} / 100`,
+    });
+    cumulativeScore += 20;
+  }
+
   // Issue 2: Oil Viscosity Remains High
   if (evidence.viscosityCp > RISK_THRESHOLDS.viscosity.criticalCp) {
     detectedIssues.push({

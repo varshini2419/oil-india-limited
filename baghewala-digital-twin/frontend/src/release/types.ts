@@ -73,12 +73,6 @@ export interface ReleaseManifest {
   releaseId: string;
   generatedAt: string;
   appMode: ProductionAppMode;
-  step5FreezeStatus: 'FROZEN_VALIDATED';
-  step61Status: 'COMPLETED_FIELD_INTEGRATION' | 'BLOCKED_SAFETY_AUDIT';
-  step62Status: 'COMPLETED_PRODUCTION_FREEZE' | 'RELEASE_BLOCKED';
-  verifiedTestSuitesCount: number;
-  verifiedTotalTestsCount: number;
-  buildStatus: 'SUCCESS_ZERO_ERRORS';
   registeredRoutesCount: number;
   realFieldConnectivityStatus: 'NOT_CONNECTED_DISCONNECTED';
   safetyGovernanceStatus: 'ADVISORY_ONLY_ENFORCED';

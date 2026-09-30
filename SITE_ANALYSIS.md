@@ -23,9 +23,10 @@ reports. The system repeatedly and explicitly labels itself **advisory-only** �
 - **Meta description:** none (no `meta[name=description]` in index.html) — **Unknown/absent**
 - **Audience:** petroleum/reservoir engineers, hackathon judges ("SIH prototype" per README),
   evaluators walking a scripted demo flow.
-- **Auth:** none. All routes public. No login page, no role gating, no 401/403 handling. The
-  header shows a decorative "Administrator / admin@gmail.com / Logout" cluster with **no real
-  auth wiring** (Logout button has no onClick).
+- **Auth:** yes — client-side session auth protects the whole app. Unauthenticated users are
+  redirected to `/login` (`ProtectedRoute`). Single demo credential: `admin@gmail.com` / `admin123`
+  (hardcoded in `AuthContext.tsx`; also revealed by the "Forgot Password?" alert). Session persists
+  in `localStorage` ("Remember Me") or `sessionStorage`. One role only — `Administrator`.
 
 ---
 
@@ -35,7 +36,8 @@ reports. The system repeatedly and explicitly labels itself **advisory-only** �
 |---|---|---|
 | Framework | React 19 (`react@^19.2.8`) + TypeScript (~6.0.2) | `frontend/package.json` |
 | Build | Vite 8 (`vite@^8.3.0`), Rolldown-based reporter output | package.json, build output |
-| Routing | `react-router-dom@^7.18.4` (BrowserRouter, nested `AppLayout`) | `src/App.tsx` |
+| Routing | `react-router-dom@^7.18.4` (BrowserRouter; `AuthProvider` → public `/login` + `ProtectedRoute` layout route) | `src/App.tsx` |
+| Auth | Client-side session context (`AuthProvider`) — hardcoded demo credential, localStorage/sessionStorage persistence | `src/context/AuthContext.tsx`, `components/auth/ProtectedRoute.tsx` |
 | Styling | Tailwind CSS v4 (`@tailwindcss/vite@^4.3.3`) + plain CSS (`Sidebar.css`, `DigitalTwinPage.css`) + global CSS variable theme remap | `src/index.css` |
 | Icons | `lucide-react@^1.48.0` (dynamic icon map for sidebar) | `NavigationItem.tsx` |
 | State | React Context + hooks (`ScenarioProvider`), **localStorage** persistence; no Redux/Zustand | `simulation/scenario/scenarioStore.ts` |
@@ -53,8 +55,9 @@ reports. The system repeatedly and explicitly labels itself **advisory-only** �
 baghewala-digital-twin/
 ├── frontend/               # React SPA
 │   └── src/
-│       ├── components/     # layout, navigation, ui, simulation, digital-twin, wellDynamics, realtimeMonitoring
-│       ├── pages/          # 25 page files (19 routed + 6 unrouted, see §3)
+│       ├── components/     # layout, navigation, ui, simulation, digital-twin, wellDynamics, realtimeMonitoring, auth
+│       ├── pages/          # 25 page files (20 routed incl. /login + 5 unrouted, see §3)
+│       ├── context/        # AuthContext (client-side session)
 │       ├── simulation/     # ALL physics engines (thermal, viscosity, mobility, production, srpOptimization, cssOptimization, riskEngine, validation, copilot, realtimeMonitoring, fieldDataIntegration, historicalCalibration, uncertaintyAnalysis, scenarioOptimization, finalValidation, finalEngineeringAssessment, productionPilot, deploymentReadiness, integratedValidation, operationalReadiness, fieldIntegration, commandCenter, scenarios, reports…)
 │       ├── data/baghewala/ # hardcoded documented field/reservoir/crude/well/historical datasets
 │       ├── services/       # api.ts, simulationApi.ts, baghewalaRagService.ts, baghewalaRagEngine.ts, imageIngestionService.ts
@@ -74,28 +77,32 @@ status bar + `<Outlet/>`). **No dynamic/parametrized routes. No auth-protected r
 section. No 404 page** — `path="*"` silently redirects to `/`.
 
 ```
-/ (AppLayout — Header, Sidebar, StatusBar wrap every page)
-├── /                            → DashboardPage ................ "Field Dashboard"
-├── /well-dynamics               → WellDynamicsPage ............. "WELL DYNAMICS"
-├── /command-center              → REDIRECT to /well-dynamics (no page; legacy path)
-├── /digital-twin                → DigitalTwinPage .............. "2D Digital Twin Workspace"
-├── /simulation                  → SimulationPage ............... "BAGHEWALA DIGITAL TWIN WORKSTATION"
-├── /scenarios                   → ScenariosPage ................ "Interactive What-If Scenario Optimization & Trade-Off Engine"
-├── /results                     → ResultsPage .................. "Simulation Results — Thermal, Viscosity, Mobility & Production Analytics"
-├── /realtime-monitoring         → RealtimeMonitoringPage ....... "STEP 5.5 — REAL-TIME DIGITAL TWIN MONITORING & WHAT-IF SIMULATION"
-├── /field-data                  → FieldDataIntegrationPage ..... "Field Data Integration & Telemetry Ingestion"
-├── /historical-validation       → HistoricalValidationPage ..... "Field Data Calibration & Historical Validation Workspace"
-├── /engineering-copilot         → AiEngineeringCopilotPage ..... "BAGHEWALA AI ENGINEERING COPILOT"
-├── /integrated-validation       → IntegratedValidationPage ..... "Integrated Digital Twin Validation & Decision Support"
-├── /operational-readiness       → OperationalReadinessPage ..... "STEP 5.8 — OPERATIONAL READINESS & DEMONSTRATION WORKSPACE"
-├── /deployment-readiness        → DeploymentReadinessPage ...... "DEPLOYMENT READINESS & PILOT VALIDATION"
-├── /production-pilot            → ProductionPilotPage .......... "BAGHEWALA PRODUCTION PILOT WORKFLOW"
-├── /final-engineering-assessment→ FinalEngineeringAssessmentPage "FINAL ENGINEERING ASSESSMENT & PERFORMANCE VALIDATION"
-├── /final-validation            → FinalValidationPage .......... "FINAL DIGITAL TWIN VALIDATION & DEMONSTRATION WORKSPACE"
-├── /field-integration           → FieldIntegrationPage ......... "STEP 6.1 — REAL-WORLD FIELD INTEGRATION & CONTROLLED PILOT READINESS"
-├── /release                     → ReleasePage .................. "STEP 6.2 — PRODUCTION DEPLOYMENT & FINAL RELEASE FREEZE"
-├── /reports                     → ReportsPage .................. "Simulation Reports & Engineering Documentation"
-└── *                            → <Navigate to="/" replace/> (silent redirect; NO 404 page)
+/ (AuthProvider wraps everything)
+├── /login                       → LoginPage .................... "BAGHEWALA DIGITAL TWIN" (public)
+└── ProtectedRoute (redirects to /login when unauthenticated)
+    └── / (AppLayout — Header, Sidebar, StatusBar wrap every page)
+        ├── /                            → DashboardPage ................ "Field Dashboard"
+        ├── /well-dynamics               → WellDynamicsPage ............. "WELL DYNAMICS"
+        ├── /command-center              → REDIRECT to /well-dynamics (no page; legacy path)
+        ├── /digital-twin                → DigitalTwinPage .............. "2D Digital Twin Workspace"
+        ├── /simulation                  → SimulationPage ............... "BAGHEWALA DIGITAL TWIN WORKSTATION"
+        ├── /scenarios                   → ScenariosPage ................ "Interactive What-If Scenario Optimization & Trade-Off Engine"
+        ├── /results                     → ResultsPage .................. "Simulation Results — Thermal, Viscosity, Mobility & Production Analytics"
+        ├── /realtime-monitoring         → RealtimeMonitoringPage ....... "STEP 5.5 — REAL-TIME DIGITAL TWIN MONITORING & WHAT-IF SIMULATION"
+        ├── /field-data                  → FieldDataIntegrationPage ..... "Field Data Integration & Telemetry Ingestion"
+        ├── /historical-validation       → HistoricalValidationPage ..... "Field Data Calibration & Historical Validation Workspace"
+        ├── /engineering-copilot         → AiEngineeringCopilotPage ..... "BAGHEWALA AI ENGINEERING COPILOT"
+        ├── /integrated-validation       → IntegratedValidationPage ..... "Integrated Digital Twin Validation & Decision Support"
+        ├── /operational-readiness       → OperationalReadinessPage ..... "STEP 5.8 — OPERATIONAL READINESS & DEMONSTRATION WORKSPACE"
+        ├── /deployment-readiness        → DeploymentReadinessPage ...... "DEPLOYMENT READINESS & PILOT VALIDATION"
+        ├── /production-pilot            → ProductionPilotPage .......... "BAGHEWALA PRODUCTION PILOT WORKFLOW"
+        ├── /final-engineering-assessment→ FinalEngineeringAssessmentPage "FINAL ENGINEERING ASSESSMENT & PERFORMANCE VALIDATION"
+        ├── /final-validation            → FinalValidationPage .......... "FINAL DIGITAL TWIN VALIDATION & DEMONSTRATION WORKSPACE"
+        ├── /field-integration           → FieldIntegrationPage ......... "STEP 6.1 — REAL-WORLD FIELD INTEGRATION & CONTROLLED PILOT READINESS"
+        ├── /release                     → ReleasePage .................. "STEP 6.2 — PRODUCTION DEPLOYMENT & FINAL RELEASE FREEZE"
+        ├── /reports                     → ReportsPage .................. "Simulation Reports & Engineering Documentation"
+        └── *                            → <Navigate to="/" replace/> (silent redirect; NO 404 page —
+                                            and if logged out, / redirects onward to /login)
 ```
 
 **Verification (rendered DOM probes of the running dev build):** `<title>` = `Baghewala Heavy-Oil Digital Twin | Oil India Limited` on every route (SPA, no per-page titles); `/release` H1 confirmed = `STEP 6.2 — PRODUCTION DEPLOYMENT & FINAL RELEASE FREEZE`; `/reports` H1 confirmed = `Simulation Reports & Engineering Documentation` with tab buttons `Live Simulation Report`, `Scenario Comparison Report`, `Historical Validation Report`, `Final Validation Package`, `Final Engineering Assessment`, `Production Pilot Audit`, `Release & Freeze Manifest` and download buttons `Markdown (.md)`, `JSON (.json)`; navigating to `/nonexistent-page` landed on `/` (confirmed catch-all redirect).
@@ -109,7 +116,11 @@ section. No 404 page** — `path="*"` silently redirects to `/`.
 | `pages/HistoricalUncertaintyPage.tsx` | "STEP 5.3 — UNCERTAINTY & SENSITIVITY ANALYSIS" (Monte Carlo, tornado, OAT ranking, correlations) |
 | `pages/ScenarioOptimizationPage.tsx` | "STEP 5.4 — SCENARIO OPTIMIZATION & DECISION SUPPORT ENGINE" |
 
-Total: **19 routed pages** + 1 redirect + 1 catch-all redirect + **4 orphan page components**.
+Total: **20 routed pages** (1 public `/login` + 19 protected inside `AppLayout`) + 1 redirect +
+1 catch-all redirect + **4 orphan page components** (CommandCenter, HistoricalCalibration,
+HistoricalUncertainty, ScenarioOptimization). Verified live in the running app: unauthenticated deep-link to
+`/release` lands on `/login`; login with `admin@gmail.com`/`admin123` lands on `/` ("Field Dashboard")
+with header session `Administrator` / `admin@gmail.com`; `Logout` returns to `/login`.
 
 ---
 
@@ -120,7 +131,7 @@ Total: **19 routed pages** + 1 redirect + 1 catch-all redirect + **4 orphan page
 **Header** (`components/layout/Header.tsx`, class `oil-header-wrapper`):
 - Left: drilling-derrick SVG emblem → `BAGHEWALA DIGITAL TWIN` + ribbon `AN OIL HIGH-VISCOSITY ENTERPRISE` + sub-line `Heavy-Oil Field Simulation & Decision Support`
 - Center (xl+): amber pill `ACTIVE SCENARIO: {name}`; telemetry pills `{temp}°C | {steam} t/d | {spm} SPM`; emerald `DEMO NODE` pill; `System Status:` + StatusIndicator "System Ready"
-- Right: `Administrator` / `admin@gmail.com` + amber `Logout` button (decorative, no handler)
+- Right: session block `{user?.name || 'Administrator'}` / `{user?.email || 'admin@gmail.com'}` (from AuthContext) + amber `Logout` button (`LogOut` icon, title `Sign out from session`, wired to `logout()` → clears storage → redirects to `/login`)
 - Center pills are driven by the shared `useScenarioStore()`, so they change live on every page.
 
 **Sidebar** (`components/layout/Sidebar.tsx`, class `oil-sidebar-wrapper`, 236px):
@@ -156,7 +167,8 @@ Total: **19 routed pages** + 1 redirect + 1 catch-all redirect + **4 orphan page
 `StatusIndicator` (dot+label pill: ready/simulating/warning/error/not_initialized), `FieldDataPanel`.
 Others: `SimulationReportModal`, `DigitalTwinViewport` (+ animations, legend), wellDynamics
 component set (`PhenomenaSelector`, `WellVisualizationCanvas`, `PhenomenaExplanationPanel`),
-`WhatIfSimulationPanel`.
+`WhatIfSimulationPanel`, pilot telemetry panels (`LiveWellStatusPanel`, `ActualVsPredictedPanel`,
+`DeviationAlertsPanel`), `ProtectedRoute`.
 
 ---
 
@@ -165,7 +177,21 @@ component set (`PhenomenaSelector`, `WellVisualizationCanvas`, `PhenomenaExplana
 > Common to ALL pages: light content canvas on `bg-slate-950`-class main, wrapped by the global
 > chrome; data almost entirely derived from the shared client-side `ScenarioProvider` physics
 > pipeline (hardcoded math, no DB); mono type; dense metric cards. Loading/empty/error states noted
-> per page. Every page is **public** (no auth) unless noted.
+> per page. Every page **requires login** (via `ProtectedRoute`); the only public page is `/login`.
+
+---
+
+### 5.0 `/login` — LoginPage (public)
+- **File:** `src/pages/LoginPage.tsx` + `src/pages/LoginPage.css`
+- **Purpose:** Portal gateway. Full-screen branded login with government/PSU styling (Ashoka emblem SVG, Oil India red drop badge, Hindi + English name).
+- **H2:** `BAGHEWALA DIGITAL TWIN` (with `DIGITAL TWIN` in OIL red `#a71d2a`); subtitle `Heavy-Oil Field Simulation & Decision Support`.
+- **Branding header:** `ऑयल इंडिया लिमिटेड` / `Oil India Limited` / `(A Maharatna Company)`.
+- **Form fields:** text input placeholder `Username / Email`; password input placeholder `Password` with show/hide eye toggle (aria-labels `Show password` / `Hide password`); checkbox `Remember Me`; `Forgot Password?` button (shows alert: "For demo access, please use admin@gmail.com / admin123"); submit button **`LOGIN TO PORTAL`**.
+- **Validation (verified live):** empty email → `Please enter your username or email.`; empty password → `Please enter your password.`; wrong credentials → `Invalid email or password.` (red inline error box with ShieldAlert icon). Success → redirect `/`.
+- **Background:** fixed full-bleed image `/login-bg.png` (exists in `public/` alongside `login-bg.jpg`) + dark gradient overlay.
+- **Footer bar (4 boxes):** `Baghewala Field` / `Bikaner, Rajasthan, India` · `System Status` / `All Systems Operational` · `Server Time` / live ticking clock in `DD Mon YYYY, HH:MM:SS IST` format · `Connection` / `Secure Encrypted`. Sub-footer: `© 2026 Oil India Limited. All rights reserved.`
+- **States:** already-authenticated visitors are auto-redirected to `/`. No loading state (instant local check).
+- **Data source:** fully client-side (`AuthContext`). Footer claims are decorative/hardcoded.
 
 ---
 
@@ -226,7 +252,10 @@ component set (`PhenomenaSelector`, `WellVisualizationCanvas`, `PhenomenaExplana
   - **OPTIMIZATION:** lazy `ScenarioOptimizationPanel` (Pareto engine UI).
   - **HISTORICAL:** lazy `HistoricalValidationPanel` + `UncertaintyAnalysisPanel`.
   - **CONFIDENCE:** lazy `EngineeringConfidencePanel` (SPE 100642 framing).
-  - **PILOT:** lazy `ProductionPilotPanel` (SCADA replay framing).
+  - **PILOT:** lazy `ProductionPilotPanel` (SCADA replay framing) embedding three live-streaming sub-panels:
+    `LIVE WELL TELEMETRY: {wellId}` (8 real-time tiles: `Res Temp`/`Res Press`/`Steam Rate`/`Water Cut`/`SPM`/`Actual`/`Predicted`/`Quality`, each with Pred/derived sub-values, `STATUS: LIVE`/`STATUS: PAUSED` chip, `{n}ms latency`; empty state `No active well telemetry ingested yet. Click PLAY or STEP to stream live demonstration telemetry.`);
+    `ACTUAL VS PREDICTED PRODUCTION COMPARISON` (3 metric cards: `Crude Oil Production` Actual Field vs Physics Predicted + delta, `Reservoir Pressure Response`, `Reservoir Thermal & Water Response`; error chip `ERROR: {n}%` colored at 10%/20% thresholds; `Comparison History Trajectory` table with columns `Timestamp | Actual BOPD | Predicted BOPD | Error BOPD | Error % | Press Dev`, last 8 rows; empty state `No actual-vs-predicted comparison available yet. Valid telemetry required.`);
+    `DETERMINISTIC DEVIATION ALERTS` (chips `{n} CRITICAL`/`{n} WARNING`/`ALL NOMINAL`; configurable-threshold reference strip from `DEVIATION_THRESHOLDS` for `Production Error`, `Pressure`, `Temp`, `Water Cut`; alert cards with `Measured:`/`Expected:`/`Deviation:`/`Threshold:` footer; empty state `No physical or telemetry deviations detected. Observed field state aligns within nominal operating limits.`).
   - **AI_COPILOT:** `AiEngineeringExplanationPanel` + `SimulationHistoricalIncidents` (RAG evidence; uses remote RAG if configured else offline engine).
   - **REPORT:** hero card `Comprehensive Baghewala Engineering Decision Report` + button **`GENERATE FULL REPORT`** → opens `SimulationReportModal` (20-section markdown/JSON export); 3 explainer cards: `Full Causal Decision Trace`, `Multimodal RAG Evidence`, `Multi-Format Export`.
 - **Loading states:** lazy tabs show fallback `Loading {label}...` with pulsing dot.
@@ -476,12 +505,18 @@ DigitalTwinState + config ──▶ OperationalReadiness / FinalValidation / Pil
 
 ## 7. Auth & User Flows
 
-- **Auth:** none. No signup/login/forgot flows, no tokens, no route guards. Header "Administrator / admin@gmail.com / Logout" is static decoration. API CORS is open (`*`). If a real deployment is intended, this is the single biggest gap.
+- **Auth model:** client-side session gate. `AuthProvider` holds `{ isAuthenticated, user: {email, name}, login(), logout() }`. `ProtectedRoute` wraps the entire `AppLayout` route and redirects unauthenticated navigation (including deep links and the `*` fallback) to `/login`.
+- **Credential:** exactly one, hardcoded — `admin@gmail.com` / `admin123` (email compared lowercased/trimmed; password exact). There are **no roles** beyond this single `Administrator` identity; no backend auth endpoint participates (the FastAPI service has no auth routes).
+- **Persistence:** `Remember Me` checked → `localStorage['baghewala_digital_twin_auth']`; unchecked → `sessionStorage` (cleared on tab close). A malformed stored JSON falls back to `{ email: 'admin@gmail.com', name: 'Administrator' }`.
+- **Login flow (verified live):** `/login` → submit empty → field errors (`Please enter your username or email.` / `Please enter your password.`) → wrong creds → `Invalid email or password.` → correct creds → navigate `/` (Field Dashboard), header shows `Administrator` / `admin@gmail.com`.
+- **Logout flow (verified live):** header `Logout` (title `Sign out from session`) → clears both storages → redirect `/login`. Deep-linking any protected route while logged out returns to `/login`.
+- **Security caveats:** credentials and check are in client bundle (trivially bypassable); token-less boolean session; CORS `*` on backend; suitable for demo only.
 - **Primary evaluator flow (scripted on Well Dynamics):**
-  1. Land on `/well-dynamics` → click `STEP 1: Normal` … `STEP 5: Motor Overload` (or `NEXT STEP`) — each applies an input preset that instantly recomputes physics everywhere.
-  2. Open `/simulation` → walk tabs `Digital Twin & Simulation` → `Results & Comparison` → `Decision Report` → `GENERATE FULL REPORT`.
-  3. `/scenarios` → tweak sliders → `SAVE SCENARIO` → compare in `Pareto Trade-Off Plot & Matrix` → `RUN SIMULATOR`.
-  4. `/reports` → pick report → `Markdown (.md)` / `JSON (.json)` download.
+  1. `/login` → `LOGIN TO PORTAL` with demo credential.
+  2. Land `/` (Field Dashboard) → sidebar to `/well-dynamics` → click `STEP 1: Normal` … `STEP 5: Motor Overload` (or `NEXT STEP`) — each applies an input preset that instantly recomputes physics everywhere.
+  3. Open `/simulation` → walk tabs `Digital Twin & Simulation` → `Results & Comparison` → `Decision Report` → `GENERATE FULL REPORT`.
+  4. `/scenarios` → tweak sliders → `SAVE SCENARIO` → compare in `Pareto Trade-Off Plot & Matrix` → `RUN SIMULATOR`.
+  5. `/reports` → pick report → `Markdown (.md)` / `JSON (.json)` download.
 - **Data-ingest flow:** `/field-data` → configure source/policy → paste payload → `Ingest Payload` → review quality audit → click rows to step through twin preview.
 - **Governance flow:** `/operational-readiness` (`Run End-to-End Demonstration`) → `/deployment-readiness` (`RUN VALIDATION`, print) → `/field-integration` (mode + `GRANT OPERATOR APPROVAL`/`PAUSE PILOT`) → `/release` (env strategy, checklist, freeze certificate modal).
 - **State flow:** every page reads/writes the same `ScenarioProvider`; changing scenario inputs on any page instantly updates header pills, status bar, and all physics-derived panels app-wide.
@@ -502,7 +537,7 @@ DigitalTwinState + config ──▶ OperationalReadiness / FinalValidation / Pil
 3. **ResultsPage Step-5.x summary panels are hardcoded literals** (MAE 2022.9 → 2015.2, `6.90 BOPD`, `98.2%`, `Combined Optimization`, `34.8 BOPD`…) that don't react to scenario changes and duplicate values computed elsewhere — high risk of drift.
 4. **Orphan pages:** `CommandCenterPage`, `HistoricalCalibrationPage`, `HistoricalUncertaintyPage`, `ScenarioOptimizationPage` are fully built but unrouted (the sidebar has no path to Steps 5.2/5.3/5.4 standalone workspaces; their content lives only inside Simulation tabs). `HistoricalCalibrationPage`'s mode toggle mutates a *global* registry — dead but side-effectful if ever imported.
 5. **Self-link quirk:** on `/results`, the Step 5.3 panel's "View Output Results →" link points back to `/results` itself.
-6. **Fake auth surface:** Administrator/Logout in header does nothing; risky in demos (implies session that doesn't exist).
+6. **Demo-only auth:** credentials `admin@gmail.com` / `admin123` are hardcoded in the client bundle and even surfaced via the "Forgot Password?" alert; no backend session, no rate limiting. The login footer's `Connection` / `Secure Encrypted` and `Server Time` claims are decorative — nothing is encrypted or server-synchronized.
 7. **StatusBar "Backend: Ready" is hardcoded**; `checkHealth()` exists but is never surfaced. If backend is down, UI still claims Ready.
 8. **RAG duality:** remote RAG service + offline hardcoded engine — good fallback, but two sources of truth for "grounded evidence".
 9. **Theme transition debt:** pages built before the current "Black Chrome & Amber" theme still carry `dark:` Tailwind classes and inline `bg-slate-900` patterns; global CSS remaps them, which works but is fragile (attribute-substring selectors with `!important`).
@@ -511,3 +546,13 @@ DigitalTwinState + config ──▶ OperationalReadiness / FinalValidation / Pil
 12. **`/command-center` redirect** means the sidebar's first item (`Well Dynamics`) and the legacy bookmark behave differently than the built CommandCenterPage suggests.
 
 **Strengths worth preserving:** strict "advisory-only / 0 actuation" governance framing everywhere; explicit provenance chips (DOCUMENTED/MODELED/SIMULATED) on nearly every number; deterministic seeded Monte Carlo (reproducible); localStorage-corruption fallback; lazy-loading heavy panels on `/simulation`.
+
+---
+
+## 2026 Refactor Snapshot
+
+The primary application surface is now six protected workflows: `/`, `/digital-twin`, `/simulation`, `/optimization`, `/monitoring`, and `/reports`, plus public `/login` and a real 404 page. Legacy routes redirect to the appropriate workflow for bookmark compatibility.
+
+The shared scenario pipeline now exposes modeled rod floating and impact loading, pump-fill efficiency, cycle SOR, energy per barrel, operating cost, and a CSS cooling timeline with advisory SRP/VFD setpoints. Documented incident records feed the failure-history panel. Dashboard coverage distinguishes loaded, partially loaded, and unavailable sources; live field telemetry is not claimed when absent.
+
+The Simulation workstation has five tabs: Twin & Controls, ML Advisory, Results & Comparison, Validation & Confidence, and AI Copilot & Evidence. Reports has four report types: Live Simulation Report, Scenario Comparison Report, Validation & Readiness Report, and Production Pilot Audit, each supporting Markdown and JSON export.

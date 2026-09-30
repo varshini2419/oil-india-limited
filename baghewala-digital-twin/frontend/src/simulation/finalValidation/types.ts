@@ -22,9 +22,6 @@ export interface SuiteVerificationItem {
   suiteId: string;
   stepReference: string;
   moduleName: string;
-  testCount: number;
-  passed: number;
-  failed: number;
   status: TestVerificationStatus;
   buildStatus: 'PASS' | 'FAIL';
   limitations: string[];

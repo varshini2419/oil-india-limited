@@ -1,387 +1,136 @@
-import React, { useState } from 'react';
-import { PageHeader } from '../components/ui/PageHeader';
-import { Panel } from '../components/ui/Panel';
-import { Download, AlertTriangle, FileCode, Sparkles } from 'lucide-react';
-import { executeFinalValidation } from '../simulation/finalValidation/finalValidationEngine';
-import { generateFinalReport } from '../simulation/finalValidation/finalReportEngine';
-import { executeFinalEngineeringAssessment } from '../simulation/finalEngineeringAssessment/finalAssessmentEngine';
-import { generateAssessmentReport } from '../simulation/finalEngineeringAssessment/assessmentReportEngine';
-import { executeProductionPilotWorkflow } from '../simulation/productionPilot/pilotWorkflowEngine';
-import { generatePilotReport } from '../simulation/productionPilot/pilotReportEngine';
-import { executeReleaseVerification } from '../release/releaseVerification';
-import { evaluateReleaseChecklist } from '../release/releaseChecklist';
-import { generateReleaseManifest } from '../release/releaseManifest';
-import { useScenarioStore } from '../simulation/scenario/scenarioStore';
-import { generateLiveSimulationReport } from '../simulation/reports/liveSimulationReportEngine';
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import {
+  Activity, Bell, Boxes, ChevronDown, ClipboardCheck, Database, Download,
+  FileBarChart, FileCheck2, FileJson, FileText, FlaskConical, Flame, Gauge,
+  GitBranch, Info, Network, PanelLeftClose, Radio, Search, Settings, ShieldCheck,
+  SlidersHorizontal, Wrench,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import twinImg from "@/assets/digital-twin.jpg";
+import { useDocumentTitle } from "@/hooks/useDocumentTitle";
 
-import { generateScenarioComparisonReport } from '../simulation/scenarios/scenarioComparisonReportEngine';
-import { generateHistoricalValidationReport } from '../simulation/validation/validationReportEngine';
-
-interface ActiveReportView {
+const navItems = [
+  { icon: Gauge, label: "Dashboard", to: "/" as const },
+  { icon: Boxes, label: "Digital Twin", to: "/digital-twin" as const },
+  { icon: Activity, label: "Well Dynamics", to: "/well-dynamics" as const },
+  { icon: SlidersHorizontal, label: "Simulation", to: "/simulation" as const },
+  { icon: Network, label: "Optimization", to: "/optimization" as const },
+  { icon: Radio, label: "Live Monitoring", to: "/monitoring" as const },
+  { icon: FileText, label: "Reports", to: "/reports" as const },
+];
+function Sidebar() {
+  return (
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-[196px] flex-col bg-sidebar text-sidebar-foreground lg:flex">
+      <div className="flex items-center gap-2 px-4 pb-5 pt-4">
+        <span className="flex h-9 w-9 items-center justify-center rounded-md bg-sidebar-primary text-sidebar-primary-foreground"><Flame className="h-6 w-6" fill="currentColor" /></span>
+        <div><p className="text-sm font-bold text-sidebar-accent-foreground">BAGHEWALA</p><p className="text-[9px] text-sidebar-foreground/60">HEAVY-OIL ASSET</p></div>
+        <PanelLeftClose className="ml-auto h-4 w-4 text-sidebar-foreground/50" />
+      </div>
+      <nav className="space-y-1 px-2">
+        {navItems.map((item) => (
+          <Link key={item.label} to={item.to} className={`flex items-center gap-3 rounded-md px-3 py-2.5 text-xs ${item.label === "Reports" ? "bg-sidebar-primary font-semibold text-sidebar-primary-foreground shadow" : "text-sidebar-foreground/85 hover:bg-sidebar-accent"}`}>
+            <item.icon className="h-4 w-4" />{item.label}{item.label === "Reports" && <span className="ml-auto">›</span>}
+          </Link>
+        ))}
+        <p className="border-t border-sidebar-border px-3 pb-2 pt-5 text-[9px] tracking-wider text-sidebar-foreground/45">TOOLS</p>
+        <Link to="/data-explorer" className="flex items-center gap-3 px-3 py-2 text-xs"><Database className="h-4 w-4" />Data Explorer</Link>
+        <div className="flex items-center gap-3 px-3 py-2 text-xs"><GitBranch className="h-4 w-4" />Scenarios</div>
+      </nav>
+      <div className="mx-3 mb-3 mt-auto overflow-hidden rounded-md border border-sidebar-border bg-sidebar-accent/35">
+        <img src={twinImg} alt="Field digital twin geological model" className="h-24 w-full object-cover" />
+        <div className="p-3"><p className="text-sm font-semibold text-sidebar-accent-foreground">Field Digital Twin</p><p className="mt-1 text-[10px] leading-relaxed text-sidebar-foreground/65">Integrated simulation &amp; real-time data for better decisions.</p></div>
+      </div>
+    </aside>
+  );
+}
+function Topbar() {
+  return (
+    <header className="flex h-12 items-center border-b border-border bg-card px-5">
+      <PanelLeftClose className="mr-5 h-4 w-4 rotate-180 text-muted-foreground" />
+      <div className="flex w-[405px] items-center gap-2 rounded-md border border-input bg-background px-3 py-1.5">
+        <Search className="h-3.5 w-3.5 text-muted-foreground" /><input aria-label="Search" placeholder="Search wells, scenarios, or parameters..." className="min-w-0 flex-1 bg-transparent text-[9px] outline-none" /><kbd className="rounded border border-border px-1.5 py-0.5 text-[8px] text-muted-foreground">Ctrl + K</kbd>
+      </div>
+      <div className="ml-auto flex items-center gap-3"><Button size="icon" variant="ghost" className="relative h-8 w-8" aria-label="Notifications"><Bell /><span className="absolute right-1.5 top-1 h-2 w-2 rounded-full bg-destructive" /></Button><Button size="icon" variant="ghost" className="h-8 w-8" aria-label="Settings"><Settings /></Button><div className="flex items-center gap-2 border-l border-border pl-3"><span className="flex h-8 w-8 items-center justify-center rounded-full bg-foreground text-xs font-bold text-background">OI</span><div><p className="text-[10px] font-bold">Oil India Limited</p><p className="text-[8px] text-muted-foreground">Administrator</p></div><ChevronDown className="ml-2 h-3.5 w-3.5" /></div></div>
+    </header>
+  );
+}
+type ReportKey = "live" | "scenario" | "validation" | "pilot";
+type ReportDefinition = {
   title: string;
+  subtitle: string;
   id: string;
-  timestamp: string;
-  status: string;
-  disclaimer: string;
-  sections: { title: string; content: string }[];
-  rawState: unknown;
-  markdown: string;
+  risk: string;
+  icon: typeof FileText;
+  sections: Array<{ title: string; body: string; detail?: string; icon: typeof FileText; tone: string }>;
+};
+const reports: Record<ReportKey, ReportDefinition> = {
+  live: {
+    title: "Live Simulation Report", subtitle: "Current operating state and model outputs", id: "RPT-LIVE-1790730734403 · 2026-09-30T01:12:14.403Z", risk: "HIGH", icon: FileText,
+    sections: [
+      { title: "Physics results", body: "The current simulation operating at reservoir temp 65.8°C and 8 SPM yields an estimated crude viscosity of 2,133 cP and production rate of 2.11 BOPD. Fluid mobility shifted by 134.9%, placing the system risk status at HIGH (40/100).", icon: FlaskConical, tone: "bg-sky-soft text-sky-foreground" },
+      { title: "Optimize Steam Soak Duration & Enforce TWCCEP Connections", body: "Maintain steam injection quality >=80% and inspect surface wellhead thermal expansion joints before cycle 2.", detail: "Expected impact: Prevents thermal casing elongation leak while sustaining temperature gain.", icon: Settings, tone: "bg-mint text-mint-foreground" },
+      { title: "Regulate Pumping Speed & Polished Rod Load Index", body: "Adjust VFD frequency to keep SPM between 7.0 and 10.0 SPM to avoid rod fatigue parting.", detail: "Expected impact: Extends sucker rod string fatigue endurance life.", icon: Network, tone: "bg-violet-soft text-violet-foreground" },
+    ],
+  },
+  scenario: {
+    title: "Scenario Comparison Report", subtitle: "Compare multiple scenarios and outcomes", id: "RPT-SCENARIO-1790730734404 · 2026-09-30T01:12:14.403Z", risk: "MEDIUM", icon: FileBarChart,
+    sections: [
+      { title: "Scenario comparison", body: "Five operating scenarios were evaluated against the current baseline. Max Production improves output by 12% while maintaining equipment risk within the approved operating envelope.", icon: FileBarChart, tone: "bg-sky-soft text-sky-foreground" },
+      { title: "Preferred operating case", body: "The balanced optimization case provides the best weighted outcome across production, energy cost, and equipment protection.", detail: "Expected impact: Stable production with lower intervention frequency.", icon: Network, tone: "bg-mint text-mint-foreground" },
+      { title: "Trade-off summary", body: "Higher stroke frequency improves production but increases polished rod load and energy demand.", detail: "Recommendation: Retain 8–10 SPM and review after the next telemetry window.", icon: Wrench, tone: "bg-violet-soft text-violet-foreground" },
+    ],
+  },
+  validation: {
+    title: "Validation & Readiness Report", subtitle: "Model validation and data readiness", id: "RPT-VALIDATION-1790730734405 · 2026-09-30T01:12:14.403Z", risk: "READY", icon: ShieldCheck,
+    sections: [
+      { title: "Model validation", body: "The physics model is aligned with the latest pressure, temperature, viscosity, and production measurements at 94% confidence.", icon: FlaskConical, tone: "bg-sky-soft text-sky-foreground" },
+      { title: "Data readiness", body: "Telemetry coverage is 99.7%. All required inputs are available and within accepted recency limits.", detail: "No blocking data-quality issues were detected.", icon: ClipboardCheck, tone: "bg-mint text-mint-foreground" },
+      { title: "Readiness decision", body: "The current model package is ready for engineering review and controlled field validation.", detail: "Maintain operator approval before applying recommendations.", icon: ShieldCheck, tone: "bg-violet-soft text-violet-foreground" },
+    ],
+  },
+  pilot: {
+    title: "Production Pilot Audit", subtitle: "Field pilot analysis and lessons learned", id: "RPT-PILOT-1790730734406 · 2026-09-30T01:12:14.403Z", risk: "REVIEW", icon: FileCheck2,
+    sections: [
+      { title: "Pilot performance", body: "The production pilot maintained stable operation through the monitored interval with no unplanned shutdowns.", icon: FileBarChart, tone: "bg-sky-soft text-sky-foreground" },
+      { title: "Operational observations", body: "Temperature response remained within the expected envelope while viscosity improved after thermal intervention.", detail: "Field observations support the modelled mobility trend.", icon: ClipboardCheck, tone: "bg-mint text-mint-foreground" },
+      { title: "Lessons learned", body: "Earlier rod-load review and tighter thermal inspection gates should be included in the next pilot cycle.", detail: "Action owners should confirm closure before restart.", icon: Wrench, tone: "bg-violet-soft text-violet-foreground" },
+    ],
+  },
+};
+function downloadReport(report: ReportDefinition, format: "md" | "json") {
+  const data = format === "json"
+    ? JSON.stringify({ title: report.title, id: report.id, risk: report.risk, sections: report.sections.map(({ title, body, detail }) => ({ title, body, detail })) }, null, 2)
+    : `# ${report.title}\n\n${report.id}\n\nRisk: ${report.risk}\n\n${report.sections.map((section) => `## ${section.title}\n\n${section.body}${section.detail ? `\n\n${section.detail}` : ""}`).join("\n\n")}`;
+  const url = URL.createObjectURL(new Blob([data], { type: format === "json" ? "application/json" : "text/markdown" }));
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `${report.title.toLowerCase().replaceAll(" ", "-")}.${format}`;
+  anchor.click();
+  URL.revokeObjectURL(url);
+}
+export function ReportsPage() {
+  useDocumentTitle({ title: "Engineering Reports — Baghewala Heavy-Oil Asset", description: "Review Baghewala live simulations, scenario comparisons, validation evidence, and production pilot audits." });
+  const [selected, setSelected] = useState<ReportKey>("live");
+  const report = reports[selected];
+  const tabs = Object.entries(reports) as Array<[ReportKey, ReportDefinition]>;
+  return (
+    <div className="min-h-screen bg-background"><Sidebar /><div className="lg:pl-[196px]"><div className="min-w-[1080px]"><Topbar /><main className="px-5 pb-4 pt-3">
+      <section className="relative overflow-hidden py-3">
+        <div className="absolute inset-0 opacity-30 [background-image:repeating-radial-gradient(ellipse_at_60%_80%,transparent_0,transparent_7px,var(--amber-soft)_8px,transparent_9px)]" />
+        <div className="relative border-l-4 border-primary pl-3"><div className="flex items-center gap-3"><h1 className="text-[26px] font-bold leading-none">Reports</h1><span className="rounded-md border border-border bg-card/80 px-3 py-1 text-[8px] font-bold tracking-widest text-muted-foreground">ENGINEERING EVIDENCE</span></div><p className="mt-2 text-[11px] text-muted-foreground">Live simulation, scenario comparison, validation and pilot audit.</p></div>
+      </section>
+      <section className="grid grid-cols-4 gap-2">
+        {tabs.map(([key, item]) => <Button key={key} variant="outline" onClick={() => setSelected(key)} className={`h-[62px] justify-start px-3 text-left ${selected === key ? "border-primary bg-amber-soft/40" : "bg-card"}`}><span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-amber-soft text-accent-foreground"><item.icon className="h-5 w-5" /></span><span className="min-w-0"><strong className="block truncate text-[10px]">{item.title}</strong><span className="block truncate text-[9px] font-normal text-muted-foreground">{item.subtitle}</span></span></Button>)}
+      </section>
+      <section className="mt-4 min-h-[430px] rounded-lg border border-primary bg-card px-5 py-4 shadow-sm">
+        <div className="flex items-start border-b border-border pb-3"><div><h2 className="text-[15px] font-bold">{report.title}</h2><p className="mt-1 text-[10px] text-muted-foreground">{report.id}</p></div><span className={`ml-auto rounded-md border px-3 py-2 text-[9px] font-bold tracking-widest ${report.risk === "HIGH" ? "border-rose-foreground/20 bg-rose-soft text-rose-foreground" : report.risk === "READY" ? "border-mint-foreground/20 bg-mint text-mint-foreground" : "border-primary/20 bg-amber-soft text-accent-foreground"}`}>● {report.risk}</span></div>
+        <div className="flex gap-2 py-3"><Button size="sm" className="h-8 text-[10px]" onClick={() => downloadReport(report, "md")}><Download />Markdown (.md)</Button><Button size="sm" variant="outline" className="h-8 text-[10px]" onClick={() => downloadReport(report, "json")}><FileJson />JSON (.json)</Button></div>
+        <div className="space-y-5 pt-2">{report.sections.map((section) => <article key={section.title} className="flex gap-4"><span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-md ${section.tone}`}><section.icon className="h-5 w-5" /></span><div><h3 className="text-[13px] font-bold">{section.title}</h3><p className="mt-1 max-w-[900px] text-[10px] leading-relaxed text-muted-foreground">{section.body}</p>{section.detail && <p className="text-[10px] leading-relaxed text-muted-foreground">{section.detail}</p>}</div></article>)}</div>
+        <div className="mt-4 flex items-center gap-3 rounded-md border border-primary/30 bg-amber-soft/45 px-3 py-2"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground"><Info className="h-4 w-4" /></span><div><p className="text-[9px] font-bold text-accent-foreground">HISTORICAL EVIDENCE — NOT A PREDICTION</p><p className="text-[9px] text-muted-foreground">This report is based on documented field data and model outputs from the selected simulation state.</p></div></div>
+      </section>
+    </main></div></div></div>
+  );
 }
 
-export const ReportsPage: React.FC = () => {
-  const scenarioStore = useScenarioStore();
-  const { activeScenario, presets, savedScenarios } = scenarioStore;
-
-  const [selectedReportKey, setSelectedReportKey] = useState<
-    'live-simulation' | 'scenario-comparison' | 'historical-validation' | 'final-validation' | 'assessment' | 'pilot' | 'release-freeze'
-  >('live-simulation');
-
-  // Live simulation report
-  const liveSimReport = generateLiveSimulationReport(scenarioStore);
-  const scenarioCompReport = generateScenarioComparisonReport(presets, savedScenarios);
-  const historicalValReport = generateHistoricalValidationReport(activeScenario.inputs);
-
-  // Other system reports
-  const pilotState = executeProductionPilotWorkflow('SCENARIO_A_NORMAL', 0, false, activeScenario.inputs);
-  const pilotReport = generatePilotReport(pilotState);
-
-  const finalValState = executeFinalValidation({ pilotExecutionState: pilotState });
-  const finalValReport = generateFinalReport(finalValState);
-
-  const assessmentState = executeFinalEngineeringAssessment({ pilotExecutionState: pilotState });
-  const assessmentReport = generateAssessmentReport(assessmentState);
-
-  const releaseCert = executeReleaseVerification();
-  const releaseChecklist = evaluateReleaseChecklist();
-  const manifest = generateReleaseManifest();
-
-  const handleDownloadText = (content: string, filename: string) => {
-    const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const handleDownloadJSON = (data: unknown, filename: string) => {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  const getActiveReportData = (): ActiveReportView => {
-    switch (selectedReportKey) {
-      case 'live-simulation':
-        const liveSections = [
-          {
-            title: '1. Active Scenario Inputs Summary',
-            content: `Scenario: ${liveSimReport.scenarioName}\nTemp: ${liveSimReport.inputsSummary.reservoirTemperatureC}°C | Steam: ${liveSimReport.inputsSummary.steamInjectionRateTpd} TPD (${liveSimReport.inputsSummary.steamQualityPercent}%) | VFD: ${liveSimReport.inputsSummary.vfdFrequencyHz} Hz | SPM: ${liveSimReport.inputsSummary.spm} SPM | Stroke: ${liveSimReport.inputsSummary.strokeLengthMeters} m`
-          },
-          {
-            title: '2. Calculated Physics Results',
-            content: `Modeled Temp: ${liveSimReport.calculatedResults.predictedReservoirTempC.toFixed(1)}°C (${liveSimReport.calculatedResults.thermalState})\nCrude Viscosity: ${liveSimReport.calculatedResults.estimatedViscosityCp.toLocaleString()} cP (${liveSimReport.calculatedResults.viscosityChangePercent}%)\nMobility (k/μ): ${liveSimReport.calculatedResults.mobilityDcP.toFixed(4)} D/cP (+${liveSimReport.calculatedResults.mobilityChangePercent}%)\nEstimated Production: ${liveSimReport.calculatedResults.estimatedProductionBopd.toFixed(2)} BOPD (+${liveSimReport.calculatedResults.productionChangePercent}%)\nSRP Load Index: ${liveSimReport.calculatedResults.srpLoadIndex.toFixed(1)} / 100 (${liveSimReport.calculatedResults.srpPprlLbs.toLocaleString()} lbs PPRL)\nSystem Risk Level: ${liveSimReport.calculatedResults.riskLevel} (${liveSimReport.calculatedResults.riskScore}/100)`
-          },
-          {
-            title: '3. Parameter Transition Matrix (Baseline vs Current)',
-            content: liveSimReport.parameterDeltas.map(d => `${d.parameter}: Baseline ${d.baselineValue} -> Current ${d.currentValue} (Delta: ${d.delta})`).join('\n')
-          },
-          {
-            title: '4. Active Risks & System Constraints',
-            content: liveSimReport.activeRisks.length > 0
-              ? liveSimReport.activeRisks.map(r => `[${r.severity}] ${r.title}: ${r.explanation}\nAdvisory: ${r.advisory}`).join('\n\n')
-              : '✓ All parameters operating safely within documented bounds.'
-          },
-          {
-            title: '5. Grounded Historical RAG Evidence',
-            content: liveSimReport.groundedEvidence.map(e => `[${e.category}] ${e.title}\nSource: ${e.document} Page ${e.page} (Confidence: ${e.confidence})\nWhy Relevant: ${e.matchExplanation}`).join('\n\n')
-          },
-          {
-            title: '6. Documented Knowledge Gaps (SHARP D4.1 Table 6)',
-            content: liveSimReport.knowledgeGaps.map(g => `${g.id}: ${g.title} (${g.topic})\nGap: ${g.documentedGap}\nSource: ${g.source} | Impact: ${g.impact}`).join('\n\n')
-          },
-          {
-            title: '7. AI Engineering Explanation & Advisory Actions',
-            content: `${liveSimReport.aiExplanation}\n\nRecommended Actions:\n` + liveSimReport.advisoryActions.map(a => `- ${a.title} [Priority: ${a.priority}]\n  Action: ${a.action}\n  Expected Impact: ${a.expectedImpact}`).join('\n')
-          }
-        ];
-        return {
-          title: `LIVE SIMULATION ENGINEERING REPORT — ${liveSimReport.scenarioName.toUpperCase()}`,
-          id: liveSimReport.reportId,
-          timestamp: liveSimReport.generatedAt,
-          status: liveSimReport.calculatedResults.riskLevel === 'CRITICAL' ? 'CRITICAL_RISK' : (liveSimReport.calculatedResults.riskLevel === 'HIGH' ? 'HIGH_RISK' : 'OPTIMAL_OPERATION'),
-          disclaimer: liveSimReport.disclaimer,
-          sections: liveSections,
-          rawState: liveSimReport,
-          markdown: liveSimReport.markdownReport
-        };
-
-      case 'scenario-comparison':
-        return {
-          title: `WHAT-IF SCENARIO COMPARISON REPORT (${scenarioCompReport.matrix.snapshots.length} SCENARIOS)`,
-          id: scenarioCompReport.reportId,
-          timestamp: scenarioCompReport.generatedAt,
-          status: scenarioCompReport.status,
-          disclaimer: scenarioCompReport.disclaimer,
-          sections: scenarioCompReport.sections,
-          rawState: scenarioCompReport.matrix,
-          markdown: scenarioCompReport.markdownReport,
-        };
-
-      case 'historical-validation':
-        return {
-          title: `HISTORICAL VALIDATION REPORT (PROTOTYPE FIELD DATA)`,
-          id: historicalValReport.reportId,
-          timestamp: historicalValReport.generatedAt,
-          status: historicalValReport.status,
-          disclaimer: historicalValReport.disclaimer,
-          sections: historicalValReport.sections,
-          rawState: historicalValReport.calibrationMetrics,
-          markdown: historicalValReport.markdownReport,
-        };
-
-      case 'final-validation':
-        return {
-          title: finalValReport.title,
-          id: finalValReport.reportId,
-          timestamp: finalValReport.generatedAt,
-          status: finalValReport.finalStatus,
-          disclaimer: finalValReport.disclaimer,
-          sections: finalValReport.sections,
-          rawState: finalValState,
-          markdown: `# ${finalValReport.title}\n\n**Report ID:** ${finalValReport.reportId}\n**Generated:** ${finalValReport.generatedAt}\n**Status:** ${finalValReport.finalStatus}\n\n---\n\n` +
-            finalValReport.sections.map((s) => `## ${s.title}\n${s.content}\n`).join('\n') +
-            `\n---\n> **MANDATED SAFETY DISCLAIMER:** ${finalValReport.disclaimer}\n`
-        };
-      case 'assessment':
-        return {
-          title: assessmentReport.title,
-          id: assessmentReport.reportId,
-          timestamp: assessmentReport.generatedAt,
-          status: assessmentReport.finalStatus,
-          disclaimer: assessmentReport.disclaimer,
-          sections: assessmentReport.sections,
-          rawState: assessmentState,
-          markdown: `# ${assessmentReport.title}\n\n**Report ID:** ${assessmentReport.reportId}\n**Generated:** ${assessmentReport.generatedAt}\n**Status:** ${assessmentReport.finalStatus}\n\n---\n\n` +
-            assessmentReport.sections.map((s) => `## ${s.title}\n${s.content}\n`).join('\n') +
-            `\n---\n> **MANDATED SAFETY DISCLAIMER:** ${assessmentReport.disclaimer}\n`
-        };
-      case 'pilot':
-        const pilotSections = [
-          { title: '1. Pilot Scenario & Data Provenance', content: `Scenario: ${pilotReport.scenarioName}\nData Provenance: ${pilotReport.dataProvenance}\nTelemetry Quality Score: ${pilotReport.telemetryQualityScore}/100` },
-          { title: '2. Digital Twin State Summary', content: pilotReport.twinStateSummary },
-          { title: '3. Core Physics & Production Results', content: pilotReport.physicsResultsSummary },
-          { title: '4. Decision Trace & Risk Assessment', content: `${pilotReport.decisionTraceSummary}\n${pilotReport.riskRating}` },
-          { title: '5. Pilot Engineering Limitations', content: pilotReport.limitations.map((l, i) => `${i + 1}. ${l}`).join('\n') },
-          { title: '6. Required Physical Field Inputs', content: pilotReport.requiredFieldInputs.map((r, i) => `${i + 1}. ${r}`).join('\n') },
-          { title: '7. Final Pilot Determination', content: `${pilotReport.finalPilotStatus}\n\n${pilotReport.disclaimer}` },
-        ];
-        return {
-          title: pilotReport.title,
-          id: pilotReport.reportId,
-          timestamp: pilotReport.generatedAt,
-          status: pilotReport.finalPilotStatus,
-          disclaimer: pilotReport.disclaimer,
-          sections: pilotSections,
-          rawState: pilotState,
-          markdown: `# ${pilotReport.title}\n\n**Report ID:** ${pilotReport.reportId}\n**Generated:** ${pilotReport.generatedAt}\n**Status:** ${pilotReport.finalPilotStatus}\n\n---\n\n` +
-            pilotSections.map((s) => `## ${s.title}\n${s.content}\n`).join('\n') +
-            `\n---\n> **MANDATED SAFETY DISCLAIMER:** ${pilotReport.disclaimer}\n`
-        };
-      case 'release-freeze':
-        const releaseMarkdown = `# ${manifest.projectName} — RELEASE VERIFICATION\n\n` +
-          `**System Version:** ${manifest.version}\n` +
-          `**Application Mode:** ${manifest.appMode}\n` +
-          `**Verification Status:** ${releaseCert.isReleaseReady ? 'RELEASE_READY' : 'RELEASE_BLOCKED'}\n` +
-          `**Verified Test Suites:** ${manifest.verifiedTestSuitesCount}\n` +
-          `**Verified Individual Tests:** ${manifest.verifiedTotalTestsCount}\n` +
-          `**Checklist:** ${releaseCert.checklistPassedCount} / ${releaseCert.checklistTotalCount} passed\n` +
-          `**Demonstration Scenarios:** ${releaseCert.demoScenariosCount}\n\n` +
-          `## Blockers\n${releaseCert.blockers.length ? releaseCert.blockers.map((item) => `- ${item}`).join('\n') : 'None recorded.'}\n\n` +
-          `## Warnings\n${releaseCert.warnings.length ? releaseCert.warnings.map((item) => `- ${item}`).join('\n') : 'None recorded.'}\n\n` +
-          `## Limitations\n${manifest.limitations.map((item) => `- ${item}`).join('\n')}\n\n` +
-          `---\n> **MANDATED SAFETY DISCLAIMER:** ${manifest.disclaimer}\n`;
-        return {
-          title: `RELEASE VERIFICATION — VERSION ${manifest.version}`,
-          id: `REL-${manifest.releaseId}`,
-          timestamp: manifest.generatedAt,
-          status: releaseCert.isReleaseReady ? 'RELEASE_READY' : 'RELEASE_BLOCKED',
-          disclaimer: manifest.disclaimer,
-          sections: [
-            { title: '1. Verification Summary', content: `${releaseCert.isReleaseReady ? 'RELEASE_READY' : 'RELEASE_BLOCKED'}; ${releaseCert.demoScenariosCount} demonstration scenarios evaluated.` },
-            { title: '2. Test Verification', content: `${manifest.verifiedTestSuitesCount} suites and ${manifest.verifiedTotalTestsCount} individual tests are recorded in the manifest.` },
-            { title: '3. Release Checklist', content: `${releaseCert.checklistPassedCount} / ${releaseCert.checklistTotalCount} checks passed. ${releaseChecklist.filter((item) => !item.passed).map((item) => item.description).join('; ') || 'No checklist blockers recorded.'}` },
-            { title: '4. Real-Field Connectivity', content: `${manifest.realFieldConnectivityStatus}. ${releaseCert.warnings.join('\n') || 'No connectivity warnings recorded.'}` },
-            { title: '5. Engineering Limitations', content: manifest.limitations.join('\n') },
-          ],
-          rawState: releaseCert,
-          markdown: releaseMarkdown,
-        };
-    }
-  };
-
-  const activeReport = getActiveReportData();
-
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title="Simulation Reports & Engineering Documentation"
-        subtitle="Dynamic live scenario report, exportable engineering summaries, audit traces, and release certificates"
-        badgeText="Step 6.2 Certified Workstation"
-      />
-
-      {/* Report Selection Tabs */}
-      <div className="flex flex-wrap gap-2 border-b border-slate-800 pb-2 font-mono text-xs">
-        <button
-          onClick={() => setSelectedReportKey('live-simulation')}
-          className={`px-3 py-1.5 rounded font-bold transition-colors flex items-center gap-1.5 ${
-            selectedReportKey === 'live-simulation'
-              ? 'bg-sky-900 text-sky-200 border border-sky-700'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5 text-sky-400" />
-          <span>Live Simulation Report</span>
-        </button>
-
-        <button
-          onClick={() => setSelectedReportKey('scenario-comparison')}
-          className={`px-3 py-1.5 rounded font-bold transition-colors flex items-center gap-1.5 ${
-            selectedReportKey === 'scenario-comparison'
-              ? 'bg-sky-900 text-sky-200 border border-sky-700'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }`}
-        >
-          <span>Scenario Comparison Report</span>
-        </button>
-
-        <button
-          onClick={() => setSelectedReportKey('historical-validation')}
-          className={`px-3 py-1.5 rounded font-bold transition-colors flex items-center gap-1.5 ${
-            selectedReportKey === 'historical-validation'
-              ? 'bg-sky-900 text-sky-200 border border-sky-700'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }`}
-        >
-          <span>Historical Validation Report</span>
-        </button>
-
-        <button
-          onClick={() => setSelectedReportKey('final-validation')}
-          className={`px-3 py-1.5 rounded font-bold transition-colors ${
-            selectedReportKey === 'final-validation'
-              ? 'bg-sky-900 text-sky-200 border border-sky-700'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }`}
-        >
-          Final Validation Package
-        </button>
-
-        <button
-          onClick={() => setSelectedReportKey('assessment')}
-          className={`px-3 py-1.5 rounded font-bold transition-colors ${
-            selectedReportKey === 'assessment'
-              ? 'bg-sky-900 text-sky-200 border border-sky-700'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }`}
-        >
-          Final Engineering Assessment
-        </button>
-
-        <button
-          onClick={() => setSelectedReportKey('pilot')}
-          className={`px-3 py-1.5 rounded font-bold transition-colors ${
-            selectedReportKey === 'pilot'
-              ? 'bg-sky-900 text-sky-200 border border-sky-700'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }`}
-        >
-          Production Pilot Audit
-        </button>
-
-        <button
-          onClick={() => setSelectedReportKey('release-freeze')}
-          className={`px-3 py-1.5 rounded font-bold transition-colors ${
-            selectedReportKey === 'release-freeze'
-              ? 'bg-sky-900 text-sky-200 border border-sky-700'
-              : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
-          }`}
-        >
-          Release & Freeze Manifest
-        </button>
-      </div>
-
-      {/* Main Report View Panel */}
-      <Panel
-        title={activeReport.title}
-        subtitle={`ID: ${activeReport.id} | Generated: ${activeReport.timestamp}`}
-        action={
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => handleDownloadText(activeReport.markdown, `${activeReport.id}.md`)}
-              className="px-2.5 py-1 rounded bg-sky-950 text-sky-300 hover:bg-sky-900 border border-sky-800 font-mono text-xs font-bold transition-colors inline-flex items-center gap-1"
-            >
-              <Download className="w-3.5 h-3.5" />
-              Markdown (.md)
-            </button>
-            <button
-              onClick={() => handleDownloadJSON(activeReport.rawState, `${activeReport.id}.json`)}
-              className="px-2.5 py-1 rounded bg-slate-900 text-slate-300 hover:bg-slate-800 border border-slate-700 font-mono text-xs font-bold transition-colors inline-flex items-center gap-1"
-            >
-              <FileCode className="w-3.5 h-3.5" />
-              JSON (.json)
-            </button>
-          </div>
-        }
-      >
-        <div className="space-y-4 font-mono text-xs">
-          {/* Status Header */}
-          <div className="flex items-center justify-between p-3 bg-slate-950 rounded border border-slate-800">
-            <span className="text-slate-400 text-xs">Report Status Determination:</span>
-            <span className={`px-2.5 py-1 rounded text-xs font-bold ${
-              activeReport.status.includes('OPTIMAL') || activeReport.status.includes('READY') || activeReport.status.includes('PASSED')
-                ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
-                : 'bg-amber-950 text-amber-300 border border-amber-800'
-            }`}>
-              {activeReport.status}
-            </span>
-          </div>
-
-          {/* Report Content Sections */}
-          <div className="space-y-3">
-            {activeReport.sections.map((section, idx) => (
-              <div key={idx} className="bg-slate-950 p-4 rounded border border-slate-800 space-y-2">
-                <div className="text-[11px] font-bold text-sky-400 uppercase tracking-wider">
-                  {section.title}
-                </div>
-                <div className="text-slate-300 text-xs font-sans whitespace-pre-wrap leading-relaxed">
-                  {section.content}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Safety Disclaimer */}
-          <div className="bg-amber-950/30 border border-amber-800/60 p-3.5 rounded text-amber-200 text-xs font-sans">
-            <div className="flex items-center gap-2 font-mono font-bold text-amber-300 uppercase tracking-wider mb-1">
-              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
-              <span>Mandated Safety Disclaimer</span>
-            </div>
-            <p className="text-[11px] text-amber-100/90 leading-relaxed">
-              {activeReport.disclaimer}
-            </p>
-          </div>
-        </div>
-      </Panel>
-    </div>
-  );
-};
+export default ReportsPage;

@@ -18,17 +18,6 @@ export function summarizeEngineeringEvidence(input?: FinalValidationInput): Evid
 
   // Add specific Step 5.13 Consolidated Summary Evidence
   const isRealConn = input?.isRealTelemetryConnected ?? false;
-  evidenceItems.push({
-    id: 'EVD-513-01',
-    sourceStep: 'Step 5.13',
-    sourceModule: 'finalValidation',
-    description: 'System Unit Test Suite Verification Count',
-    value: 396,
-    unit: 'tests',
-    status: 'PASS',
-    provenance: 'DERIVED',
-    limitations: ['Verified clean build with 0 TypeScript compilation errors.'],
-  });
 
   evidenceItems.push({
     id: 'EVD-513-02',

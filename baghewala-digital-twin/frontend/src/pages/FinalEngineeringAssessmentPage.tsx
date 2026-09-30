@@ -24,8 +24,14 @@ import type {
   AssessmentReport,
 } from '../simulation/finalEngineeringAssessment/types';
 import { executeProductionPilotWorkflow } from '../simulation/productionPilot';
+import { useDocumentTitle } from '../hooks/useDocumentTitle';
 
 export const FinalEngineeringAssessmentPage: React.FC = () => {
+  useDocumentTitle({
+    title: "Final Engineering Assessment",
+    description:
+      "Consolidated engineering assessment with evidence trace and findings.",
+  });
   const [isRealTelemetryConnected, setIsRealTelemetryConnected] = useState(false);
   const [showReportModal, setShowReportModal] = useState(false);
 

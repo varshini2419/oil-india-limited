@@ -14,10 +14,11 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   children,
 }) => {
   return (
-    <div className="flex flex-col md:flex-row md:items-center justify-between pb-5 mb-6 border-b border-slate-800 gap-4">
+    <div className="oil-page-header flex flex-col md:flex-row md:items-center justify-between pb-5 mb-6 border-b border-slate-800 gap-4">
       <div>
         <div className="flex items-center gap-3">
-          <h1 className="text-[22px] font-extrabold tracking-wide text-slate-900 uppercase font-mono">
+          <span className="oil-page-header-mark" aria-hidden="true" />
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-900 font-sans">
             {title}
           </h1>
           {badgeText && (

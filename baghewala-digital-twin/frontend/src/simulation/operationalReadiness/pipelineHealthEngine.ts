@@ -5,7 +5,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'physics_models',
       componentName: 'Physics Models Engine',
-      stepReference: 'Steps 4.3–4.9',
+      stepReference: 'Core physics models',
       status: customOverrides?.physics_models || 'PASS',
       evidence: 'Thermal, viscosity, mobility, production, SRP, CSS & Risk engines operational.',
       limitation: 'Deterministic physics equations subject to reservoir fluid property boundaries.',
@@ -14,7 +14,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'historical_validation',
       componentName: 'Historical Backtesting',
-      stepReference: 'Step 5.1',
+      stepReference: 'Historical validation',
       status: customOverrides?.historical_validation || 'PASS',
       evidence: '4 Baghewala historical appraisal cases evaluated against physics predictions.',
       limitation: 'Limited historical well test cases available in published records.',
@@ -23,7 +23,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'calibration',
       componentName: 'Parameter Calibration',
-      stepReference: 'Step 5.2',
+      stepReference: 'Parameter calibration',
       status: customOverrides?.calibration || 'PASS',
       evidence: 'Historical calibration engine active with holdout validation and provenance tracking.',
       limitation: 'Calibration applies to documented tunable reservoir parameters only.',
@@ -32,7 +32,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'uncertainty',
       componentName: 'Monte Carlo Uncertainty',
-      stepReference: 'Step 5.3',
+      stepReference: 'Monte Carlo uncertainty',
       status: customOverrides?.uncertainty || 'PASS',
       evidence: 'Monte Carlo PRNG sampling, Morris sensitivity, and Tornado rankings active.',
       limitation: 'Uncertainty intervals reflect assumed input distributions.',
@@ -41,7 +41,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'optimization',
       componentName: 'Scenario Optimization',
-      stepReference: 'Step 5.4',
+      stepReference: 'Scenario optimization',
       status: customOverrides?.optimization || 'PASS',
       evidence: 'Grid search candidate evaluator and Pareto multi-objective trade-off active.',
       limitation: 'Candidate bounds constrained by equipment physical operating limits.',
@@ -50,7 +50,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'monitoring',
       componentName: 'Real-Time Monitoring & What-If',
-      stepReference: 'Step 5.5',
+      stepReference: 'Real-time monitoring',
       status: customOverrides?.monitoring || 'PASS',
       evidence: 'Telemetry simulator stream replay and interactive what-if calculator active.',
       limitation: 'What-if calculations assume steady-state thermal response.',
@@ -59,7 +59,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'field_ingestion',
       componentName: 'Field Data Ingestion',
-      stepReference: 'Step 5.6',
+      stepReference: 'Field data integration',
       status: customOverrides?.field_ingestion || 'PASS',
       evidence: 'JSON/CSV ingestion, schema validation, outlier detection & missing value handling active.',
       limitation: 'Simulated telemetry fallback active when live field feed is unavailable.',
@@ -68,7 +68,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'integrated_validation',
       componentName: 'Integrated Validation & Decision Trace',
-      stepReference: 'Step 5.7',
+      stepReference: 'Integrated validation',
       status: customOverrides?.integrated_validation || 'PASS',
       evidence: '8-stage auditable causal decision trace and 13-section report generator active.',
       limitation: 'Integrated validation depends on field data coverage and quality.',
@@ -86,7 +86,7 @@ export function evaluatePipelineHealth(customOverrides?: Record<string, Pipeline
     {
       componentId: 'unit_consistency',
       componentName: 'Unit Normalization Engine',
-      stepReference: 'Step 5.6',
+      stepReference: 'Field data integration',
       status: customOverrides?.unit_consistency || 'PASS',
       evidence: 'Automatic unit normalization to standard oilfield units (°C, bar, BOPD, TPD, Hz, SPM, m).',
       limitation: 'Unrecognized unit strings are tagged UNIT_UNKNOWN without fabrication.',

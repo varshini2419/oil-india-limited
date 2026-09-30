@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Lock, User, Eye, EyeOff, LogIn, MapPin, Users, Clock, ShieldCheck, ShieldAlert } from 'lucide-react';
+import { Lock, User, Eye, EyeOff, LogIn, MapPin, Clock, ShieldAlert, Info } from 'lucide-react';
 import './LoginPage.css';
 
 export const LoginPage: React.FC = () => {
@@ -182,7 +182,7 @@ export const LoginPage: React.FC = () => {
             </div>
 
             {/* Options Row */}
-            <div className="flex items-center justify-between text-xs pt-0.5">
+            <div className="flex items-center text-xs pt-0.5">
               <label className="flex items-center gap-2 text-slate-600 font-medium cursor-pointer">
                 <input
                   type="checkbox"
@@ -192,13 +192,17 @@ export const LoginPage: React.FC = () => {
                 />
                 <span>Remember Me</span>
               </label>
-              <button
-                type="button"
-                className="text-[#a71d2a] hover:underline font-semibold cursor-pointer"
-                onClick={() => alert('For demo access, please use admin@gmail.com / admin123')}
-              >
-                Forgot Password?
-              </button>
+            </div>
+
+            {/* Demo access hint (replaces the old forgot-password alert) */}
+            <div className="flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">
+              <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-600" aria-hidden="true" />
+              <span>
+                <strong className="font-semibold">Demo access:</strong> sign in with{' '}
+                <code className="mx-0.5 rounded bg-amber-100 px-1 py-0.5 font-mono text-[11px]">admin@gmail.com</code>
+                /
+                <code className="mx-0.5 rounded bg-amber-100 px-1 py-0.5 font-mono text-[11px]">admin123</code>
+              </span>
             </div>
 
             {/* Primary Login Button */}
@@ -213,7 +217,7 @@ export const LoginPage: React.FC = () => {
       {/* Bottom Information Footer Bar */}
       <footer className="oil-footer-wrapper">
         <div className="oil-login-footer-bar">
-          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 items-center">
+          <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-2 gap-4 items-center">
             {/* Box 1: Location */}
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 shrink-0">
@@ -225,36 +229,14 @@ export const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Box 2: System Status */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 shrink-0">
-                <Users className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="oil-footer-item-title">System Status</div>
-                <div className="oil-footer-item-status">All Systems Operational</div>
-              </div>
-            </div>
-
-            {/* Box 3: Server Time */}
+            {/* Box 2: Server Time */}
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 shrink-0">
                 <Clock className="w-4 h-4" />
               </div>
               <div>
                 <div className="oil-footer-item-title">Server Time</div>
-                <div className="oil-footer-item-subtitle font-mono">{serverTime || '20 Mar 2026, 09:46:40 IST'}</div>
-              </div>
-            </div>
-
-            {/* Box 4: Connection */}
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-slate-800/80 border border-slate-700/70 flex items-center justify-center text-slate-300 shrink-0">
-                <ShieldCheck className="w-4 h-4" />
-              </div>
-              <div>
-                <div className="oil-footer-item-title">Connection</div>
-                <div className="oil-footer-item-status">Secure Encrypted</div>
+                <div className="oil-footer-item-subtitle font-mono">{serverTime || '—'}</div>
               </div>
             </div>
           </div>

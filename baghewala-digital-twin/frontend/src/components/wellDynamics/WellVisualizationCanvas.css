@@ -1,0 +1,6 @@
+.well-visualization-panel { color: #22303d; }
+.well-visualization-toolbar h2 { color: #22303d !important; font-family: var(--font-ui); font-size: .95rem; letter-spacing: 0; }
+.well-visualization-toolbar button { color: #52606d; }
+.well-visualization-toolbar button:hover { color: #17202b; background: #eef2f4; }
+.well-visualization-stage { min-height: 520px; }
+@media (max-width: 640px) { .well-visualization-stage { min-height: 430px; height: 430px; } }
