@@ -34,7 +34,7 @@ interface AnimationProviderProps {
 }
 
 export const AnimationProvider: React.FC<AnimationProviderProps> = ({ children }) => {
-  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [speed, setSpeedState] = useState<AnimationSpeedMode>('normal');
   const [strokeOffset, setStrokeOffset] = useState<number>(0);
   const [walkingBeamAngle, setWalkingBeamAngle] = useState<number>(0);

@@ -318,12 +318,23 @@ class SimulationService:
     """Loads trained ML models once and serves predictions + constraint checks."""
 
     def __init__(self):
-        self.models = {
-            "nowcast_with_temp": joblib.load(ARTIFACTS_DIR / "nowcast_with_temp.joblib"),
-            "nowcast_no_temp": joblib.load(ARTIFACTS_DIR / "nowcast_softsensor_no_temp.joblib"),
-            "forecast_7d": joblib.load(ARTIFACTS_DIR / "forecast_plus7d.joblib"),
-            "alarm_clf_7d": joblib.load(ARTIFACTS_DIR / "alarm_classifier_7d.joblib"),
+        self.models = {}
+        self.model_load_error: str | None = None
+
+        model_files = {
+            "nowcast_with_temp": ARTIFACTS_DIR / "nowcast_with_temp.joblib",
+            "nowcast_no_temp": ARTIFACTS_DIR / "nowcast_softsensor_no_temp.joblib",
+            "forecast_7d": ARTIFACTS_DIR / "forecast_plus7d.joblib",
+            "alarm_clf_7d": ARTIFACTS_DIR / "alarm_classifier_7d.joblib",
         }
+
+        for name, path in model_files.items():
+            try:
+                self.models[name] = joblib.load(path)
+            except Exception as exc:  # pragma: no cover - depends on local Python/Windows policy
+                self.model_load_error = str(exc)
+                self.models[name] = None
+
         with open(ARTIFACTS_DIR / "model_metadata.json", "r") as f:
             self.metadata = json.load(f)
 
@@ -348,6 +359,15 @@ class SimulationService:
     def get_constraints_registry(self) -> list[dict]:
         return self.registry_df.to_dict(orient="records")
 
+    def _require_models(self) -> None:
+        if any(model is None for model in self.models.values()):
+            if self.model_load_error:
+                raise RuntimeError(
+                    "ML model artifacts could not be loaded in this environment: "
+                    f"{self.model_load_error}"
+                )
+            raise RuntimeError("ML model artifacts are unavailable.")
+
     # ------------------------------------------------------------------
     #  Feature preparation
     # ------------------------------------------------------------------
@@ -361,6 +381,8 @@ class SimulationService:
     #  ML Prediction
     # ------------------------------------------------------------------
     def predict(self, input_data: dict) -> dict[str, Any]:
+        self._require_models()
+
         well_id = input_data.get("well_id")
         well = self._well_index.get(well_id)
         if well is None:

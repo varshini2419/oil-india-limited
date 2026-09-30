@@ -22,7 +22,18 @@ import {
   FileText,
   Sparkles,
   Download,
+  Cpu,
+  Flame,
+  ShieldAlert,
+  Bell,
+  LayoutDashboard,
 } from 'lucide-react';
+
+const DashboardPanel = lazy(() =>
+  import('../components/dashboard/DashboardPanel').then((m) => ({
+    default: m.DashboardPanel,
+  }))
+);
 
 const ScenarioOptimizationPanel = lazy(() =>
   import('../components/simulation/ScenarioOptimizationPanel').then((m) => ({
@@ -54,6 +65,30 @@ const ProductionPilotPanel = lazy(() =>
   }))
 );
 
+const SPMOptimizerPanel = lazy(() =>
+  import('../components/simulation/SPMOptimizerPanel').then((m) => ({
+    default: m.SPMOptimizerPanel,
+  }))
+);
+
+const CSSOptimizerPanel = lazy(() =>
+  import('../components/simulation/CSSOptimizerPanel').then((m) => ({
+    default: m.CSSOptimizerPanel,
+  }))
+);
+
+const PredictiveMaintenancePanel = lazy(() =>
+  import('../components/simulation/PredictiveMaintenancePanel').then((m) => ({
+    default: m.PredictiveMaintenancePanel,
+  }))
+);
+
+const AlertsEventsPanel = lazy(() =>
+  import('../components/simulation/AlertsEventsPanel').then((m) => ({
+    default: m.AlertsEventsPanel,
+  }))
+);
+
 const AnalysisPanelFallback: React.FC<{ label: string }> = ({ label }) => (
   <div className="p-6 bg-slate-900 border border-slate-800 rounded-2xl font-mono text-xs text-slate-400 flex items-center justify-between shadow-md">
     <span className="font-sans font-medium">Loading {label}...</span>
@@ -61,8 +96,13 @@ const AnalysisPanelFallback: React.FC<{ label: string }> = ({ label }) => (
   </div>
 );
 
-type WorkstationTab =
+export type WorkstationTab =
+  | 'DASHBOARD'
   | 'TWIN'
+  | 'SPM_OPTIMIZER'
+  | 'CSS_OPTIMIZER'
+  | 'PREDICTIVE_MAINTENANCE'
+  | 'ALERTS_EVENTS'
   | 'ML_ADVISORY'
   | 'NOC'
   | 'RESULTS'
@@ -81,7 +121,12 @@ interface NavTabItem {
 }
 
 const NAV_TABS: NavTabItem[] = [
+  { id: 'DASHBOARD', label: 'Dashboard', icon: LayoutDashboard, badge: 'Live Overview' },
   { id: 'TWIN', label: 'Digital Twin & Simulation', icon: Activity, badge: 'Live' },
+  { id: 'SPM_OPTIMIZER', label: 'SPM Optimizer', icon: Cpu, badge: '2D Twin' },
+  { id: 'CSS_OPTIMIZER', label: 'CSS Optimizer', icon: Flame, badge: 'Thermal' },
+  { id: 'PREDICTIVE_MAINTENANCE', label: 'Predictive Maintenance', icon: ShieldAlert, badge: 'Health' },
+  { id: 'ALERTS_EVENTS', label: 'Alerts & Events', icon: Bell, badge: 'Live Feed' },
   { id: 'ML_ADVISORY', label: 'ML Advisory', icon: Brain, badge: '30 Wells' },
   { id: 'NOC', label: 'Baseline NOC', icon: Compass, badge: 'Reference' },
   { id: 'RESULTS', label: 'Results & Comparison', icon: GitCompare, badge: '14 Metrics' },
@@ -113,7 +158,7 @@ export const SimulationPage: React.FC = () => {
   } = useScenarioStore();
 
   const [reportModalOpen, setReportModalOpen] = useState(false);
-  const [activeWorkstationTab, setActiveWorkstationTab] = useState<WorkstationTab>('TWIN');
+  const [activeWorkstationTab, setActiveWorkstationTab] = useState<WorkstationTab>('DASHBOARD');
 
   const inputs = activeScenario.inputs;
 
@@ -174,6 +219,13 @@ export const SimulationPage: React.FC = () => {
       </nav>
 
       {/* 3. SEPARATED SECTION CONTENT BASED ON ACTIVE HEADER TAB */}
+      
+      {/* TAB 0: LIVE OPERATIONS DASHBOARD */}
+      {activeWorkstationTab === 'DASHBOARD' && (
+        <Suspense fallback={<AnalysisPanelFallback label="Live Operations Dashboard" />}>
+          <DashboardPanel onNavigateTab={setActiveWorkstationTab} />
+        </Suspense>
+      )}
       
       {/* TAB 1: DIGITAL TWIN & SIMULATION */}
       {activeWorkstationTab === 'TWIN' && (
@@ -299,6 +351,34 @@ export const SimulationPage: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* TAB: SPM OPTIMIZER WORKSTATION */}
+      {activeWorkstationTab === 'SPM_OPTIMIZER' && (
+        <Suspense fallback={<AnalysisPanelFallback label="SPM Optimizer Workstation" />}>
+          <SPMOptimizerPanel />
+        </Suspense>
+      )}
+
+      {/* TAB: CSS OPTIMIZER WORKSTATION */}
+      {activeWorkstationTab === 'CSS_OPTIMIZER' && (
+        <Suspense fallback={<AnalysisPanelFallback label="CSS Optimizer Workstation" />}>
+          <CSSOptimizerPanel />
+        </Suspense>
+      )}
+
+      {/* TAB: PREDICTIVE MAINTENANCE WORKSTATION */}
+      {activeWorkstationTab === 'PREDICTIVE_MAINTENANCE' && (
+        <Suspense fallback={<AnalysisPanelFallback label="Predictive Maintenance Workstation" />}>
+          <PredictiveMaintenancePanel />
+        </Suspense>
+      )}
+
+      {/* TAB: ALERTS & EVENTS WORKSTATION */}
+      {activeWorkstationTab === 'ALERTS_EVENTS' && (
+        <Suspense fallback={<AnalysisPanelFallback label="Alerts & Events Workstation" />}>
+          <AlertsEventsPanel />
+        </Suspense>
       )}
 
       {/* TAB 2: ML VISCOSITY ADVISORY */}
