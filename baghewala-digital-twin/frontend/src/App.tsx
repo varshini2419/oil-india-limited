@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ScenarioProvider } from './simulation/scenario';
+import { LoginPage } from './pages/LoginPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 import { AppLayout } from './components/layout/AppLayout';
@@ -20,6 +21,9 @@ function App() {
       <ScenarioProvider>
         <BrowserRouter>
           <Routes>
+            {/* Public Route */}
+            <Route path="/login" element={<LoginPage />} />
+
             {/* Redirect root to /digital-twin */}
             <Route path="/" element={<Navigate to="/digital-twin" replace />} />
             <Route path="/dashboard" element={<DashboardPage />} />

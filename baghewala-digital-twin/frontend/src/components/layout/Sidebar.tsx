@@ -17,7 +17,7 @@ interface NavEntry {
 
 // Flat "Navigation Modules" list, ordered exactly like the reference design.
 const navModules: NavEntry[] = [
-  { id: 'dashboard', label: 'Dashboard', path: '/', icon: 'LayoutDashboard' },
+  { id: 'dashboard', label: 'Dashboard', path: '/dashboard', icon: 'LayoutDashboard' },
   { id: 'digital-twin', label: 'Digital Twin', path: '/digital-twin', icon: 'Layers' },
   { id: 'well-dynamics', label: 'Well Dynamics', path: '/well-dynamics', icon: 'Activity' },
   { id: 'simulation', label: 'Simulation', path: '/simulation', icon: 'Sliders' },
